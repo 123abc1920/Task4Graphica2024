@@ -54,7 +54,7 @@ public class Vector3f {
     public static Vector3f normalize(Vector3f v){
         float l = length(v);
         if(l>Global.eps){
-            return new Vector3f((float)v.getX()/l, (float)v.getY()/l, (float)v.getZ()/l);
+            return new Vector3f(v.getX()/l, v.getY()/l, v.getZ()/l);
         } else {
             throw new IllegalArgumentException("Division by zero");
         }
