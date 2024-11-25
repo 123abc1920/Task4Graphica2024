@@ -1,7 +1,6 @@
 package com.cgvsu;
 
 import com.cgvsu.render_engine.RenderEngine;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -9,9 +8,8 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseDragEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -36,6 +34,9 @@ public class GuiController {
     @FXML
     private Canvas canvas;
 
+    @FXML
+    private VBox VBoxMain;
+
     private Model mesh = null;
 
     private Camera camera = new Camera(
@@ -45,14 +46,21 @@ public class GuiController {
 
     private Timeline timeline;
 
-    private double startX;
+    private double startXLMB;
 
-    private double startY;
+    private double startYLMB;
 
-    private double endX;
+    private double endXLMB;
 
-    private double endY;
+    private double endYLMB;
 
+    private double startXRMB;
+
+    private double startYRMB;
+
+    private double endXRMB;
+
+    private double endYRMB;
 
     @FXML
     private void initialize() {
@@ -75,20 +83,31 @@ public class GuiController {
         });
 
         canvas.setOnMousePressed(mouseEvent -> {
-            startX = mouseEvent.getSceneX();
-            startY = mouseEvent.getSceneY();
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+//                startXLMB = mouseEvent.getSceneX();
+                startYLMB = mouseEvent.getSceneY();
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                startXRMB = mouseEvent.getSceneX();
+            }
         });
 
         canvas.setOnMouseDragged(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                endX = mouseEvent.getSceneX();
-                endY = mouseEvent.getSceneY();
-                double shiftX = endX - startX;
-                double shiftY = endY - startY;
-                camera.movePosition(new Vector3f((float) shiftX * 0.05f,  (float) shiftY * 0.05f, 0)); // вынести 0.05f как поле класса чтобы можно было изменить чувствительность
-                camera.moveTarget(new Vector3f((float) shiftX * 0.05f,  (float) shiftY * 0.05f, 0));
-                startX = mouseEvent.getSceneX();
-                startY = mouseEvent.getSceneY();
+//                endXLMB = mouseEvent.getSceneX();
+                endYLMB = mouseEvent.getSceneY();
+//                double shiftXLBM = endXLMB - startXLMB;
+                double shiftYLMB = endYLMB - startYLMB;
+                camera.movePosition(new Vector3f(/*(float) shiftX * 0.05f*/0,  (float) shiftYLMB * 0.05f, 0)); // вынести 0.05f как поле класса чтобы можно было изменить чувствительность
+                camera.moveTarget(new Vector3f(/*(float) shiftX * 0.05f*/0,  (float) shiftYLMB * 0.05f, 0));
+//                startXLMB = mouseEvent.getSceneX();
+                startYLMB = mouseEvent.getSceneY();
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                //todo: добавить поворот вокруг оси, мб заменить на другую реализацию
+//                Vector3f pos = camera.getPosition();
+//                double coordX = camera.getPosition().x; double coordZ = camera.getPosition().z;
+//                endXRMB = mouseEvent.getSceneX();
+//                double shiftXRMB = endXRMB - startXRMB;
+//                camera.rotateAroundY(new Vector3f(pos.x + ));
             }
         });
 
