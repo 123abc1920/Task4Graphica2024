@@ -20,6 +20,15 @@ public class Matrix4f {
         }
         return copy;
     }
+    public Matrix4f(Matrix4f other) {
+        this.matrix = new float[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                this.matrix[i][j] = other.get(i, j);
+            }
+        }
+    }
+
 
     public float get(int row, int col) {
         if (row < 0 || row >= 4 || col < 0 || col >= 4) {
