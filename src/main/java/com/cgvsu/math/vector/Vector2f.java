@@ -1,4 +1,7 @@
-package com.cgvsu.math;
+package com.cgvsu.math.vector;
+
+import com.cgvsu.math.Global;
+
 // Это заготовка для собственной библиотеки для работы с линейной алгеброй
 public class Vector2f {
     private final float x;

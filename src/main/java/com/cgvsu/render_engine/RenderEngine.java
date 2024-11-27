@@ -2,7 +2,7 @@ package com.cgvsu.render_engine;
 
 import java.util.ArrayList;
 
-import com.cgvsu.math.Vector3f;
+import com.cgvsu.math.vector.Vector3f;
 import javafx.scene.canvas.GraphicsContext;
 import javax.vecmath.*;
 import com.cgvsu.model.Model;

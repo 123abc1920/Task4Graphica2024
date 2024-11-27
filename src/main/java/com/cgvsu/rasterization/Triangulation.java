@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import com.cgvsu.math.Global;
-import com.cgvsu.math.Vector2f;
+import com.cgvsu.math.vector.Vector2f;
 
 
 public final class Triangulation {

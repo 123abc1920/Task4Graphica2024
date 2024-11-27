@@ -1,4 +1,6 @@
-package com.cgvsu.math;
+package com.cgvsu.math.vector;
+
+import com.cgvsu.math.Global;
 
 public class Vector3f {
     private final float x;

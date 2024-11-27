@@ -1,11 +1,10 @@
 package com.cgvsu.rasterization;
 
-import org.junit.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
-import com.cgvsu.math.Vector2f;
+import com.cgvsu.math.vector.Vector2f;
 
 import java.util.ArrayList;
 import java.util.Arrays;

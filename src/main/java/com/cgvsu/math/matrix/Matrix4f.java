@@ -1,4 +1,7 @@
-package com.cgvsu.math;
+package com.cgvsu.math.matrix;
+
+import com.cgvsu.math.Global;
+import com.cgvsu.math.vector.Vector4f;
 
 public class Matrix4f {
     private final float[][] matrix;

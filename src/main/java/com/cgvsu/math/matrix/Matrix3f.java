@@ -1,7 +1,10 @@
-package com.cgvsu.math;
+package com.cgvsu.math.matrix;
+
+import com.cgvsu.math.Global;
+import com.cgvsu.math.vector.Vector3f;
 
 public class Matrix3f {
-    private final float[][] matrix;
+    private float[][] matrix;
 
     public Matrix3f(float[][] matrix) {
         if (matrix.length != 3 || matrix[0].length != 3) {
@@ -13,12 +16,24 @@ public class Matrix3f {
         }
     }
 
-    public float[][] getMatrix() {
+    public float[][] matrix() {
         float[][] copy = new float[3][3];
         for (int i = 0; i < 3; i++) {
             System.arraycopy(matrix[i], 0, copy[i], 0, 3);
         }
         return copy;
+    }
+    public float get(int row, int col) {
+        if (row < 0 || row >= 3 || col < 0 || col >= 3) {
+            throw new IndexOutOfBoundsException("Indices must be between 0 and 2!");
+        }
+        return matrix[row][col];
+    }
+    public void set(int row, int col, float value) {
+        if (row < 0 || row >= 3 || col < 0 || col >= 3) {
+            throw new IndexOutOfBoundsException("Indices must be between 0 and 2!");
+        }
+        matrix[row][col] = value;
     }
 
     public boolean equals(Matrix3f other) {
