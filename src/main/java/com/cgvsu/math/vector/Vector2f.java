@@ -2,10 +2,9 @@ package com.cgvsu.math.vector;
 
 import com.cgvsu.math.Global;
 
-// Это заготовка для собственной библиотеки для работы с линейной алгеброй
 public class Vector2f {
-    private final float x;
-    private final float y;
+    private float x;
+    private float y;
 
     public Vector2f(float x, float y) {
         this.x = x;
@@ -20,45 +19,72 @@ public class Vector2f {
         return y;
     }
 
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public float get(int index) {
+        if (index == 0) {
+            return x;
+        } else if (index == 1) {
+            return y;
+        } else {
+            throw new IndexOutOfBoundsException("Index must be 0 or 1 for a 2D vector.");
+        }
+    }
+
+    public void set(int index, float value) {
+        if (index == 0) {
+            this.x = value;
+        } else if (index == 1) {
+            this.y = value;
+        } else {
+            throw new IndexOutOfBoundsException("Index must be 0 or 1 for a 2D vector.");
+        }
+    }
+
     public boolean equals(Vector2f other) {
         return Math.abs(x - other.getX()) < Global.eps && Math.abs(y - other.getY()) < Global.eps;
     }
 
-    public static Vector2f addition(Vector2f v1, Vector2f v2) {
-        return new Vector2f(v1.getX() + v2.getX(), v1.getY() + v2.getY());
+    public Vector2f add(Vector2f other) {
+        return new Vector2f(this.x + other.x, this.y + other.y);
     }
 
-    public static Vector2f subtraction(Vector2f v1, Vector2f v2) {
-        return new Vector2f(v1.getX() - v2.getX(), v1.getY() - v2.getY());
+    public Vector2f sub(Vector2f other) {
+        return new Vector2f(this.x - other.x, this.y - other.y);
     }
 
-    public static Vector2f multiplication(Vector2f v, float a) {
-        return new Vector2f(v.getX() * a, v.getY() * a);
+    public Vector2f mul(float scalar) {
+        return new Vector2f(this.x * scalar, this.y * scalar);
     }
 
-    public static Vector2f division(Vector2f v, float a) {
-        if (a > Global.eps) {
-            return new Vector2f((float) v.getX() / a, (float) v.getY() / a);
+    public Vector2f div(float scalar) {
+        if (scalar > Global.eps) {
+            return new Vector2f(this.x / scalar, this.y / scalar);
         } else {
-            throw new IllegalArgumentException("Делить на 0 нельзя");
+            throw new IllegalArgumentException("Division by zero is not allowed.");
         }
     }
 
-    public static float length(Vector2f v) {
-        return (float) Math.sqrt(v.getX() * v.getX() + v.getY() * v.getY());
+    public float length() {
+        return (float) Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
-    public static Vector2f normalize(Vector2f v) {
-        float length = length(v);
-        if (length > Global.eps) {
-            return new Vector2f((float) v.getX() / length, (float) v.getY() / length);
+    public Vector2f normalize() {
+        float len = this.length();
+        if (len > Global.eps) {
+            return new Vector2f(this.x / len, this.y / len);
         } else {
-            throw new IllegalArgumentException("Делить на 0 нельзя");
+            throw new IllegalArgumentException("Cannot normalize a zero-length vector.");
         }
     }
 
-    public static float dotProduct(Vector2f v1, Vector2f v2) {
-        return v1.getX() * v2.getX() + v1.getY() * v2.getY();
+    public float dot(Vector2f other) {
+        return this.x * other.x + this.y * other.y;
     }
-
 }

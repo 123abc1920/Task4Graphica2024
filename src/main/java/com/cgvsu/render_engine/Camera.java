@@ -2,6 +2,7 @@ package com.cgvsu.render_engine;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Matrix4f;
 
+
 public class Camera {
 
     public Camera(
