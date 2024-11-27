@@ -11,9 +11,6 @@ public class Matrix4f {
             throw new IllegalArgumentException("Matrix length should be 4x4!");
         }
         this.matrix = new float[4][4];
-        for (int i = 0; i < 4; i++) {
-            System.arraycopy(matrix[i], 0, this.matrix[i], 0, 4);
-        }
     }
 
     public float[][] matrix() {
@@ -35,7 +32,7 @@ public class Matrix4f {
         if (row < 0 || row >= 4 || col < 0 || col >= 4) {
             throw new IndexOutOfBoundsException("Indices must be between 0 and 3!");
         }
-        matrix[row][col] = value;
+        this.matrix[row][col] = value;
     }
 
     public boolean equals(Matrix4f other) {
