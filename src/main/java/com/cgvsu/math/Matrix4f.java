@@ -63,6 +63,19 @@ public class Matrix4f {
         }
         return new Matrix4f(res);
     }
+    public Matrix4f mul(Matrix4f other) {
+        float[][] result = new float[4][4];
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 4; k++) {
+                    result[i][j] += this.matrix[i][k] * other.matrix[k][j];
+                }
+            }
+        }
+
+        return new Matrix4f(result);
+    }
 
     public static Matrix4f transposition(Matrix4f A) {
         float[][] res = new float[4][4];
@@ -86,6 +99,14 @@ public class Matrix4f {
         }
         return new Matrix4f(res);
     }
+    public void set(int row, int col, float value) {
+        this.matrix[row][col] = value;
+    }
+
+    public float get(int row, int col) {
+        return this.matrix[row][col];
+    }
+
 
     public static Vector4f multiplyOnVector(Matrix4f A, Vector4f B) {
         float[] res = new float[4];
@@ -95,4 +116,15 @@ public class Matrix4f {
         res[3] = A.matrix[3][0] * B.getX() + A.matrix[3][1] * B.getY() + A.matrix[3][2] * B.getZ() + A.matrix[3][3] * B.getW();
         return new Vector4f(res[0], res[1], res[2], res[3]);
     }
+    public Matrix4f(Matrix4f other) {
+        this.matrix = new float[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                this.matrix[i][j] = other.get(i, j); // Используйте метод get() или прямой доступ
+            }
+        }
+    }
+
+
+
 }

@@ -1,5 +1,4 @@
 package com.cgvsu.math;
-// Это заготовка для собственной библиотеки для работы с линейной алгеброй
 public class Vector2f {
     private final float x;
     private final float y;

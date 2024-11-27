@@ -18,7 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
-import javax.vecmath.Vector3f;
+import com.cgvsu.math.Vector3f;
+
 
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
