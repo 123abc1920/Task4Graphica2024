@@ -1,7 +1,10 @@
 package com.cgvsu.math;
 
+import com.cgvsu.math.Global;
+import com.cgvsu.math.Vector3f;
+
 public class Matrix3f {
-    private final float[][] matrix;
+    private float[][] matrix;
 
     public Matrix3f(float[][] matrix) {
         if (matrix.length != 3 || matrix[0].length != 3) {
@@ -13,12 +16,24 @@ public class Matrix3f {
         }
     }
 
-    public float[][] getMatrix() {
+    public float[][] matrix() {
         float[][] copy = new float[3][3];
         for (int i = 0; i < 3; i++) {
             System.arraycopy(matrix[i], 0, copy[i], 0, 3);
         }
         return copy;
+    }
+    public float get(int row, int col) {
+        if (row < 0 || row >= 3 || col < 0 || col >= 3) {
+            throw new IndexOutOfBoundsException("Indices must be between 0 and 2!");
+        }
+        return matrix[row][col];
+    }
+    public void set(int row, int col, float value) {
+        if (row < 0 || row >= 3 || col < 0 || col >= 3) {
+            throw new IndexOutOfBoundsException("Indices must be between 0 and 2!");
+        }
+        matrix[row][col] = value;
     }
 
     public boolean equals(Matrix3f other) {
@@ -32,43 +47,43 @@ public class Matrix3f {
         return true;
     }
 
-    public static Matrix3f addition(Matrix3f A, Matrix3f B) {
+    public Matrix3f add(Matrix3f other) {
         float[][] res = new float[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                res[i][j] = A.matrix[i][j] + B.matrix[i][j];
+                res[i][j] = this.matrix[i][j] + other.matrix[i][j];
             }
         }
         return new Matrix3f(res);
     }
 
-    public static Matrix3f subtraction(Matrix3f A, Matrix3f B) {
+    public Matrix3f sub(Matrix3f other) {
         float[][] res = new float[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                res[i][j] = A.matrix[i][j] - B.matrix[i][j];
+                res[i][j] = this.matrix[i][j] - other.matrix[i][j];
             }
         }
         return new Matrix3f(res);
     }
 
-    public static Matrix3f multiplication(Matrix3f A, Matrix3f B) {
+    public Matrix3f mul(Matrix3f other) {
         float[][] res = new float[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 for (int k = 0; k < 3; k++) {
-                    res[i][j] += A.matrix[i][k] * B.matrix[k][j];
+                    res[i][j] += this.matrix[i][k] * other.matrix[k][j];
                 }
             }
         }
         return new Matrix3f(res);
     }
 
-    public static Matrix3f transposition(Matrix3f A) {
+    public Matrix3f transposition() {
         float[][] res = new float[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                res[j][i] = A.matrix[i][j];
+                res[j][i] = this.matrix[i][j];
             }
         }
         return new Matrix3f(res);
@@ -87,10 +102,10 @@ public class Matrix3f {
         return new Matrix3f(res);
     }
 
-    public static Vector3f multiplyOnVector(Matrix3f A, Vector3f B) {
+    public Vector3f multiplyOnVector(Vector3f vector) {
         float[] res = new float[3];
         for (int i = 0; i < 3; i++) {
-            res[i] = A.matrix[i][0] * B.getX() + A.matrix[i][1] * B.getY() + A.matrix[i][2] * B.getZ();
+            res[i] = this.matrix[i][0] * vector.getX() + this.matrix[i][1] * vector.getY() + this.matrix[i][2] * vector.getZ();
         }
         return new Vector3f(res[0], res[1], res[2]);
     }

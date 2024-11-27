@@ -13,18 +13,41 @@ public class Matrix4f {
         }
     }
 
-    public float[][] getMatrix() {
+    public float[][] matrix() {
         float[][] copy = new float[4][4];
         for (int i = 0; i < 4; i++) {
             System.arraycopy(matrix[i], 0, copy[i], 0, 4);
         }
         return copy;
     }
+    public Matrix4f(Matrix4f other) {
+        this.matrix = new float[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                this.matrix[i][j] = other.get(i, j);
+            }
+        }
+    }
+
+
+    public float get(int row, int col) {
+        if (row < 0 || row >= 4 || col < 0 || col >= 4) {
+            throw new IndexOutOfBoundsException("Indices must be between 0 and 3!");
+        }
+        return matrix[row][col];
+    }
+
+    public void set(int row, int col, float value) {
+        if (row < 0 || row >= 4 || col < 0 || col >= 4) {
+            throw new IndexOutOfBoundsException("Indices must be between 0 and 3!");
+        }
+        this.matrix[row][col] = value;
+    }
 
     public boolean equals(Matrix4f other) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                if (Math.abs(matrix[i][j] - other.matrix[i][j]) >= Global.eps) {
+                if (Math.abs(this.matrix[i][j] - other.matrix[i][j]) >= Global.eps) {
                     return false;
                 }
             }
@@ -32,43 +55,43 @@ public class Matrix4f {
         return true;
     }
 
-    public static Matrix4f addition(Matrix4f A, Matrix4f B) {
+    public Matrix4f add(Matrix4f other) {
         float[][] res = new float[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                res[i][j] = A.matrix[i][j] + B.matrix[i][j];
+                res[i][j] = this.matrix[i][j] + other.matrix[i][j];
             }
         }
         return new Matrix4f(res);
     }
 
-    public static Matrix4f subtraction(Matrix4f A, Matrix4f B) {
+    public Matrix4f sub(Matrix4f other) {
         float[][] res = new float[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                res[i][j] = A.matrix[i][j] - B.matrix[i][j];
+                res[i][j] = this.matrix[i][j] - other.matrix[i][j];
             }
         }
         return new Matrix4f(res);
     }
 
-    public static Matrix4f multiplication(Matrix4f A, Matrix4f B) {
+    public Matrix4f mul(Matrix4f other) {
         float[][] res = new float[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 for (int k = 0; k < 4; k++) {
-                    res[i][j] += A.matrix[i][k] * B.matrix[k][j];
+                    res[i][j] += this.matrix[i][k] * other.matrix[k][j];
                 }
             }
         }
         return new Matrix4f(res);
     }
 
-    public static Matrix4f transposition(Matrix4f A) {
+    public Matrix4f transposition() {
         float[][] res = new float[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                res[j][i] = A.matrix[i][j];
+                res[j][i] = this.matrix[i][j];
             }
         }
         return new Matrix4f(res);
@@ -86,31 +109,15 @@ public class Matrix4f {
         }
         return new Matrix4f(res);
     }
-    
-    public float get(int row, int col) {
-        return this.matrix[row][col];
-    }
-    
-    public Matrix4f mul(Matrix4f other) {
-        float[][] result = new float[4][4];
 
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                for (int k = 0; k < 4; k++) {
-                    result[i][j] += this.matrix[i][k] * other.matrix[k][j];
-                }
-            }
-        }
-
-        return new Matrix4f(result);
-    }
-
-    public static Vector4f multiplyOnVector(Matrix4f A, Vector4f B) {
+    public Vector4f multiplyOnVector(Vector4f vector) {
         float[] res = new float[4];
-        res[0] = A.matrix[0][0] * B.getX() + A.matrix[0][1] * B.getY() + A.matrix[0][2] * B.getZ() + A.matrix[0][3] * B.getW();
-        res[1] = A.matrix[1][0] * B.getX() + A.matrix[1][1] * B.getY() + A.matrix[1][2] * B.getZ() + A.matrix[1][3] * B.getW();
-        res[2] = A.matrix[2][0] * B.getX() + A.matrix[2][1] * B.getY() + A.matrix[2][2] * B.getZ() + A.matrix[2][3] * B.getW();
-        res[3] = A.matrix[3][0] * B.getX() + A.matrix[3][1] * B.getY() + A.matrix[3][2] * B.getZ() + A.matrix[3][3] * B.getW();
+        for (int i = 0; i < 4; i++) {
+            res[i] = this.matrix[i][0] * vector.getX()
+                    + this.matrix[i][1] * vector.getY()
+                    + this.matrix[i][2] * vector.getZ()
+                    + this.matrix[i][3] * vector.getW();
+        }
         return new Vector4f(res[0], res[1], res[2], res[3]);
     }
 }
