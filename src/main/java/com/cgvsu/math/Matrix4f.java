@@ -86,6 +86,24 @@ public class Matrix4f {
         }
         return new Matrix4f(res);
     }
+    
+    public float get(int row, int col) {
+        return this.matrix[row][col];
+    }
+    
+    public Matrix4f mul(Matrix4f other) {
+        float[][] result = new float[4][4];
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 4; k++) {
+                    result[i][j] += this.matrix[i][k] * other.matrix[k][j];
+                }
+            }
+        }
+
+        return new Matrix4f(result);
+    }
 
     public static Vector4f multiplyOnVector(Matrix4f A, Vector4f B) {
         float[] res = new float[4];

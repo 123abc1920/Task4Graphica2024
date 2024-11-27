@@ -51,6 +51,20 @@ public class Vector3f {
     public static float length(Vector3f v){
         return (float) Math.sqrt(v.getX() * v.getX() + v.getY() * v.getY() + v.getZ() * v.getZ());
     }
+    
+    public Vector3f normalize() {
+        float length = (float) Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+        if (length > Global.eps) {
+            return new Vector3f(this.x / length, this.y / length, this.z / length);
+        } else {
+            throw new IllegalArgumentException("Cannot normalize a zero vector");
+        }
+    }
+    
+    public float dot(Vector3f other) {
+        return this.x * other.x + this.y * other.y + this.z * other.z;
+    }
+    
     public static Vector3f normalize(Vector3f v){
         float l = length(v);
         if(l>Global.eps){
@@ -64,6 +78,13 @@ public class Vector3f {
     }
     public static float scalar(Vector3f vector1, Vector3f vector2) {
         return vector1.getX() * vector2.getX() + vector1.getY() * vector2.getY() + vector1.getZ() * vector2.getZ();
+    }
+    
+    public Vector3f add(Vector3f other) {
+        return new Vector3f(this.x + other.x, this.y + other.y, this.z + other.z);
+    }
+    public Vector3f sub(Vector3f other) {
+        return new Vector3f(this.x - other.x, this.y - other.y, this.z - other.z);
     }
 
 }

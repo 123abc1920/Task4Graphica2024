@@ -1,6 +1,7 @@
 package com.cgvsu.render_engine;
-import javax.vecmath.Vector3f;
-import javax.vecmath.Matrix4f;
+
+import com.cgvsu.math.Matrix4f;
+import com.cgvsu.math.Vector3f;
 
 public class Camera {
 
