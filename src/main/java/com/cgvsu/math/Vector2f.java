@@ -1,11 +1,23 @@
 package com.cgvsu.math;
+
 public class Vector2f {
-    private final float x;
-    private final float y;
+    private static final float eps = 1e-4f;
+    private float x;
+    private float y;
 
     public Vector2f(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    public float get(int index) {
+        switch (index) {
+            case 0:
+                return x;
+            case 1:
+                return y;
+        }
+        throw new IllegalArgumentException();
     }
 
     public float getX() {
@@ -16,45 +28,50 @@ public class Vector2f {
         return y;
     }
 
-    public boolean equals(Vector2f other) {
-        return Math.abs(x - other.getX()) < Global.eps && Math.abs(y - other.getY()) < Global.eps;
+
+    public Vector2f add(Vector2f other) {
+        return new Vector2f(x + other.getX(), y + other.getY());
     }
 
-    public static Vector2f addition(Vector2f v1, Vector2f v2) {
-        return new Vector2f(v1.getX() + v2.getX(), v1.getY() + v2.getY());
+    public Vector2f sub(Vector2f other) {
+        return new Vector2f(x - other.getX(), y - other.getY());
     }
 
-    public static Vector2f subtraction(Vector2f v1, Vector2f v2) {
-        return new Vector2f(v1.getX() - v2.getX(), v1.getY() - v2.getY());
+    public Vector2f multiplyScalar(float scalar) {
+        return new Vector2f(x * scalar, y * scalar);
     }
 
-    public static Vector2f multiplication(Vector2f v, float a) {
-        return new Vector2f(v.getX() * a, v.getY() * a);
+    public Vector2f divScalar(float scalar) {
+        if (Math.abs(scalar) < eps) {
+            throw new ArithmeticException("Делить на 0 нельзя");
+        }
+        return new Vector2f(x / scalar, y / scalar);
     }
 
-    public static Vector2f division(Vector2f v, float a) {
-        if (a > Global.eps) {
-            return new Vector2f((float) v.getX() / a, (float) v.getY() / a);
+    public float getLength() {
+        return (float) Math.sqrt(x * x + y * y);
+    }
+
+    public Vector2f normalize() {
+        float length = getLength();
+        if (Math.abs(length) > eps) {
+            return new Vector2f(x / length, y / length);
         } else {
             throw new IllegalArgumentException("Делить на 0 нельзя");
         }
     }
 
-    public static float length(Vector2f v) {
-        return (float) Math.sqrt(v.getX() * v.getX() + v.getY() * v.getY());
+    public float dotProduct(Vector2f v) {
+        return this.x * v.getX() + this.y * v.getY();
     }
-
-    public static Vector2f normalize(Vector2f v) {
-        float length = length(v);
-        if (length > Global.eps) {
-            return new Vector2f((float) v.getX() / length, (float) v.getY() / length);
-        } else {
-            throw new IllegalArgumentException("Делить на 0 нельзя");
-        }
+    @Override
+    public String toString() {
+        return "Vector2f{" + "x=" + x + ", y=" + y + '}';
     }
-
-    public static float dotProduct(Vector2f v1, Vector2f v2) {
-        return v1.getX() * v2.getX() + v1.getY() * v2.getY();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if(!(o instanceof Vector2f other)) return false;
+        return Math.abs(x - other.x) < eps && Math.abs(y - other.y) < eps;
     }
-
 }

@@ -1,130 +1,168 @@
 package com.cgvsu.math;
 
+import com.cgvsu.math.Vector3f;
+import com.cgvsu.math.Vector4f;
+
 public class Matrix4f {
-    private final float[][] matrix;
+    private static final float esp = 1e-4f;
+    private float[][] matrix;
+
+    public Matrix4f() {
+        this.matrix = new float[4][4];
+    }
+
+    public Matrix4f(boolean isUnitMatrix) {
+        if (isUnitMatrix) {
+            this.matrix = new float[][]{
+                    {1, 0, 0, 0},
+                    {0, 1, 0, 0},
+                    {0, 0, 1, 0},
+                    {0, 0, 0, 1}
+            };
+        } else {
+            this.matrix = new float[4][4];
+        }
+    }
 
     public Matrix4f(float[][] matrix) {
         if (matrix.length != 4 || matrix[0].length != 4) {
-            throw new IllegalArgumentException("Matrix length should be 4x4!");
+            throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 4 на 4");
         }
-        this.matrix = new float[4][4];
-        for (int i = 0; i < 4; i++) {
-            System.arraycopy(matrix[i], 0, this.matrix[i], 0, 4);
-        }
+        this.matrix = matrix;
     }
 
     public float[][] getMatrix() {
-        float[][] copy = new float[4][4];
-        for (int i = 0; i < 4; i++) {
-            System.arraycopy(matrix[i], 0, copy[i], 0, 4);
-        }
-        return copy;
+        return matrix;
     }
 
-    public boolean equals(Matrix4f other) {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (Math.abs(matrix[i][j] - other.matrix[i][j]) >= Global.eps) {
-                    return false;
-                }
+    public float getCell(int row, int col) {
+        return matrix[row][col];
+    }
+
+    public void printMatrix() {
+        System.out.println("Matrix: ");
+        for (float[] floats : matrix) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                System.out.print(floats[j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public Matrix4f sum(Matrix4f matrix4f) {
+        if (matrix4f.getMatrix().length != 4 || matrix4f.getMatrix()[0].length != 4) {
+            throw new IllegalArgumentException();
+        }
+        float[][] values = new float[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                values[i][j] = matrix[i][j] + matrix4f.getCell(i, j);
             }
         }
-        return true;
+        return new Matrix4f(values);
     }
 
-    public static Matrix4f addition(Matrix4f A, Matrix4f B) {
-        float[][] res = new float[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                res[i][j] = A.matrix[i][j] + B.matrix[i][j];
+    public Matrix4f sub(Matrix4f matrix4f) {
+        if (matrix4f.getMatrix().length != 4 || matrix4f.getMatrix()[0].length != 4) {
+            throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 4 на 4.");
+        }
+        float[][] values = new float[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                values[i][j] = matrix[i][j] - matrix4f.getCell(i, j);
             }
         }
-        return new Matrix4f(res);
+        return new Matrix4f(values);
     }
 
-    public static Matrix4f subtraction(Matrix4f A, Matrix4f B) {
-        float[][] res = new float[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                res[i][j] = A.matrix[i][j] - B.matrix[i][j];
+    public Vector4f multiplyVector(Vector4f vectorCol) {
+        if (vectorCol == null) {
+            throw new NullPointerException("Предоставленный вектор не может быть нулевым");
+        }
+
+        float[] values = new float[4];
+        for (int i = 0; i < matrix.length; i++) {
+            values[i] = 0;
+            for (int j = 0; j < matrix[0].length; j++) {
+                values[i] += matrix[i][j] * vectorCol.get(j);
             }
         }
-        return new Matrix4f(res);
+        return new Vector4f(values[0], values[1], values[2], values[3]);
     }
 
-    public static Matrix4f multiplication(Matrix4f A, Matrix4f B) {
-        float[][] res = new float[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+    public Vector3f multiplyVectorDivW(Vector3f vectorCol3f) {
+        if (vectorCol3f == null) {
+            throw new NullPointerException("Предоставленный вектор не может быть нулевым");
+        }
+        Vector4f vector4fCol = vectorCol3f.translationToVector4f();
+
+        float[] values = new float[4];
+        for (int i = 0; i < matrix.length; i++) {
+            values[i] = 0;
+            for (int j = 0; j < matrix[0].length; j++) {
+                values[i] += matrix[i][j] * vector4fCol.get(j);
+            }
+        }
+        return new Vector3f(values[0] / values[3], values[1] / values[3], values[2] / values[3]);
+    }
+
+    public Matrix4f multiplyMatrix(Matrix4f matrix4f) {
+        if (matrix4f.getMatrix().length != 4 || matrix4f.getMatrix()[0].length != 4) {
+            throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 4 на 4.");
+        }
+        float[][] values = new float[4][4];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                values[i][j] = 0;
                 for (int k = 0; k < 4; k++) {
-                    res[i][j] += A.matrix[i][k] * B.matrix[k][j];
+                    values[i][j] += matrix[i][k] * matrix4f.getCell(k, j);
                 }
             }
         }
-        return new Matrix4f(res);
+        return new Matrix4f(values);
     }
-    public Matrix4f mul(Matrix4f other) {
-        float[][] result = new float[4][4];
 
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                for (int k = 0; k < 4; k++) {
-                    result[i][j] += this.matrix[i][k] * other.matrix[k][j];
-                }
+    public Matrix4f transpose() {
+        if (matrix.length != 4 || matrix[0].length != 4) {
+            throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 4 на 4.");
+        }
+        float[][] transposed = new float[4][4];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                transposed[j][i] = matrix[i][j];
             }
         }
-
-        return new Matrix4f(result);
+        return new Matrix4f(transposed);
     }
 
-    public static Matrix4f transposition(Matrix4f A) {
-        float[][] res = new float[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                res[j][i] = A.matrix[i][j];
+    public float determinant() {
+        if (matrix.length != 4 || matrix[0].length != 4) {
+            throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 4 на 4.");
+        }
+
+        return matrix[0][0] * (matrix[1][1] * (matrix[2][2] * matrix[3][3] - matrix[2][3] * matrix[3][2])
+                - matrix[1][2] * (matrix[2][1] * matrix[3][3] - matrix[2][3] * matrix[3][1])
+                + matrix[1][3] * (matrix[2][1] * matrix[3][2] - matrix[2][2] * matrix[3][1]))
+                - matrix[0][1] * (matrix[1][0] * (matrix[2][2] * matrix[3][3] - matrix[2][3] * matrix[3][2])
+                - matrix[1][2] * (matrix[2][0] * matrix[3][3] - matrix[2][3] * matrix[3][0])
+                + matrix[1][3] * (matrix[2][0] * matrix[3][2] - matrix[2][2] * matrix[3][0]))
+                + matrix[0][2] * (matrix[1][0] * (matrix[2][1] * matrix[3][3] - matrix[2][3] * matrix[3][1])
+                - matrix[1][1] * (matrix[2][0] * matrix[3][3] - matrix[2][3] * matrix[3][0])
+                + matrix[1][3] * (matrix[2][0] * matrix[3][1] - matrix[2][1] * matrix[3][0]))
+                - matrix[0][3] * (matrix[1][0] * (matrix[2][1] * matrix[3][2] - matrix[2][2] * matrix[3][1])
+                - matrix[1][1] * (matrix[2][0] * matrix[3][2] - matrix[2][2] * matrix[3][0])
+                + matrix[1][2] * (matrix[2][0] * matrix[3][1] - matrix[2][1] * matrix[3][0]));
+    }
+
+    public boolean equalsAns(Matrix4f matrix4f) {
+        boolean flag = false;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (matrix[i][j] == matrix4f.getCell(i, j)) {
+                    flag = true;
+                } else return false;
             }
         }
-        return new Matrix4f(res);
+        return flag;
     }
-
-    public static Matrix4f zeroMatrix() {
-        float[][] res = new float[4][4];
-        return new Matrix4f(res);
-    }
-
-    public static Matrix4f oneMatrix() {
-        float[][] res = new float[4][4];
-        for (int i = 0; i < 4; i++) {
-            res[i][i] = 1;
-        }
-        return new Matrix4f(res);
-    }
-    public void set(int row, int col, float value) {
-        this.matrix[row][col] = value;
-    }
-
-    public float get(int row, int col) {
-        return this.matrix[row][col];
-    }
-
-
-    public static Vector4f multiplyOnVector(Matrix4f A, Vector4f B) {
-        float[] res = new float[4];
-        res[0] = A.matrix[0][0] * B.getX() + A.matrix[0][1] * B.getY() + A.matrix[0][2] * B.getZ() + A.matrix[0][3] * B.getW();
-        res[1] = A.matrix[1][0] * B.getX() + A.matrix[1][1] * B.getY() + A.matrix[1][2] * B.getZ() + A.matrix[1][3] * B.getW();
-        res[2] = A.matrix[2][0] * B.getX() + A.matrix[2][1] * B.getY() + A.matrix[2][2] * B.getZ() + A.matrix[2][3] * B.getW();
-        res[3] = A.matrix[3][0] * B.getX() + A.matrix[3][1] * B.getY() + A.matrix[3][2] * B.getZ() + A.matrix[3][3] * B.getW();
-        return new Vector4f(res[0], res[1], res[2], res[3]);
-    }
-    public Matrix4f(Matrix4f other) {
-        this.matrix = new float[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                this.matrix[i][j] = other.get(i, j); // Используйте метод get() или прямой доступ
-            }
-        }
-    }
-
-
-
 }

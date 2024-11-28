@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import com.cgvsu.math.Global;
 import com.cgvsu.math.Vector2f;
 
 
 public final class Triangulation {
 
-	private Triangulation() {
+	/*private Triangulation() {
 		throw new UnsupportedOperationException("Cannot be instantiated.");
 	}
 
@@ -150,5 +149,5 @@ public final class Triangulation {
 		float dx = a.getX() - b.getX();
 		float dy = a.getY() - b.getY();
 		return (float) Math.sqrt(dx * dx + dy * dy);
-	}
+	}*/
 }
