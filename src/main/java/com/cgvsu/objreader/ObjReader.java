@@ -145,10 +145,8 @@ public class ObjReader {
 					throw new ObjReaderException("Invalid element size.", lineInd);
 				}
 			}
-
 		} catch(NumberFormatException e) {
 			throw new ObjReaderException("Failed to parse int value.", lineInd);
-
 		} catch(IndexOutOfBoundsException e) {
 			throw new ObjReaderException("Too few arguments.", lineInd);
 		}
