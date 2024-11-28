@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
+
 import com.cgvsu.math.Vector3f;
 
 
@@ -79,7 +80,7 @@ public class GuiController {
 
     @FXML
     private void initialize() {
-        anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()-VBoxMain.getWidth()));
+        anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - VBoxMain.getWidth()));
         anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
         timeline = new Timeline();
@@ -97,46 +98,45 @@ public class GuiController {
             }
         });
 
-        if (mesh != null) {
-            VBoxMain.setVisible(true);
+        VBoxMain.setVisible(true);
 
 //            textFieldPosX.set
 
-            canvas.setOnMousePressed(mouseEvent -> {
-                if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+        canvas.setOnMousePressed(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 //                startXLMB = mouseEvent.getSceneX();
-                    startYLMB = mouseEvent.getSceneY();
-                } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                    startXRMB = mouseEvent.getSceneX();
-                }
-            });
+                startYLMB = mouseEvent.getSceneY();
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                startXRMB = mouseEvent.getSceneX();
+            }
+        });
 
-            canvas.setOnMouseDragged(mouseEvent -> {
-                if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+        canvas.setOnMouseDragged(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 //                endXLMB = mouseEvent.getSceneX();
-                    endYLMB = mouseEvent.getSceneY();
+                endYLMB = mouseEvent.getSceneY();
 //                double shiftXLBM = endXLMB - startXLMB;
-                    double shiftYLMB = endYLMB - startYLMB;
-                    camera.movePosition(new Vector3f(/*(float) shiftX * 0.05f*/0,  (float) shiftYLMB * 0.05f, 0)); // вынести 0.05f как поле класса чтобы можно было изменить чувствительность
-                    camera.moveTarget(new Vector3f(/*(float) shiftX * 0.05f*/0,  (float) shiftYLMB * 0.05f, 0));
+                double shiftYLMB = endYLMB - startYLMB;
+                camera.movePosition(new Vector3f(/*(float) shiftX * 0.05f*/0, (float) shiftYLMB * 0.05f, 0)); // вынести 0.05f как поле класса чтобы можно было изменить чувствительность
+                camera.moveTarget(new Vector3f(/*(float) shiftX * 0.05f*/0, (float) shiftYLMB * 0.05f, 0));
+                System.out.println(shiftYLMB);
+
 //                startXLMB = mouseEvent.getSceneX();
-                    startYLMB = mouseEvent.getSceneY();
-                } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                    //todo: добавить поворот вокруг оси, мб заменить на другую реализацию
+                startYLMB = mouseEvent.getSceneY();
+            } //else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                //todo: добавить поворот вокруг оси, мб заменить на другую реализацию
 //                Vector3f pos = camera.getPosition();
 //                double coordX = camera.getPosition().x; double coordZ = camera.getPosition().z;
 //                endXRMB = mouseEvent.getSceneX();
 //                double shiftXRMB = endXRMB - startXRMB;
 //                camera.rotateAroundY(new Vector3f(pos.x + ));
-                }
-            });
+//            }
+        });
 
-            canvas.setOnScroll(swipeEvent -> {
-                if (swipeEvent.getDeltaY() > 0) camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
-                else camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
-            });
-
-        }
+        canvas.setOnScroll(swipeEvent -> {
+            if (swipeEvent.getDeltaY() > 0) camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
+            else camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
+        });
 
         timeline.getKeyFrames().add(frame);
         timeline.play();
@@ -158,7 +158,7 @@ public class GuiController {
         try {
             String fileContent = Files.readString(fileName);
             mesh = ObjReader.read(fileContent);
-            
+
             // todo: обработка ошибок
         } catch (IOException exception) {
 
