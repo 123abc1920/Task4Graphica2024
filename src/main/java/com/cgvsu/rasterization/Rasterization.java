@@ -6,11 +6,15 @@ import javafx.scene.paint.Color;
 
 public class Rasterization {
 	public static void fillTriangle(final GraphicsContext graphicsContext, final float[] arrX, final float[] arrY,
-			final Color[] colors) {
+			final float[] arrZ, final Color[] colors, ZBuffer zBuffer) {
 
 		final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
 
-		sort(arrX, arrY, colors);
+		sort(arrX, arrY, arrZ, colors);
+
+		if (arrX.length < 3 || arrY.length < 3 || arrZ.length < 3 || colors.length < 3) {
+			throw new IllegalArgumentException("Массивы должны содержать как минимум 3 элемента.");
+		}
 
 		for (float y = arrY[1]; y <= arrY[2]; y++) {
 			final float x1 = (arrY[2] - arrY[1] == 0) ? arrX[1]
@@ -19,7 +23,14 @@ public class Rasterization {
 					: (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
 			for (float x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
 				double[] barizenticCoordinate = barizentricCalculator(x, y, arrX, arrY);
-				pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, colors));
+				float z = (float) (barizenticCoordinate[0] * arrZ[0] + barizenticCoordinate[1] * arrZ[1]
+						+ barizenticCoordinate[2] * arrZ[2]);
+				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
+					if (z < zBuffer.get((int) x, (int) y)) {
+						pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, colors));
+						zBuffer.set((int) x, (int) y, z);
+					}
+				}
 			}
 		}
 
@@ -30,7 +41,14 @@ public class Rasterization {
 					: (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
 			for (float x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
 				double[] barizenticCoordinate = barizentricCalculator(x, y, arrX, arrY);
-				pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, colors));
+				float z = (float) (barizenticCoordinate[0] * arrZ[0] + barizenticCoordinate[1] * arrZ[1]
+						+ barizenticCoordinate[2] * arrZ[2]);
+				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
+					if (z < zBuffer.get((int) x, (int) y)) {
+						pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, colors));
+						zBuffer.set((int) x, (int) y, z);
+					}
+				}
 			}
 		}
 	}
@@ -65,27 +83,30 @@ public class Rasterization {
 				1);
 	}
 
-	private static void sort(float[] x, float[] y, Color[] c) {
+	private static void sort(float[] x, float[] y, float[] z, Color[] c) {
 		if (y[0] > y[1]) {
-			swap(x, y, c, 0, 1);
+			swap(x, y, z, c, 0, 1);
 		}
 		if (y[1] > y[2]) {
-			swap(x, y, c, 1, 2);
+			swap(x, y, z, c, 1, 2);
 		}
 		if (y[0] > y[1]) {
-			swap(x, y, c, 0, 1);
+			swap(x, y, z, c, 0, 1);
 		}
 	}
 
-	private static void swap(float[] x, float[] y, Color[] c, int i, int j) {
+	private static void swap(float[] x, float[] y, float[] z, Color[] c, int i, int j) {
 		float tempY = y[i];
 		float tempX = x[i];
+		float tempZ = z[i];
 		Color tempC = c[i];
 		x[i] = x[j];
 		y[i] = y[j];
+		z[i] = z[j];
 		c[i] = c[j];
 		x[j] = tempX;
 		y[j] = tempY;
+		z[j] = tempZ;
 		c[j] = tempC;
 	}
 }
