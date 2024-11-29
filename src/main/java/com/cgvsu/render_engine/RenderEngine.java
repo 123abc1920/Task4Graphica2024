@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.math.Vector3f;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 import com.cgvsu.math.Matrix4f;
 import com.cgvsu.model.Model;
+import com.cgvsu.rasterization.Rasterization;
 
 import static com.cgvsu.render_engine.GraphicConveyor.*;
 
@@ -36,6 +39,16 @@ public class RenderEngine {
 				resultPoints.add(resultPoint);
 			}
 
+			float[] arrX = new float[3];
+			float[] arrY = new float[3];
+			for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
+				arrX[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getX();
+				arrY[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getY();
+			}
+
+			Color[] colors = { Color.AQUA, Color.AQUA, Color.AQUA };
+			Rasterization.fillTriangle(graphicsContext, arrX, arrY, colors);
+
 			for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
 				graphicsContext.strokeLine(resultPoints.get(vertexInPolygonInd - 1).getX(),
 						resultPoints.get(vertexInPolygonInd - 1).getY(), resultPoints.get(vertexInPolygonInd).getX(),
@@ -43,7 +56,8 @@ public class RenderEngine {
 			}
 
 			graphicsContext.strokeLine(resultPoints.get(nVerticesInPolygon - 1).getX(),
-					resultPoints.get(nVerticesInPolygon - 1).getY(), resultPoints.get(0).getX(), resultPoints.get(0).getY());
+					resultPoints.get(nVerticesInPolygon - 1).getY(), resultPoints.get(0).getX(),
+					resultPoints.get(0).getY());
 		}
 	}
 }
