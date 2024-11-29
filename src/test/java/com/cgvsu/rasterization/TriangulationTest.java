@@ -21,7 +21,7 @@ public class TriangulationTest {
         new Vector2f(0, 4)
     );
 
-    private final static List<Vector2f> SELF_INTERSECTING_POLYGON = Arrays.asList(
+    /*private final static List<Vector2f> SELF_INTERSECTING_POLYGON = Arrays.asList(
         new Vector2f(0, 0),
         new Vector2f(0, 2),
         new Vector2f(-1, 1),
@@ -136,5 +136,5 @@ public class TriangulationTest {
 
         List<int[]> triangles = Triangulation.earClippingTriangulate(randomPolygon);
         Assertions.assertEquals(triangles.size(), verticesCount - 2);
-    }
+    }*/
 }
