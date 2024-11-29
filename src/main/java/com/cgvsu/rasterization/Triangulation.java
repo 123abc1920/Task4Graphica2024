@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import com.cgvsu.math.Global;
+import com.cgvsu.math.Matrix2f;
+import com.cgvsu.math.Matrix3f;
 import com.cgvsu.math.Vector2f;
-
 
 public final class Triangulation {
 
-	/*private Triangulation() {
+	private Triangulation() {
 		throw new UnsupportedOperationException("Cannot be instantiated.");
 	}
 
@@ -74,7 +76,7 @@ public final class Triangulation {
 				Vector2f curVertex = vertices.get(curVertexIndex);
 				Vector2f nextVertex = vertices.get(nextVertexIndex);
 
-				float crossProduct = crossProduct(prevVertex, curVertex, nextVertex);
+				float crossProduct = direction(prevVertex, curVertex, nextVertex);
 				if ((isCCW ? crossProduct : -crossProduct) < Global.eps) {
 					continue;
 				}
@@ -127,19 +129,36 @@ public final class Triangulation {
 		return area < 0;
 	}
 
-	static float crossProduct(Vector2f a, Vector2f b, Vector2f c) {
+	static float direction(Vector2f a, Vector2f b, Vector2f c) {
 		float dx1 = b.getX() - a.getX();
 		float dy1 = b.getY() - a.getY();
 		float dx2 = c.getX() - a.getX();
 		float dy2 = c.getY() - a.getY();
 
-		return dx1 * dy2 - dx2 * dy1;
+		Matrix2f matrix = new Matrix2f();
+		matrix.setCell(0, 0, dx1);
+		matrix.setCell(0, 1, dy1);
+		matrix.setCell(1, 0, dx2);
+		matrix.setCell(1, 1, dy2);
+
+		return matrix.determinant();
+	}
+
+	public static float changeMatrix(Vector2f... vectors) {
+		Matrix3f matrix = new Matrix3f();
+		for (int i = 0; i < 3; i++) {
+			matrix.setCell(i, 0, vectors[i].getX());
+			matrix.setCell(i, 1, vectors[i].getY());
+			matrix.setCell(i, 2, 0);
+		}
+
+		return matrix.determinate();
 	}
 
 	static boolean isPointInTriangle(Vector2f a, Vector2f b, Vector2f c, Vector2f p) {
-		float check1 = crossProduct(a, b, p);
-		float check2 = crossProduct(p, b, c);
-		float check3 = crossProduct(p, c, a);
+		float check1 = direction(a, b, p);
+		float check2 = direction(p, b, c);
+		float check3 = direction(p, c, a);
 
 		return (check1 >= -Global.eps && check2 >= -Global.eps && check3 >= -Global.eps)
 				|| (check1 <= Global.eps && check2 <= Global.eps && check3 <= Global.eps);
@@ -149,5 +168,5 @@ public final class Triangulation {
 		float dx = a.getX() - b.getX();
 		float dy = a.getY() - b.getY();
 		return (float) Math.sqrt(dx * dx + dy * dy);
-	}*/
+	}
 }
