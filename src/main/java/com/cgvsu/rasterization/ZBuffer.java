@@ -1,18 +1,18 @@
 package com.cgvsu.rasterization;
 
 public class ZBuffer {
-	private float[][] matrix;
+	private double[][] matrix;
 
 	public ZBuffer(int width, int height) {
-		matrix = new float[width][height];
+		matrix = new double[width][height];
 
-		fill();
+		refill();
 	}
 
-	private void fill() {
+	public void refill() {
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
-				this.matrix[i][j] = Integer.MAX_VALUE;
+				this.matrix[i][j] = Float.MAX_VALUE;
 			}
 		}
 	}
@@ -29,7 +29,7 @@ public class ZBuffer {
 		matrix[row][col] = z;
 	}
 
-	public float get(int row, int col) {
+	public double get(int row, int col) {
 		return matrix[row][col];
 	}
 }
