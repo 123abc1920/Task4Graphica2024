@@ -8,6 +8,7 @@ import com.cgvsu.math.Global;
 import com.cgvsu.math.Matrix2f;
 import com.cgvsu.math.Matrix3f;
 import com.cgvsu.math.Vector2f;
+import com.cgvsu.math.Vector2f;
 
 public final class Triangulation {
 
@@ -28,7 +29,7 @@ public final class Triangulation {
 		List<int[]> triangles = new ArrayList<>(vertexIndicesCount - 2);
 
 		for (int i = 2; i < vertexIndicesCount; i++) {
-			triangles.add(new int[] { 0, vertexIndices.get(i), vertexIndices.get(i - 1) });
+			triangles.add(new int[] { vertexIndices.get(0), vertexIndices.get(i), vertexIndices.get(i - 1) });
 		}
 
 		return triangles;
@@ -142,17 +143,6 @@ public final class Triangulation {
 		matrix.setCell(1, 1, dy2);
 
 		return matrix.determinant();
-	}
-
-	public static float changeMatrix(Vector2f... vectors) {
-		Matrix3f matrix = new Matrix3f();
-		for (int i = 0; i < 3; i++) {
-			matrix.setCell(i, 0, vectors[i].getX());
-			matrix.setCell(i, 1, vectors[i].getY());
-			matrix.setCell(i, 2, 0);
-		}
-
-		return matrix.determinate();
 	}
 
 	static boolean isPointInTriangle(Vector2f a, Vector2f b, Vector2f c, Vector2f p) {

@@ -20,178 +20,206 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.cgvsu.math.Vector3f;
 
-
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
+import com.cgvsu.rasterization.Triangulation;
 import com.cgvsu.render_engine.Camera;
+import com.cgvsu.model.Polygon;
 
 public class GuiController {
 
-    final private float TRANSLATION = 0.5F; //10.0F;
+	final private float TRANSLATION = 0.5F; // 10.0F;
 
-    @FXML
-    AnchorPane anchorPane;
+	@FXML
+	AnchorPane anchorPane;
 
-    @FXML
-    private Canvas canvas;
+	@FXML
+	private Canvas canvas;
 
-    @FXML
-    private VBox VBoxMain;
+	@FXML
+	private VBox VBoxMain;
 
-    @FXML
-    private VBox VBoxCamera;
+	@FXML
+	private VBox VBoxCamera;
 
-    @FXML
-    public TextField textFieldPosX;
+	@FXML
+	public TextField textFieldPosX;
 
-    @FXML
-    public TextField textFieldPosY;
+	@FXML
+	public TextField textFieldPosY;
 
-    @FXML
-    public TextField textFieldPosZ;
+	@FXML
+	public TextField textFieldPosZ;
 
-    private Model mesh = null;
+	private Model mesh = null;
 
-    private Camera camera = new Camera(
-            new Vector3f(0, 00, 100),
-            new Vector3f(0, 0, 0),
-            1.0F, 1, 0.01F, 100);
+	private Camera camera = new Camera(new Vector3f(0, 00, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100);
 
-    private Timeline timeline;
+	private Timeline timeline;
 
-    private double startXLMB;
+	private double startXLMB;
 
-    private double startYLMB;
+	private double startYLMB;
 
-    private double endXLMB;
+	private double endXLMB;
 
-    private double endYLMB;
+	private double endYLMB;
 
-    private double startXRMB;
+	private double startXRMB;
 
-    private double startYRMB;
+	private double startYRMB;
 
-    private double endXRMB;
+	private double endXRMB;
 
-    private double endYRMB;
+	private double endYRMB;
 
-    @FXML
-    private void initialize() {
-        anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - VBoxMain.getWidth()));
-        anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
+	@FXML
+	private void initialize() {
+		anchorPane.prefWidthProperty()
+				.addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - VBoxMain.getWidth()));
+		anchorPane.prefHeightProperty()
+				.addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
-        timeline = new Timeline();
-        timeline.setCycleCount(Animation.INDEFINITE);
+		timeline = new Timeline();
+		timeline.setCycleCount(Animation.INDEFINITE);
 
-        KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
-            double width = canvas.getWidth();
-            double height = canvas.getHeight();
+		KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
+			double width = canvas.getWidth();
+			double height = canvas.getHeight();
 
-            canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
-            camera.setAspectRatio((float) (width / height));
+			canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
+			camera.setAspectRatio((float) (width / height));
 
-            if (mesh != null) {
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
-            }
-        });
+			if (mesh != null) {
+				RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+			}
+		});
 
-        VBoxMain.setVisible(true);
+		VBoxMain.setVisible(true);
 
 //            textFieldPosX.set
 
-        canvas.setOnMousePressed(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+		canvas.setOnMousePressed(mouseEvent -> {
+			if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 //                startXLMB = mouseEvent.getSceneX();
-                startYLMB = mouseEvent.getSceneY();
-            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                startXRMB = mouseEvent.getSceneX();
-            }
-        });
+				startYLMB = mouseEvent.getSceneY();
+			} else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+				startXRMB = mouseEvent.getSceneX();
+			}
+		});
 
-        canvas.setOnMouseDragged(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+		canvas.setOnMouseDragged(mouseEvent -> {
+			if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 //                endXLMB = mouseEvent.getSceneX();
-                endYLMB = mouseEvent.getSceneY();
+				endYLMB = mouseEvent.getSceneY();
 //                double shiftXLBM = endXLMB - startXLMB;
-                double shiftYLMB = endYLMB - startYLMB;
-                camera.movePosition(new Vector3f(/*(float) shiftX * 0.05f*/0, (float) shiftYLMB * 0.05f, 0)); // вынести 0.05f как поле класса чтобы можно было изменить чувствительность
-                camera.moveTarget(new Vector3f(/*(float) shiftX * 0.05f*/0, (float) shiftYLMB * 0.05f, 0));
-                System.out.println(shiftYLMB);
+				double shiftYLMB = endYLMB - startYLMB;
+				camera.movePosition(new Vector3f(/* (float) shiftX * 0.05f */0, (float) shiftYLMB * 0.05f, 0)); // вынести
+																												// 0.05f
+																												// как
+																												// поле
+																												// класса
+																												// чтобы
+																												// можно
+																												// было
+																												// изменить
+																												// чувствительность
+				camera.moveTarget(new Vector3f(/* (float) shiftX * 0.05f */0, (float) shiftYLMB * 0.05f, 0));
+				// System.out.println(shiftYLMB);
 
 //                startXLMB = mouseEvent.getSceneX();
-                startYLMB = mouseEvent.getSceneY();
-            } //else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                //todo: добавить поворот вокруг оси, мб заменить на другую реализацию
+				startYLMB = mouseEvent.getSceneY();
+			} // else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+				// todo: добавить поворот вокруг оси, мб заменить на другую реализацию
 //                Vector3f pos = camera.getPosition();
 //                double coordX = camera.getPosition().x; double coordZ = camera.getPosition().z;
 //                endXRMB = mouseEvent.getSceneX();
 //                double shiftXRMB = endXRMB - startXRMB;
 //                camera.rotateAroundY(new Vector3f(pos.x + ));
 //            }
-        });
+		});
 
-        canvas.setOnScroll(swipeEvent -> {
-            if (swipeEvent.getDeltaY() > 0) camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
-            else camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
-        });
+		canvas.setOnScroll(swipeEvent -> {
+			if (swipeEvent.getDeltaY() > 0)
+				camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
+			else
+				camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
+		});
 
-        timeline.getKeyFrames().add(frame);
-        timeline.play();
-    }
+		timeline.getKeyFrames().add(frame);
+		timeline.play();
+	}
 
-    @FXML
-    private void onOpenModelMenuItemClick() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
-        fileChooser.setTitle("Load Model");
+	@FXML
+	private void onOpenModelMenuItemClick() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
+		fileChooser.setTitle("Load Model");
 
-        File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
-        if (file == null) {
-            return;
-        }
+		File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+		if (file == null) {
+			return;
+		}
 
-        Path fileName = Path.of(file.getAbsolutePath());
+		Path fileName = Path.of(file.getAbsolutePath());
 
-        try {
-            String fileContent = Files.readString(fileName);
-            mesh = ObjReader.read(fileContent);
+		try {
+			String fileContent = Files.readString(fileName);
+			mesh = ObjReader.read(fileContent);
+			// todo: обработка ошибок
+		} catch (IOException exception) {
 
-            // todo: обработка ошибок
-        } catch (IOException exception) {
+		}
 
-        }
-    }
+		ArrayList<Polygon> ps = new ArrayList<>();
+		for (Polygon p : mesh.polygons) {
+			List<int[]> l = Triangulation.convexPolygonTriangulate(p.getVertexIndices());
+			for (int i = 0; i < l.size(); i++) {
+				ArrayList<Integer> newVertices = new ArrayList<>();
+				for (int j = 0; j < l.get(i).length; j++) {
+					newVertices.add(l.get(i)[j]);
+				}
+				Polygon newP = new Polygon();
+				newP.setVertexIndices(newVertices);
+				ps.add(newP);
+			}
+		}
+		mesh.polygons = ps;
+	}
 
-    @FXML
-    public void handleCameraForward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
-    }
+	@FXML
+	public void handleCameraForward(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
+	}
 
-    @FXML
-    public void handleCameraBackward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, TRANSLATION));
-    }
+	@FXML
+	public void handleCameraBackward(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, 0, TRANSLATION));
+	}
 
-    @FXML
-    public void handleCameraLeft(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
-    }
+	@FXML
+	public void handleCameraLeft(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
+	}
 
-    @FXML
-    public void handleCameraRight(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
-    }
+	@FXML
+	public void handleCameraRight(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
+	}
 
-    @FXML
-    public void handleCameraUp(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, TRANSLATION, 0));
-    }
+	@FXML
+	public void handleCameraUp(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, TRANSLATION, 0));
+	}
 
-    @FXML
-    public void handleCameraDown(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
-    }
+	@FXML
+	public void handleCameraDown(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
+	}
 }
