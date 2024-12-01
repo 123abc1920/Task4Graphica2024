@@ -5,7 +5,7 @@ import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.objreader.ObjReaderException;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;

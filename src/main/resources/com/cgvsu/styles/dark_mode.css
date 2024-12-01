@@ -1,0 +1,23 @@
+Label {
+    -fx-padding: 5px 5px 5px 5px;
+}
+TextField {
+    -fx-padding: 5px;
+}
+VBox {
+    -fx-background-color: rgb(140,140,140);
+}
+MenuBar {
+    -fx-background-color: rgb(140,140,140);
+    -fx-padding: 0px;
+}
+.menu-item {
+    -fx-padding: 0px 0px 3px 3px;
+    -fx-background-color: rgb(140,140,140);
+}
+.context-menu {
+    -fx-padding: 0px;
+}
+AnchorPane {
+    -fx-background-color: rgb(140,140,140);
+}

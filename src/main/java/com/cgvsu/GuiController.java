@@ -1,14 +1,19 @@
 package com.cgvsu;
 
+import com.cgvsu.math.Matrix3f;
 import com.cgvsu.render_engine.RenderEngine;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.SwipeEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -23,6 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import com.cgvsu.math.Vector3f;
 
@@ -49,13 +55,15 @@ public class GuiController {
 	private VBox VBoxCamera;
 
 	@FXML
-	public TextField textFieldPosX;
+	private TextField textFieldPosX;
 
 	@FXML
-	public TextField textFieldPosY;
+	private TextField textFieldPosY;
 
 	@FXML
-	public TextField textFieldPosZ;
+	private TextField textFieldPosZ;
+
+	private boolean isInLightMode = true;
 
 	private Model mesh = null;
 
@@ -98,62 +106,60 @@ public class GuiController {
 
 			if (mesh != null) {
 				RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+//				VBoxMain.setVisible(true);
 			}
 		});
 
-		VBoxMain.setVisible(true);
-
-//            textFieldPosX.set
-
-		canvas.setOnMousePressed(mouseEvent -> {
-			if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-//                startXLMB = mouseEvent.getSceneX();
-				startYLMB = mouseEvent.getSceneY();
-			} else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-				startXRMB = mouseEvent.getSceneX();
-			}
-		});
-
-		canvas.setOnMouseDragged(mouseEvent -> {
-			if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-//                endXLMB = mouseEvent.getSceneX();
-				endYLMB = mouseEvent.getSceneY();
-//                double shiftXLBM = endXLMB - startXLMB;
-				double shiftYLMB = endYLMB - startYLMB;
-				camera.movePosition(new Vector3f(/* (float) shiftX * 0.05f */0, (float) shiftYLMB * 0.05f, 0)); // вынести
-																												// 0.05f
-																												// как
-																												// поле
-																												// класса
-																												// чтобы
-																												// можно
-																												// было
-																												// изменить
-																												// чувствительность
-				camera.moveTarget(new Vector3f(/* (float) shiftX * 0.05f */0, (float) shiftYLMB * 0.05f, 0));
-				// System.out.println(shiftYLMB);
-
-//                startXLMB = mouseEvent.getSceneX();
-				startYLMB = mouseEvent.getSceneY();
-			} // else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-				// todo: добавить поворот вокруг оси, мб заменить на другую реализацию
-//                Vector3f pos = camera.getPosition();
-//                double coordX = camera.getPosition().x; double coordZ = camera.getPosition().z;
-//                endXRMB = mouseEvent.getSceneX();
-//                double shiftXRMB = endXRMB - startXRMB;
-//                camera.rotateAroundY(new Vector3f(pos.x + ));
-//            }
-		});
-
-		canvas.setOnScroll(swipeEvent -> {
-			if (swipeEvent.getDeltaY() > 0)
-				camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
-			else
-				camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
-		});
+		anchorPane.getStylesheets().add(getClass().getResource("styles/light_mode.css").toExternalForm());
 
 		timeline.getKeyFrames().add(frame);
 		timeline.play();
+	}
+
+	@FXML
+	private void handleMousePressed(MouseEvent mouseEvent) {
+		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+			startXLMB = mouseEvent.getSceneX();
+			startYLMB = mouseEvent.getSceneY();
+		} /*else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+			startXRMB = mouseEvent.getSceneX();
+			startYRMB = mouseEvent.getSceneY();
+		}*/
+	}
+
+	@FXML
+	private void handleMouseDragged(MouseEvent mouseEvent) {
+		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+			endXLMB = mouseEvent.getSceneX();
+			endYLMB = mouseEvent.getSceneY();
+			double shiftXLBM = endXLMB - startXLMB;
+			double shiftYLMB = endYLMB - startYLMB;
+
+			camera.movePosition(new Vector3f((float) shiftXLBM * 0.05f, (float) shiftYLMB * 0.05f, 0));
+			camera.moveTarget(new Vector3f((float) shiftXLBM * 0.05f, (float) shiftYLMB * 0.05f, 0));
+
+			startXLMB = mouseEvent.getSceneX();
+			startYLMB = mouseEvent.getSceneY();
+		} /*else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+			endXRMB = mouseEvent.getX();
+			endYRMB = mouseEvent.getY();
+			double shiftXRBM = endXRMB - startXRMB;
+			double shiftYRMB = endYRMB - startYRMB;
+		}*/
+	}
+
+	@FXML
+	private void handleMouseScroll(ScrollEvent scrollEvent) {
+		if (scrollEvent.getDeltaY() > 0) camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
+		else camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
+	}
+
+	@FXML
+	private void handleThemeChange() {
+		isInLightMode = !isInLightMode;
+		anchorPane.getStylesheets().clear();
+		String filePath = isInLightMode ? "styles/light_mode.css" : "styles/dark_mode.css";
+		anchorPane.getStylesheets().add(getClass().getResource(filePath).toExternalForm());
 	}
 
 	@FXML
