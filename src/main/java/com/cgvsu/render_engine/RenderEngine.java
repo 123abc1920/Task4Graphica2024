@@ -8,7 +8,6 @@ import javafx.scene.canvas.GraphicsContext;
 
 import com.cgvsu.math.Matrix4f;
 import com.cgvsu.model.Model;
-import com.cgvsu.rasterization.DrawingSettings;
 import com.cgvsu.rasterization.Rasterization;
 import com.cgvsu.rasterization.RasterizationParams;
 import com.cgvsu.rasterization.ZBuffer;
@@ -51,25 +50,14 @@ public class RenderEngine {
 				arrZ[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getZ();
 			}
 
-			if (RasterizationParams.drawingSettings == DrawingSettings.SOLID_COLOR) {
+			if (!RasterizationParams.drawTexture) {
 				drawSolidColor(graphicsContext, arrX, arrY, arrZ);
+			}else {
+				
 			}
 
-			if (RasterizationParams.drawingSettings == DrawingSettings.LINES) {
+			if (RasterizationParams.drawLine) {
 				drawLines(graphicsContext, nVerticesInPolygon, resultPoints);
-			}
-
-			if (RasterizationParams.drawingSettings == DrawingSettings.LINES_SOLID_COLOR) {
-				drawSolidColor(graphicsContext, arrX, arrY, arrZ);
-				drawLines(graphicsContext, nVerticesInPolygon, resultPoints);
-			}
-
-			if (RasterizationParams.drawingSettings == DrawingSettings.lINES_TEXTURE) {
-
-			}
-
-			if (RasterizationParams.drawingSettings == DrawingSettings.TEXTURE) {
-
 			}
 
 		}
