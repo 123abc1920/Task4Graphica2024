@@ -19,12 +19,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
 
 import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -183,16 +188,31 @@ public class GuiController {
 
 		}
 
+		InputStream stream = null;
+		try {
+			stream = new FileInputStream("C:\\Users\\annam\\Downloads\\caracal_texture.png");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Image image = new Image(stream);
+
+		mesh.image = image;
+
 		ArrayList<Polygon> ps = new ArrayList<>();
 		for (Polygon p : mesh.polygons) {
 			List<int[]> l = Triangulation.convexPolygonTriangulate(p.getVertexIndices());
+			List<int[]> l1 = Triangulation.convexPolygonTriangulate(p.getTextureVertexIndices());
 			for (int i = 0; i < l.size(); i++) {
 				ArrayList<Integer> newVertices = new ArrayList<>();
+				ArrayList<Integer> newTVertices = new ArrayList<>();
 				for (int j = 0; j < l.get(i).length; j++) {
 					newVertices.add(l.get(i)[j]);
+					newTVertices.add(l1.get(i)[j]);
 				}
 				Polygon newP = new Polygon();
 				newP.setVertexIndices(newVertices);
+				newP.setTextureVertexIndices(newTVertices);
 				ps.add(newP);
 			}
 		}
