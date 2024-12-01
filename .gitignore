@@ -4,4 +4,4 @@ out
 target
 venv
 __pycache__
-.iml
+*.iml
