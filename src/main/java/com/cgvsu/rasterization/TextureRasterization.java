@@ -1,18 +1,27 @@
 package com.cgvsu.rasterization;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import com.cgvsu.math.Vector2f;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
 public class TextureRasterization {
 	public static void fillTriangle(final GraphicsContext graphicsContext, final double[] arrX, final double[] arrY,
-			final double[] arrZ, final Color[] colors, ZBuffer zBuffer) {
+			final double[] arrZ, final Vector2f[] texturePoints, ZBuffer zBuffer, Image image) {
 
 		final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
 
-		sort(arrX, arrY, arrZ);
+		sort(arrX, arrY, arrZ, texturePoints);
 
-		if (arrX.length < 3 || arrY.length < 3 || arrZ.length < 3 || colors.length < 3) {
+		if (arrX.length < 3 || arrY.length < 3 || arrZ.length < 3 || texturePoints.length < 3) {
 			throw new IllegalArgumentException("Массивы должны содержать как минимум 3 элемента.");
 		}
 
@@ -27,7 +36,7 @@ public class TextureRasterization {
 						+ barizenticCoordinate[2] * arrZ[2]);
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
 					if (z < zBuffer.get((int) x, (int) y)) {
-						pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, colors));
+						pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, texturePoints, image));
 						zBuffer.set((int) x, (int) y, z);
 					}
 				}
@@ -45,7 +54,7 @@ public class TextureRasterization {
 						+ barizenticCoordinate[2] * arrZ[2]);
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
 					if (z < zBuffer.get((int) x, (int) y)) {
-						pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, colors));
+						pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, texturePoints, image));
 						zBuffer.set((int) x, (int) y, z);
 					}
 				}
@@ -70,47 +79,51 @@ public class TextureRasterization {
 		return new double[] { coordinate0, coordinate1, coordinate2 };
 	}
 
-	private static Color getColor(double[] barycentricCoords, Color[] colors) {
+	private static Color getColor(double[] barycentricCoords, Vector2f[] texturePoints, Image image) {
 
-		final double red = barycentricCoords[0] * colors[0].getRed() + barycentricCoords[1] * colors[1].getRed()
-				+ barycentricCoords[2] * colors[2].getRed();
-		final double green = barycentricCoords[0] * colors[0].getGreen() + barycentricCoords[1] * colors[1].getGreen()
-				+ barycentricCoords[2] * colors[2].getGreen();
-		final double blue = barycentricCoords[0] * colors[0].getBlue() + barycentricCoords[1] * colors[1].getBlue()
-				+ barycentricCoords[2] * colors[2].getBlue();
+		double x = texturePoints[0].getX() * barycentricCoords[0] + texturePoints[1].getX() * barycentricCoords[1]
+				+ texturePoints[2].getX() * barycentricCoords[2];
+		double y = texturePoints[0].getY() * barycentricCoords[0] + texturePoints[1].getY() * barycentricCoords[1]
+				+ texturePoints[2].getY() * barycentricCoords[2];
 
-		return new Color(Math.max(0, Math.min(1, red)), Math.max(0, Math.min(1, green)), Math.max(0, Math.min(1, blue)),
-				1);
+		PixelReader reader = image.getPixelReader();
+		x *= image.getWidth();
+		y *= image.getHeight();
+
+		return reader.getColor((int) x, (int) y);
 	}
 
-	private static void sort(double[] x, double[] y, double[] z) {
+	private static void sort(double[] x, double[] y, double[] z, Vector2f[] v) {
 		if (y[0] > y[1]) {
-			swap(x, y, z, 0, 1);
+			swap(x, y, z, v, 0, 1);
 		}
 		if (y[1] > y[2]) {
-			swap(x, y, z, 1, 2);
+			swap(x, y, z, v, 1, 2);
 		}
 		if (y[0] > y[1]) {
-			swap(x, y, z, 0, 1);
+			swap(x, y, z, v, 0, 1);
 		}
 	}
 
-	private static void swap(double[] x, double[] y, double[] z, int i, int j) {
+	private static void swap(double[] x, double[] y, double[] z, Vector2f[] texturePoints, int i, int j) {
 		double tempY = y[i];
 		double tempX = x[i];
 		double tempZ = z[i];
+		Vector2f tempV = texturePoints[i];
 		x[i] = x[j];
 		y[i] = y[j];
 		z[i] = z[j];
+		texturePoints[i] = texturePoints[j];
 		x[j] = tempX;
 		y[j] = tempY;
 		z[j] = tempZ;
+		texturePoints[j] = tempV;
 	}
 
 	private static double[] microSwap(double a, double b) {
 		double tempA = a;
 		a = b;
 		b = tempA;
-		return new double[] {b, a};
+		return new double[] { b, a };
 	}
 }

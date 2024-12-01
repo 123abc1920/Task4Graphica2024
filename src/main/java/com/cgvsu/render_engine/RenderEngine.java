@@ -1,15 +1,19 @@
 package com.cgvsu.render_engine;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.cgvsu.math.Vector3f;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 
 import com.cgvsu.math.Matrix4f;
+import com.cgvsu.math.Vector2f;
 import com.cgvsu.model.Model;
 import com.cgvsu.rasterization.Rasterization;
 import com.cgvsu.rasterization.RasterizationParams;
+import com.cgvsu.rasterization.TextureRasterization;
 import com.cgvsu.rasterization.ZBuffer;
 
 import static com.cgvsu.render_engine.GraphicConveyor.*;
@@ -52,8 +56,15 @@ public class RenderEngine {
 
 			if (!RasterizationParams.drawTexture) {
 				drawSolidColor(graphicsContext, arrX, arrY, arrZ);
-			}else {
-				
+			} else {
+				Vector2f[] texturePoints = new Vector2f[3];
+				texturePoints[0] = mesh.textureVertices
+						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(0));
+				texturePoints[1] = mesh.textureVertices
+						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(1));
+				texturePoints[2] = mesh.textureVertices
+						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(2));
+				drawTexture(graphicsContext, arrX, arrY, arrZ, texturePoints, mesh.image);
 			}
 
 			if (RasterizationParams.drawLine) {
@@ -61,6 +72,14 @@ public class RenderEngine {
 			}
 
 		}
+	}
+
+	private static void drawTexture(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
+			Vector2f[] texturePoints, Image image) {
+		
+			TextureRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, texturePoints,
+					RasterizationParams.zBuffer, image);
+
 	}
 
 	private static void drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ) {
