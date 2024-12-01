@@ -1,3 +1,6 @@
+* {
+    -fx-text-fill: black;
+}
 Label {
     -fx-padding: 5px 5px 5px 5px;
 }
@@ -5,15 +8,26 @@ TextField {
     -fx-padding: 5px;
 }
 VBox {
-    -fx-background-color: rgb(221, 221, 221);
+    -fx-background-color: rgb(215, 215, 215);
 }
 MenuBar {
-    -fx-background-color: rgb(221, 221, 221);
+    -fx-background-color: rgb(215, 215, 215);
     -fx-padding: 0px;
+}
+.menu {
+    -fx-background-color: rgb(215, 215, 215);
+    -fx-padding: 5px;
 }
 .menu-item {
     -fx-padding: 0px 0px 3px 3px;
+    -fx-background-color: rgb(215, 215, 215);
 }
 .context-menu {
     -fx-padding: 0px;
+}
+.menu:hover, .menu-item:hover {
+    -fx-background-color: rgb(52, 156, 226);
+}
+.backgroundNeeded {
+    -fx-background-color: rgb(190, 190, 190);
 }

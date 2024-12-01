@@ -49,7 +49,7 @@ public class GuiController {
 	private Canvas canvas;
 
 	@FXML
-	private VBox VBoxMain;
+	private VBox vBoxMain;
 
 	@FXML
 	private VBox VBoxCamera;
@@ -62,6 +62,15 @@ public class GuiController {
 
 	@FXML
 	private TextField textFieldPosZ;
+
+	@FXML
+	private TextField textFieldTarX;
+
+	@FXML
+	private TextField textFieldTarY;
+
+	@FXML
+	private TextField textFieldTarZ;
 
 	private boolean isInLightMode = true;
 
@@ -90,7 +99,7 @@ public class GuiController {
 	@FXML
 	private void initialize() {
 		anchorPane.prefWidthProperty()
-				.addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - VBoxMain.getWidth()));
+				.addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - vBoxMain.getWidth()));
 		anchorPane.prefHeightProperty()
 				.addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
@@ -111,13 +120,24 @@ public class GuiController {
 		});
 
 		anchorPane.getStylesheets().add(getClass().getResource("styles/light_mode.css").toExternalForm());
+		showStartInfo();
 
 		timeline.getKeyFrames().add(frame);
 		timeline.play();
 	}
 
+	private void showStartInfo() {
+		textFieldPosX.setText(Float.toString(camera.getPosition().getX()));
+		textFieldPosY.setText(Float.toString(camera.getPosition().getY()));
+		textFieldPosZ.setText(Float.toString(camera.getPosition().getZ()));
+		textFieldTarX.setText(Float.toString(camera.getTarget().getX()));
+		textFieldTarY.setText(Float.toString(camera.getTarget().getY()));
+		textFieldTarZ.setText(Float.toString(camera.getTarget().getZ()));
+	}
+
 	@FXML
 	private void handleMousePressed(MouseEvent mouseEvent) {
+		anchorPane.requestFocus();
 		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 			startXLMB = mouseEvent.getSceneX();
 			startYLMB = mouseEvent.getSceneY();
@@ -125,6 +145,11 @@ public class GuiController {
 			startXRMB = mouseEvent.getSceneX();
 			startYRMB = mouseEvent.getSceneY();
 		}*/
+	}
+
+	@FXML
+	private void handleMouseClickedVBoxMain(MouseEvent mouseEvent) {
+		vBoxMain.requestFocus();
 	}
 
 	@FXML
@@ -161,6 +186,11 @@ public class GuiController {
 		String filePath = isInLightMode ? "styles/light_mode.css" : "styles/dark_mode.css";
 		anchorPane.getStylesheets().add(getClass().getResource(filePath).toExternalForm());
 	}
+
+	/**
+	 * Добавить обработчик событий дял всех textField по нажатии кнопки Enter
+	 */
+
 
 	@FXML
 	private void onOpenModelMenuItemClick() {

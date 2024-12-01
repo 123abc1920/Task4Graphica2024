@@ -59,15 +59,19 @@
     </MenuBar>
 
     <Canvas fx:id="canvas" height="870" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" onScroll="#handleMouseScroll" width="1400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
-   <VBox fx:id="VBoxMain" alignment="TOP_CENTER" maxWidth="300.0" minWidth="200.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="vBoxMain" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+   <VBox fx:id="vBoxMain" alignment="TOP_CENTER" maxWidth="300.0" minWidth="200.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#handleMouseClickedVBoxMain" styleClass="vBoxMain" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
          <VBox fx:id="VBoxCamera" alignment="CENTER" VBox.vgrow="NEVER">
             <children>
-               <Label alignment="CENTER" contentDisplay="CENTER" text="Камера" textAlignment="CENTER">
-                  <font>
-                     <Font size="16.0" />
-                  </font>
-               </Label>
+               <StackPane styleClass="backgroundNeeded">
+                  <children>
+                     <Label alignment="CENTER" contentDisplay="CENTER" text="Камера" textAlignment="CENTER">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                     </Label>
+                  </children>
+               </StackPane>
                <Label maxWidth="1.7976931348623157E308" text="Position" textAlignment="JUSTIFY" />
                <HBox alignment="CENTER_LEFT">
                   <children>
@@ -75,7 +79,7 @@
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></Label>
-                     <TextField fx:id="textFieldPosX" focusTraversable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0">
+                     <TextField fx:id="textFieldPosX" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></TextField>
@@ -83,7 +87,7 @@
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></Label>
-                     <TextField fx:id="textFieldPosY" focusTraversable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0">
+                     <TextField fx:id="textFieldPosY" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></TextField>
@@ -91,7 +95,7 @@
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></Label>
-                     <TextField fx:id="textFieldPosZ" focusTraversable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0">
+                     <TextField fx:id="textFieldPosZ" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></TextField>
@@ -107,7 +111,7 @@
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></Label>
-                     <TextField focusTraversable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0">
+                     <TextField fx:id="textFieldTarX" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></TextField>
@@ -115,7 +119,7 @@
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></Label>
-                     <TextField focusTraversable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0">
+                     <TextField fx:id="textFieldTarY" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></TextField>
@@ -123,7 +127,7 @@
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></Label>
-                     <TextField focusTraversable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0">
+                     <TextField fx:id="textFieldTarZ" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
                         </HBox.margin></TextField>
