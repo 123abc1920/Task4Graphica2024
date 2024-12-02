@@ -1,13 +1,11 @@
 package com.cgvsu;
 
-import com.cgvsu.math.Matrix3f;
 import com.cgvsu.render_engine.RenderEngine;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
@@ -20,7 +18,6 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
 
 import java.awt.*;
 import java.nio.file.Files;
@@ -35,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import com.cgvsu.math.Vector2f;
 import com.cgvsu.math.Vector3f;
 
 import com.cgvsu.model.Model;
@@ -222,7 +220,6 @@ public class GuiController {
 		try {
 			stream = new FileInputStream("C:\\Users\\annam\\Downloads\\caracal_texture.png");
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Image image = new Image(stream);
