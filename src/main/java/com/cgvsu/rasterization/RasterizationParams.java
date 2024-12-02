@@ -8,7 +8,7 @@ public class RasterizationParams {
 	public static ZBuffer zBuffer;
 
 	public static boolean drawLine = false;
-	public static boolean drawTexture = false;
+	public static boolean drawTexture = true;
 
 	public static void setColor(Color color) {
 		colors[0] = color;

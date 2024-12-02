@@ -25,7 +25,7 @@ public class ZBuffer {
 		return this.matrix[0].length;
 	}
 
-	public void set(int row, int col, float z) {
+	public void set(int row, int col, double z) {
 		matrix[row][col] = z;
 	}
 

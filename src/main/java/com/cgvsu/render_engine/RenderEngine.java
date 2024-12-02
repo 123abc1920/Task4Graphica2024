@@ -45,9 +45,9 @@ public class RenderEngine {
 				resultPoints.add(resultPoint);
 			}
 
-			float[] arrX = new float[3];
-			float[] arrY = new float[3];
-			float[] arrZ = new float[3];
+			double[] arrX = new double[3];
+			double[] arrY = new double[3];
+			double[] arrZ = new double[3];
 			for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
 				arrX[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getX();
 				arrY[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getY();
@@ -74,7 +74,7 @@ public class RenderEngine {
 		}
 	}
 
-	private static void drawTexture(GraphicsContext graphicsContext, float[] arrX, float[] arrY, float[] arrZ,
+	private static void drawTexture(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
 			Vector2f[] texturePoints, Image image) {
 		
 			TextureRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, texturePoints,
@@ -82,7 +82,7 @@ public class RenderEngine {
 
 	}
 
-	private static void drawSolidColor(GraphicsContext graphicsContext, float[] arrX, float[] arrY, float[] arrZ) {
+	private static void drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ) {
 		Rasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors,
 				RasterizationParams.zBuffer);
 	}
