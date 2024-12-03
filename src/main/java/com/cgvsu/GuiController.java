@@ -216,7 +216,7 @@ public class GuiController {
 
 		}
 
-		/*InputStream stream = null;
+		InputStream stream = null;
 		try {
 			stream = new FileInputStream("C:\\Users\\annam\\Downloads\\caracal_texture.png");
 		} catch (FileNotFoundException e) {
@@ -224,7 +224,7 @@ public class GuiController {
 		}
 		Image image = new Image(stream);
 
-		mesh.image = image;*/
+		mesh.image = image;
 
 		ArrayList<Polygon> ps = new ArrayList<>();
 		for (Polygon p : mesh.polygons) {

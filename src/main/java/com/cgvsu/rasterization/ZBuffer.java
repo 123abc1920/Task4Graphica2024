@@ -12,7 +12,7 @@ public class ZBuffer {
 	public void refill() {
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
-				this.matrix[i][j] = Float.MAX_VALUE;
+				this.matrix[i][j] = Double.MAX_VALUE;
 			}
 		}
 	}
