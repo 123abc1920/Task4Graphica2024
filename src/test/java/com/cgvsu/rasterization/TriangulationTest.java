@@ -64,15 +64,15 @@ public class TriangulationTest {
 
 	@Test
 	public void testCrossProduct() {
-		float cwCrossProduct = Triangulation.direction(TRIANGLE.get(1), TRIANGLE.get(0), TRIANGLE.get(2));
+		double cwCrossProduct = Triangulation.direction(TRIANGLE.get(1), TRIANGLE.get(0), TRIANGLE.get(2));
 
-		float ccwCrossProduct = Triangulation.direction(TRIANGLE.get(2), TRIANGLE.get(0), TRIANGLE.get(1));
+		double ccwCrossProduct = Triangulation.direction(TRIANGLE.get(2), TRIANGLE.get(0), TRIANGLE.get(1));
 
-		float zeroCrossProduct = Triangulation.direction(TRIANGLE.get(1), TRIANGLE.get(0), TRIANGLE.get(1));
+		double zeroCrossProduct = Triangulation.direction(TRIANGLE.get(1), TRIANGLE.get(0), TRIANGLE.get(1));
 
 		Assertions.assertEquals(-12, cwCrossProduct);
 		Assertions.assertEquals(12, ccwCrossProduct);
-		// float my beloved
+		// double my beloved
 		Assertions.assertEquals(0, Math.abs(zeroCrossProduct));
 	}
 
@@ -93,13 +93,13 @@ public class TriangulationTest {
 	@RepeatedTest(10)
 	public void testRandomPolygon() {
 		int verticesCount = 10;
-		float size = 10;
+		double size = 10;
 		List<Vector2f> randomPolygon = new ArrayList<>(10);
 
 		for (int i = 0; i < verticesCount; i++) {
-			float randomSize = RANDOM.nextFloat(size, size + size);
-			randomPolygon.add(new Vector2f((float) (Math.cos(i * 2 * Math.PI / verticesCount) * randomSize),
-					(float) (Math.sin(i * 2 * Math.PI / verticesCount) * randomSize)));
+			double randomSize = RANDOM.nextDouble(size, size + size);
+			randomPolygon.add(new Vector2f((double) (Math.cos(i * 2 * Math.PI / verticesCount) * randomSize),
+					(double) (Math.sin(i * 2 * Math.PI / verticesCount) * randomSize)));
 		}
 
 		List<int[]> triangles = Triangulation.earClippingTriangulate(randomPolygon);

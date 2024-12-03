@@ -1,21 +1,21 @@
 package com.cgvsu.math;
 
 public class Matrix2f {
-	private float[][] matrix;
+	private double[][] matrix;
 
 	public Matrix2f() {
-		this.matrix = new float[2][2];
+		this.matrix = new double[2][2];
 	}
 
-	public float getCell(int row, int col) {
+	public double getCell(int row, int col) {
 		return matrix[row][col];
 	}
 
-	public void setCell(int row, int col, float f) {
+	public void setCell(int row, int col, double f) {
 		this.matrix[row][col] = f;
 	}
 
-	public float determinant() {
+	public double determinant() {
 		return this.matrix[0][0] * this.matrix[1][1] - this.matrix[1][0] * this.matrix[0][1];
 	}
 

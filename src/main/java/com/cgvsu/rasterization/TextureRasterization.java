@@ -73,6 +73,7 @@ public class TextureRasterization {
 				new double[] { arrY[0], y, arrY[2] }, new double[] { 1, 1, 1 } }) / generalDeterminant);
 		final double coordinate2 = Math.abs(determinator(new double[][] { new double[] { arrX[0], arrX[1], x },
 				new double[] { arrY[0], arrY[1], y }, new double[] { 1, 1, 1 } }) / generalDeterminant);
+
 		return new double[] { coordinate0, coordinate1, coordinate2 };
 	}
 
@@ -83,8 +84,8 @@ public class TextureRasterization {
 				+ texturePoints[2].getY() * barycentricCoords[2];
 
 		PixelReader reader = image.getPixelReader();
-		x *= image.getWidth();
-		y *= image.getHeight();
+		x *= (image.getWidth() - 1);
+		y *= (image.getHeight() - 1);
 
 		return reader.getColor((int) x, (int) y);
 	}

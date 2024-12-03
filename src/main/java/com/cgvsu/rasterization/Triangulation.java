@@ -77,7 +77,7 @@ public final class Triangulation {
 				Vector2f curVertex = vertices.get(curVertexIndex);
 				Vector2f nextVertex = vertices.get(nextVertexIndex);
 
-				float crossProduct = direction(prevVertex, curVertex, nextVertex);
+				double crossProduct = direction(prevVertex, curVertex, nextVertex);
 				if ((isCCW ? crossProduct : -crossProduct) < Global.eps) {
 					continue;
 				}
@@ -116,7 +116,7 @@ public final class Triangulation {
 	}
 
 	private static <T extends Vector2f> boolean isCounterClockwise(List<T> vertices, List<Integer> vertexIndices) {
-		float area = 0;
+		double area = 0;
 		int vertexIndicesCount = vertexIndices.size();
 
 		Vector2f prevVertex = vertices.get(vertexIndices.get(0));
@@ -130,11 +130,11 @@ public final class Triangulation {
 		return area < 0;
 	}
 
-	static float direction(Vector2f a, Vector2f b, Vector2f c) {
-		float dx1 = b.getX() - a.getX();
-		float dy1 = b.getY() - a.getY();
-		float dx2 = c.getX() - a.getX();
-		float dy2 = c.getY() - a.getY();
+	static double direction(Vector2f a, Vector2f b, Vector2f c) {
+		double dx1 = b.getX() - a.getX();
+		double dy1 = b.getY() - a.getY();
+		double dx2 = c.getX() - a.getX();
+		double dy2 = c.getY() - a.getY();
 
 		Matrix2f matrix = new Matrix2f();
 		matrix.setCell(0, 0, dx1);
@@ -146,17 +146,17 @@ public final class Triangulation {
 	}
 
 	static boolean isPointInTriangle(Vector2f a, Vector2f b, Vector2f c, Vector2f p) {
-		float check1 = direction(a, b, p);
-		float check2 = direction(p, b, c);
-		float check3 = direction(p, c, a);
+		double check1 = direction(a, b, p);
+		double check2 = direction(p, b, c);
+		double check3 = direction(p, c, a);
 
 		return (check1 >= -Global.eps && check2 >= -Global.eps && check3 >= -Global.eps)
 				|| (check1 <= Global.eps && check2 <= Global.eps && check3 <= Global.eps);
 	}
 
-	static float edgeLength(Vector2f a, Vector2f b) {
-		float dx = a.getX() - b.getX();
-		float dy = a.getY() - b.getY();
-		return (float) Math.sqrt(dx * dx + dy * dy);
+	static double edgeLength(Vector2f a, Vector2f b) {
+		double dx = a.getX() - b.getX();
+		double dy = a.getY() - b.getY();
+		return (double) Math.sqrt(dx * dx + dy * dy);
 	}
 }

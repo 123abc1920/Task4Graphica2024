@@ -144,10 +144,10 @@ public class GuiController {
 		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 			startXLMB = mouseEvent.getSceneX();
 			startYLMB = mouseEvent.getSceneY();
-		} /*else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-			startXRMB = mouseEvent.getSceneX();
-			startYRMB = mouseEvent.getSceneY();
-		}*/
+		} /*
+			 * else if (mouseEvent.getButton() == MouseButton.SECONDARY) { startXRMB =
+			 * mouseEvent.getSceneX(); startYRMB = mouseEvent.getSceneY(); }
+			 */
 	}
 
 	@FXML
@@ -168,18 +168,19 @@ public class GuiController {
 
 			startXLMB = mouseEvent.getSceneX();
 			startYLMB = mouseEvent.getSceneY();
-		} /*else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-			endXRMB = mouseEvent.getX();
-			endYRMB = mouseEvent.getY();
-			double shiftXRBM = endXRMB - startXRMB;
-			double shiftYRMB = endYRMB - startYRMB;
-		}*/
+		} /*
+			 * else if (mouseEvent.getButton() == MouseButton.SECONDARY) { endXRMB =
+			 * mouseEvent.getX(); endYRMB = mouseEvent.getY(); double shiftXRBM = endXRMB -
+			 * startXRMB; double shiftYRMB = endYRMB - startYRMB; }
+			 */
 	}
 
 	@FXML
 	private void handleMouseScroll(ScrollEvent scrollEvent) {
-		if (scrollEvent.getDeltaY() > 0) camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
-		else camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
+		if (scrollEvent.getDeltaY() > 0)
+			camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
+		else
+			camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
 	}
 
 	@FXML
@@ -193,7 +194,6 @@ public class GuiController {
 	/**
 	 * Добавить обработчик событий дял всех textField по нажатии кнопки Enter
 	 */
-
 
 	@FXML
 	private void onOpenModelMenuItemClick() {
@@ -216,15 +216,17 @@ public class GuiController {
 
 		}
 
-		InputStream stream = null;
+		// C:\\Users\\annam\\OneDrive\\Рабочий стол\\textures\\fox\\animalia_fox_1.png
+		// C:\\Users\\annam\\Downloads\\caracal_texture.png
+		// C:\\Users\\annam\\Downloads\\text.png
+		/*InputStream stream = null;
 		try {
 			stream = new FileInputStream("C:\\Users\\annam\\Downloads\\caracal_texture.png");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		Image image = new Image(stream);
-
-		mesh.image = image;
+		mesh.image = image;*/
 
 		ArrayList<Polygon> ps = new ArrayList<>();
 		for (Polygon p : mesh.polygons) {
@@ -243,6 +245,7 @@ public class GuiController {
 				ps.add(newP);
 			}
 		}
+
 		mesh.polygons = ps;
 	}
 
