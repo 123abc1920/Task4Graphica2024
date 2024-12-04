@@ -9,9 +9,22 @@ public class RasterizationParams {
 
 	public static boolean drawLine = false;
 	public static boolean drawTexture = false;
+	public static boolean isLight = false;
 
 	public static void setColor(Color color) {
-		colors[0] = color;
+		colors[0] = colors[1] = colors[2] = color;
+	}
+
+	public static void setLine(boolean drawLine) {
+		RasterizationParams.drawLine = drawLine;
+	}
+
+	public static void setTexture(boolean drawTexture) {
+		RasterizationParams.drawTexture = drawTexture;
+	}
+
+	public static void setLight(boolean isLight) {
+		RasterizationParams.isLight = isLight;
 	}
 
 }

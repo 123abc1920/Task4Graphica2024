@@ -1,8 +1,6 @@
 package com.cgvsu.rasterization;
 
 import com.cgvsu.light.Light;
-import com.cgvsu.math.Global;
-import com.cgvsu.math.Matrix3f;
 import com.cgvsu.math.Vector3f;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -11,7 +9,8 @@ import javafx.scene.paint.Color;
 
 public class Rasterization {
 	public static void fillTriangle(final GraphicsContext graphicsContext, final double[] arrX, final double[] arrY,
-			final double[] arrZ, final Color[] colors, Vector3f[] normals, ZBuffer zBuffer, Vector3f cameraPos) {
+			final double[] arrZ, final Color[] colors, Vector3f[] normals, ZBuffer zBuffer, Vector3f cameraPos,
+			boolean isLight) {
 
 		final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
 
@@ -32,20 +31,8 @@ public class Rasterization {
 						+ barizenticCoordinate[2] * arrZ[2]);
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
 					if (z < zBuffer.get((int) x, (int) y)) {
-						Color c = colors[0];
-						Vector3f dotNormal = new Vector3f();
-						dotNormal.setX(normals[0].getX() * barizenticCoordinate[0]
-								+ normals[1].getX() * barizenticCoordinate[1]
-								+ normals[2].getX() * barizenticCoordinate[2]);
-						dotNormal.setY(normals[0].getY() * barizenticCoordinate[0]
-								+ normals[1].getY() * barizenticCoordinate[1]
-								+ normals[2].getY() * barizenticCoordinate[2]);
-						dotNormal.setZ(normals[0].getZ() * barizenticCoordinate[0]
-								+ normals[1].getZ() * barizenticCoordinate[1]
-								+ normals[2].getZ() * barizenticCoordinate[2]);
-						dotNormal.normalize();
-						c = Light.newRgb(c, dotNormal,  cameraPos.sub(new Vector3f(x, y, z)));
-						pixelWriter.setColor((int) x, (int) y, c);
+						pixelWriter.setColor((int) x, (int) y, getDotColor(colors[0], normals, barizenticCoordinate,
+								cameraPos.sub(new Vector3f(x, y, z))));
 						zBuffer.set((int) x, (int) y, z);
 					}
 				}
@@ -63,25 +50,25 @@ public class Rasterization {
 						+ barizenticCoordinate[2] * arrZ[2]);
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
 					if (z < zBuffer.get((int) x, (int) y)) {
-						Color c = getColor(barizenticCoordinate, colors);
-						Vector3f dotNormal = new Vector3f();
-						dotNormal.setX(normals[0].getX() * barizenticCoordinate[0]
-								+ normals[1].getX() * barizenticCoordinate[1]
-								+ normals[2].getX() * barizenticCoordinate[2]);
-						dotNormal.setY(normals[0].getY() * barizenticCoordinate[0]
-								+ normals[1].getY() * barizenticCoordinate[1]
-								+ normals[2].getY() * barizenticCoordinate[2]);
-						dotNormal.setZ(normals[0].getZ() * barizenticCoordinate[0]
-								+ normals[1].getZ() * barizenticCoordinate[1]
-								+ normals[2].getZ() * barizenticCoordinate[2]);
-						dotNormal.normalize();
-						c = Light.newRgb(c, dotNormal,  cameraPos.sub(new Vector3f(x, y, z)));
-						pixelWriter.setColor((int) x, (int) y, c);
+						pixelWriter.setColor((int) x, (int) y, getDotColor(colors[0], normals, barizenticCoordinate,
+								cameraPos.sub(new Vector3f(x, y, z))));
 						zBuffer.set((int) x, (int) y, z);
 					}
 				}
 			}
 		}
+	}
+
+	private static Color getDotColor(Color c, Vector3f[] normals, double[] barizenticCoordinate, Vector3f toCamera) {
+		Vector3f dotNormal = new Vector3f();
+		dotNormal.setX(normals[0].getX() * barizenticCoordinate[0] + normals[1].getX() * barizenticCoordinate[1]
+				+ normals[2].getX() * barizenticCoordinate[2]);
+		dotNormal.setY(normals[0].getY() * barizenticCoordinate[0] + normals[1].getY() * barizenticCoordinate[1]
+				+ normals[2].getY() * barizenticCoordinate[2]);
+		dotNormal.setZ(normals[0].getZ() * barizenticCoordinate[0] + normals[1].getZ() * barizenticCoordinate[1]
+				+ normals[2].getZ() * barizenticCoordinate[2]);
+		dotNormal = dotNormal.normalize();
+		return Light.newRgb(c, dotNormal, toCamera);
 	}
 
 	private static double determinator(double[][] arr) {
@@ -133,7 +120,6 @@ public class Rasterization {
 		double tempY = y[i];
 		double tempX = x[i];
 		double tempZ = z[i];
-		Color tempC = c[i];
 		Vector3f tempN = n[i];
 		x[i] = x[j];
 		y[i] = y[j];

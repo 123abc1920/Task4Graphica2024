@@ -58,7 +58,8 @@ public class RenderEngine {
 			}
 
 			if (!RasterizationParams.drawTexture) {
-				drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition());
+				drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition(),
+						RasterizationParams.isLight);
 			} else {
 				Vector2f[] texturePoints = new Vector2f[3];
 				texturePoints[0] = mesh.textureVertices
@@ -86,9 +87,9 @@ public class RenderEngine {
 	}
 
 	private static void drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
-			Vector3f[] normals, Vector3f cameraPos) {
+			Vector3f[] normals, Vector3f cameraPos, boolean isLight) {
 		Rasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors, normals,
-				RasterizationParams.zBuffer, cameraPos);
+				RasterizationParams.zBuffer, cameraPos, isLight);
 	}
 
 	private static void drawLines(GraphicsContext graphicsContext, int nVerticesInPolygon,
