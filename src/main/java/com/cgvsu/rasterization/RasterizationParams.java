@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 
 public class RasterizationParams {
 
-	public static Color[] colors = { Color.AQUA, Color.CRIMSON, Color.BLUEVIOLET };
+	public static Color[] colors = { Color.CRIMSON, Color.CRIMSON, Color.CRIMSON };
 	public static ZBuffer zBuffer;
 
 	public static boolean drawLine = false;

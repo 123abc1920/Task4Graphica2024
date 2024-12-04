@@ -1,7 +1,9 @@
 package com.cgvsu.rasterization;
 
+import com.cgvsu.light.Light;
 import com.cgvsu.math.Global;
 import com.cgvsu.math.Matrix3f;
+import com.cgvsu.math.Vector3f;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;
@@ -9,17 +11,17 @@ import javafx.scene.paint.Color;
 
 public class Rasterization {
 	public static void fillTriangle(final GraphicsContext graphicsContext, final double[] arrX, final double[] arrY,
-			final double[] arrZ, final Color[] colors, ZBuffer zBuffer) {
+			final double[] arrZ, final Color[] colors, Vector3f[] normals, ZBuffer zBuffer) {
 
 		final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
 
-		sort(arrX, arrY, arrZ, colors);
+		sort(arrX, arrY, arrZ, colors, normals);
 
 		if (arrX.length < 3 || arrY.length < 3 || arrZ.length < 3 || colors.length < 3) {
 			throw new IllegalArgumentException("Массивы должны содержать как минимум 3 элемента.");
 		}
 
-		for (int y = (int) Math.ceil(arrY[1]); y < (int) Math.floor(arrY[2]); y++) {
+		for (int y = (int) Math.ceil(arrY[1]); y <= (int) Math.floor(arrY[2]); y++) {
 			final double x1 = (arrY[2] - arrY[1] == 0) ? arrX[1]
 					: (y - arrY[1]) * (arrX[2] - arrX[1]) / (arrY[2] - arrY[1]) + arrX[1];
 			final double x2 = (arrY[0] - arrY[2] == 0) ? arrX[2]
@@ -30,7 +32,20 @@ public class Rasterization {
 						+ barizenticCoordinate[2] * arrZ[2]);
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
 					if (z < zBuffer.get((int) x, (int) y)) {
-						pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, colors));
+						Color c = colors[0];
+						Vector3f dotNormal = new Vector3f();
+						dotNormal.setX(normals[0].getX() * barizenticCoordinate[0]
+								+ normals[1].getX() * barizenticCoordinate[1]
+								+ normals[2].getX() * barizenticCoordinate[2]);
+						dotNormal.setY(normals[0].getY() * barizenticCoordinate[0]
+								+ normals[1].getY() * barizenticCoordinate[1]
+								+ normals[2].getY() * barizenticCoordinate[2]);
+						dotNormal.setZ(normals[0].getZ() * barizenticCoordinate[0]
+								+ normals[1].getZ() * barizenticCoordinate[1]
+								+ normals[2].getZ() * barizenticCoordinate[2]);
+						dotNormal.normalize();
+						c = Light.newRgb(c, dotNormal);
+						pixelWriter.setColor((int) x, (int) y, c);
 						zBuffer.set((int) x, (int) y, z);
 					}
 				}
@@ -48,7 +63,20 @@ public class Rasterization {
 						+ barizenticCoordinate[2] * arrZ[2]);
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
 					if (z < zBuffer.get((int) x, (int) y)) {
-						pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, colors));
+						Color c = getColor(barizenticCoordinate, colors);
+						Vector3f dotNormal = new Vector3f();
+						dotNormal.setX(normals[0].getX() * barizenticCoordinate[0]
+								+ normals[1].getX() * barizenticCoordinate[1]
+								+ normals[2].getX() * barizenticCoordinate[2]);
+						dotNormal.setY(normals[0].getY() * barizenticCoordinate[0]
+								+ normals[1].getY() * barizenticCoordinate[1]
+								+ normals[2].getY() * barizenticCoordinate[2]);
+						dotNormal.setZ(normals[0].getZ() * barizenticCoordinate[0]
+								+ normals[1].getZ() * barizenticCoordinate[1]
+								+ normals[2].getZ() * barizenticCoordinate[2]);
+						dotNormal.normalize();
+						c = Light.newRgb(c, dotNormal);
+						pixelWriter.setColor((int) x, (int) y, c);
 						zBuffer.set((int) x, (int) y, z);
 					}
 				}
@@ -89,29 +117,32 @@ public class Rasterization {
 				1);
 	}
 
-	private static void sort(double[] x, double[] y, double[] z, Color[] c) {
+	private static void sort(double[] x, double[] y, double[] z, Color[] c, Vector3f[] n) {
 		if (y[0] > y[1]) {
-			swap(x, y, z, c, 0, 1);
+			swap(x, y, z, c, n, 0, 1);
 		}
 		if (y[1] > y[2]) {
-			swap(x, y, z, c, 1, 2);
+			swap(x, y, z, c, n, 1, 2);
 		}
 		if (y[0] > y[1]) {
-			swap(x, y, z, c, 0, 1);
+			swap(x, y, z, c, n, 0, 1);
 		}
 	}
 
-	private static void swap(double[] x, double[] y, double[] z, Color[] c, int i, int j) {
+	private static void swap(double[] x, double[] y, double[] z, Color[] c, Vector3f[] n, int i, int j) {
 		double tempY = y[i];
 		double tempX = x[i];
 		double tempZ = z[i];
 		Color tempC = c[i];
+		Vector3f tempN = n[i];
 		x[i] = x[j];
 		y[i] = y[j];
 		z[i] = z[j];
+		n[i] = n[j];
 		x[j] = tempX;
 		y[j] = tempY;
 		z[j] = tempZ;
+		n[j] = tempN;
 	}
 
 	private static double[] microSwap(double a, double b) {

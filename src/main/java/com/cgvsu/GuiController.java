@@ -37,6 +37,7 @@ import com.cgvsu.math.Vector3f;
 
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
+import com.cgvsu.rasterization.FindNormals;
 import com.cgvsu.rasterization.Triangulation;
 import com.cgvsu.render_engine.Camera;
 import com.cgvsu.model.Polygon;
@@ -247,6 +248,7 @@ public class GuiController {
 		}
 
 		mesh.polygons = ps;
+		mesh.normals = FindNormals.findNormals(mesh);
 	}
 
 	@FXML

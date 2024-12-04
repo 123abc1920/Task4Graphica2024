@@ -45,6 +45,8 @@ public class RenderEngine {
 				resultPoints.add(resultPoint);
 			}
 
+			Vector3f[] normals = new Vector3f[3];
+
 			double[] arrX = new double[3];
 			double[] arrY = new double[3];
 			double[] arrZ = new double[3];
@@ -52,10 +54,12 @@ public class RenderEngine {
 				arrX[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getX();
 				arrY[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getY();
 				arrZ[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getZ();
+				normals[vertexInPolygonInd] = mesh.normals
+						.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 			}
 
 			if (!RasterizationParams.drawTexture) {
-				drawSolidColor(graphicsContext, arrX, arrY, arrZ);
+				drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals);
 			} else {
 				Vector2f[] texturePoints = new Vector2f[3];
 				texturePoints[0] = mesh.textureVertices
@@ -76,14 +80,15 @@ public class RenderEngine {
 
 	private static void drawTexture(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
 			Vector2f[] texturePoints, Image image) {
-		
-			TextureRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, texturePoints,
-					RasterizationParams.zBuffer, image);
+
+		TextureRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, texturePoints, RasterizationParams.zBuffer,
+				image);
 
 	}
 
-	private static void drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ) {
-		Rasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors,
+	private static void drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
+			Vector3f[] normals) {
+		Rasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors, normals,
 				RasterizationParams.zBuffer);
 	}
 
