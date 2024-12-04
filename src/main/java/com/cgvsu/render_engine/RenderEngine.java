@@ -1,6 +1,5 @@
 package com.cgvsu.render_engine;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class RenderEngine {
 			}
 
 			if (!RasterizationParams.drawTexture) {
-				drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals);
+				drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition());
 			} else {
 				Vector2f[] texturePoints = new Vector2f[3];
 				texturePoints[0] = mesh.textureVertices
@@ -87,9 +86,9 @@ public class RenderEngine {
 	}
 
 	private static void drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
-			Vector3f[] normals) {
+			Vector3f[] normals, Vector3f cameraPos) {
 		Rasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors, normals,
-				RasterizationParams.zBuffer);
+				RasterizationParams.zBuffer, cameraPos);
 	}
 
 	private static void drawLines(GraphicsContext graphicsContext, int nVerticesInPolygon,

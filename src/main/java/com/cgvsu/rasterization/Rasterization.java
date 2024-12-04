@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 
 public class Rasterization {
 	public static void fillTriangle(final GraphicsContext graphicsContext, final double[] arrX, final double[] arrY,
-			final double[] arrZ, final Color[] colors, Vector3f[] normals, ZBuffer zBuffer) {
+			final double[] arrZ, final Color[] colors, Vector3f[] normals, ZBuffer zBuffer, Vector3f cameraPos) {
 
 		final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
 
@@ -44,7 +44,7 @@ public class Rasterization {
 								+ normals[1].getZ() * barizenticCoordinate[1]
 								+ normals[2].getZ() * barizenticCoordinate[2]);
 						dotNormal.normalize();
-						c = Light.newRgb(c, dotNormal);
+						c = Light.newRgb(c, dotNormal,  cameraPos.sub(new Vector3f(x, y, z)));
 						pixelWriter.setColor((int) x, (int) y, c);
 						zBuffer.set((int) x, (int) y, z);
 					}
@@ -75,7 +75,7 @@ public class Rasterization {
 								+ normals[1].getZ() * barizenticCoordinate[1]
 								+ normals[2].getZ() * barizenticCoordinate[2]);
 						dotNormal.normalize();
-						c = Light.newRgb(c, dotNormal);
+						c = Light.newRgb(c, dotNormal,  cameraPos.sub(new Vector3f(x, y, z)));
 						pixelWriter.setColor((int) x, (int) y, c);
 						zBuffer.set((int) x, (int) y, z);
 					}
