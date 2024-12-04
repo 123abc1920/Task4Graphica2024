@@ -22,16 +22,17 @@ public class Light {
 		if (l < 0)
 			l = 0;
 
-		Vector3f R = ray.sub(n.multiplyScalar(2 * ray.dotProduct(n)));
-		R = R.normalize();
 		ray = ray.normalize();
 		cameraPos = cameraPos.normalize();
+		n = n.normalize();
+		Vector3f R = ray.sub(n.multiplyScalar(2 * ray.dotProduct(n)));
+		R = R.normalize();
 
 		double ks = 0.4;
 		double shine = 31;
 		double r = R.dotProduct(cameraPos);
 		double I_spec = ks * Math.pow(r, shine);
-		if (r < 0) {
+		if (r < 0 || l == 0) {
 			I_spec = 0;
 		}
 
