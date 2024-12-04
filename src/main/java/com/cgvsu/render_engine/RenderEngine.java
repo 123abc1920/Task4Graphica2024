@@ -10,10 +10,10 @@ import javafx.scene.image.Image;
 import com.cgvsu.math.Matrix4f;
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.model.Model;
-import com.cgvsu.rasterization.Rasterization;
 import com.cgvsu.rasterization.RasterizationParams;
 import com.cgvsu.rasterization.TextureRasterization;
-import com.cgvsu.rasterization.ZBuffer;
+import com.cgvsu.rasterization.TriangleRasterization;
+import com.cgvsu.zbuffer.ZBuffer;
 
 import static com.cgvsu.render_engine.GraphicConveyor.*;
 
@@ -88,7 +88,7 @@ public class RenderEngine {
 
 	private static void drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
 			Vector3f[] normals, Vector3f cameraPos, boolean isLight) {
-		Rasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors, normals,
+		TriangleRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors, normals,
 				RasterizationParams.zBuffer, cameraPos, isLight);
 	}
 

@@ -6,6 +6,8 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import com.cgvsu.math.Vector2f;
+import com.cgvsu.triangulation.Triangulation;
+import com.cgvsu.triangulation.TriangulationException;
 
 import java.util.ArrayList;
 import java.util.Arrays;

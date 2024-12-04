@@ -1,4 +1,4 @@
-package com.cgvsu.rasterization;
+package com.cgvsu.zbuffer;
 
 public class ZBuffer {
 	private double[][] matrix;

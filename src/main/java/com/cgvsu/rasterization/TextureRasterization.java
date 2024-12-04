@@ -5,6 +5,7 @@ import javafx.scene.image.PixelReader;
 
 import com.cgvsu.math.Matrix3f;
 import com.cgvsu.math.Vector2f;
+import com.cgvsu.zbuffer.ZBuffer;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;

@@ -2,12 +2,13 @@ package com.cgvsu.rasterization;
 
 import com.cgvsu.light.Light;
 import com.cgvsu.math.Vector3f;
+import com.cgvsu.zbuffer.ZBuffer;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
-public class Rasterization {
+public class TriangleRasterization {
 	public static void fillTriangle(final GraphicsContext graphicsContext, final double[] arrX, final double[] arrY,
 			final double[] arrZ, final Color[] colors, Vector3f[] normals, ZBuffer zBuffer, Vector3f cameraPos,
 			boolean isLight) {

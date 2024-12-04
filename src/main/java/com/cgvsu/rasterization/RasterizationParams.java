@@ -1,5 +1,7 @@
 package com.cgvsu.rasterization;
 
+import com.cgvsu.zbuffer.ZBuffer;
+
 import javafx.scene.paint.Color;
 
 public class RasterizationParams {

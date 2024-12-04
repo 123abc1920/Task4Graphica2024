@@ -1,4 +1,4 @@
-package com.cgvsu.rasterization;
+package com.cgvsu.triangulation;
 
 /**
  * Thrown to indicate that the triangulation cannot be performed.

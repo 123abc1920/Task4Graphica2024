@@ -1,4 +1,4 @@
-package com.cgvsu.rasterization;
+package com.cgvsu.triangulation;
 
 import java.util.ArrayList;
 import java.util.List;

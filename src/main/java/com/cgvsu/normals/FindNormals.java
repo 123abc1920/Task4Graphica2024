@@ -1,4 +1,4 @@
-package com.cgvsu.rasterization;
+package com.cgvsu.normals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
