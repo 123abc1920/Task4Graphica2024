@@ -4,46 +4,46 @@ import com.cgvsu.math.Vector3f;
 import com.cgvsu.math.Vector4f;
 
 public class Matrix4f {
-    private static final float esp = 1e-4f;
-    private float[][] matrix;
+    private static final double esp = 1e-4f;
+    private double[][] matrix;
 
     public Matrix4f() {
-        this.matrix = new float[4][4];
+        this.matrix = new double[4][4];
     }
 
     public Matrix4f(boolean isUnitMatrix) {
         if (isUnitMatrix) {
-            this.matrix = new float[][]{
+            this.matrix = new double[][]{
                     {1, 0, 0, 0},
                     {0, 1, 0, 0},
                     {0, 0, 1, 0},
                     {0, 0, 0, 1}
             };
         } else {
-            this.matrix = new float[4][4];
+            this.matrix = new double[4][4];
         }
     }
 
-    public Matrix4f(float[][] matrix) {
+    public Matrix4f(double[][] matrix) {
         if (matrix.length != 4 || matrix[0].length != 4) {
             throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 4 на 4");
         }
         this.matrix = matrix;
     }
 
-    public float[][] getMatrix() {
+    public double[][] getMatrix() {
         return matrix;
     }
 
-    public float getCell(int row, int col) {
+    public double getCell(int row, int col) {
         return matrix[row][col];
     }
 
     public void printMatrix() {
         System.out.println("Matrix: ");
-        for (float[] floats : matrix) {
+        for (double[] doubles : matrix) {
             for (int j = 0; j < matrix[0].length; j++) {
-                System.out.print(floats[j] + " ");
+                System.out.print(doubles[j] + " ");
             }
             System.out.println();
         }
@@ -53,7 +53,7 @@ public class Matrix4f {
         if (matrix4f.getMatrix().length != 4 || matrix4f.getMatrix()[0].length != 4) {
             throw new IllegalArgumentException();
         }
-        float[][] values = new float[matrix.length][matrix[0].length];
+        double[][] values = new double[matrix.length][matrix[0].length];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
                 values[i][j] = matrix[i][j] + matrix4f.getCell(i, j);
@@ -66,7 +66,7 @@ public class Matrix4f {
         if (matrix4f.getMatrix().length != 4 || matrix4f.getMatrix()[0].length != 4) {
             throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 4 на 4.");
         }
-        float[][] values = new float[matrix.length][matrix[0].length];
+        double[][] values = new double[matrix.length][matrix[0].length];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
                 values[i][j] = matrix[i][j] - matrix4f.getCell(i, j);
@@ -80,7 +80,7 @@ public class Matrix4f {
             throw new NullPointerException("Предоставленный вектор не может быть нулевым");
         }
 
-        float[] values = new float[4];
+        double[] values = new double[4];
         for (int i = 0; i < matrix.length; i++) {
             values[i] = 0;
             for (int j = 0; j < matrix[0].length; j++) {
@@ -96,7 +96,7 @@ public class Matrix4f {
         }
         Vector4f vector4fCol = vectorCol3f.translationToVector4f();
 
-        float[] values = new float[4];
+        double[] values = new double[4];
         for (int i = 0; i < matrix.length; i++) {
             values[i] = 0;
             for (int j = 0; j < matrix[0].length; j++) {
@@ -110,7 +110,7 @@ public class Matrix4f {
         if (matrix4f.getMatrix().length != 4 || matrix4f.getMatrix()[0].length != 4) {
             throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 4 на 4.");
         }
-        float[][] values = new float[4][4];
+        double[][] values = new double[4][4];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
                 values[i][j] = 0;
@@ -126,7 +126,7 @@ public class Matrix4f {
         if (matrix.length != 4 || matrix[0].length != 4) {
             throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 4 на 4.");
         }
-        float[][] transposed = new float[4][4];
+        double[][] transposed = new double[4][4];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
                 transposed[j][i] = matrix[i][j];
@@ -135,7 +135,7 @@ public class Matrix4f {
         return new Matrix4f(transposed);
     }
 
-    public float determinant() {
+    public double determinant() {
         if (matrix.length != 4 || matrix[0].length != 4) {
             throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 4 на 4.");
         }

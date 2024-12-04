@@ -130,12 +130,12 @@ public class GuiController {
 	}
 
 	private void showStartInfo() {
-		textFieldPosX.setText(Float.toString(camera.getPosition().getX()));
-		textFieldPosY.setText(Float.toString(camera.getPosition().getY()));
-		textFieldPosZ.setText(Float.toString(camera.getPosition().getZ()));
-		textFieldTarX.setText(Float.toString(camera.getTarget().getX()));
-		textFieldTarY.setText(Float.toString(camera.getTarget().getY()));
-		textFieldTarZ.setText(Float.toString(camera.getTarget().getZ()));
+		textFieldPosX.setText(Double.toString(camera.getPosition().getX()));
+		textFieldPosY.setText(Double.toString(camera.getPosition().getY()));
+		textFieldPosZ.setText(Double.toString(camera.getPosition().getZ()));
+		textFieldTarX.setText(Double.toString(camera.getTarget().getX()));
+		textFieldTarY.setText(Double.toString(camera.getTarget().getY()));
+		textFieldTarZ.setText(Double.toString(camera.getTarget().getZ()));
 	}
 
 	@FXML
@@ -219,14 +219,14 @@ public class GuiController {
 		// C:\\Users\\annam\\OneDrive\\Рабочий стол\\textures\\fox\\animalia_fox_1.png
 		// C:\\Users\\annam\\Downloads\\caracal_texture.png
 		// C:\\Users\\annam\\Downloads\\text.png
-		/*InputStream stream = null;
+		InputStream stream = null;
 		try {
 			stream = new FileInputStream("C:\\Users\\annam\\Downloads\\caracal_texture.png");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		Image image = new Image(stream);
-		mesh.image = image;*/
+		mesh.image = image;
 
 		ArrayList<Polygon> ps = new ArrayList<>();
 		for (Polygon p : mesh.polygons) {
@@ -247,6 +247,7 @@ public class GuiController {
 		}
 
 		mesh.polygons = ps;
+		System.out.println(mesh.textureVertices.get(0).getX());
 	}
 
 	@FXML
