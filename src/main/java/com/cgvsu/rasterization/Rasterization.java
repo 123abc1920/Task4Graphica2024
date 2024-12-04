@@ -19,12 +19,12 @@ public class Rasterization {
 			throw new IllegalArgumentException("Массивы должны содержать как минимум 3 элемента.");
 		}
 
-		for (double y = arrY[1]; y < arrY[2]; y++) {
+		for (int y = (int) Math.ceil(arrY[1]); y < (int) Math.floor(arrY[2]); y++) {
 			final double x1 = (arrY[2] - arrY[1] == 0) ? arrX[1]
 					: (y - arrY[1]) * (arrX[2] - arrX[1]) / (arrY[2] - arrY[1]) + arrX[1];
 			final double x2 = (arrY[0] - arrY[2] == 0) ? arrX[2]
 					: (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
-			for (double x = Math.min(x1, x2); x < Math.max(x1, x2); x++) {
+			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
 				double[] barizenticCoordinate = barizentricCalculator(x, y, arrX, arrY);
 				double z = (double) (barizenticCoordinate[0] * arrZ[0] + barizenticCoordinate[1] * arrZ[1]
 						+ barizenticCoordinate[2] * arrZ[2]);
@@ -37,12 +37,12 @@ public class Rasterization {
 			}
 		}
 
-		for (double y = arrY[1]; y >= arrY[0]; y--) {
+		for (int y = (int) Math.floor(arrY[1]); y >= Math.ceil(arrY[0]); y--) {
 			final double x1 = (arrY[1] - arrY[0] == 0) ? arrX[0]
 					: (y - arrY[0]) * (arrX[1] - arrX[0]) / (arrY[1] - arrY[0]) + arrX[0];
 			final double x2 = (arrY[0] - arrY[2] == 0) ? arrX[2]
 					: (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
-			for (double x = Math.min(x1, x2); x < Math.max(x1, x2); x++) {
+			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
 				double[] barizenticCoordinate = barizentricCalculator(x, y, arrX, arrY);
 				double z = (double) (barizenticCoordinate[0] * arrZ[0] + barizenticCoordinate[1] * arrZ[1]
 						+ barizenticCoordinate[2] * arrZ[2]);

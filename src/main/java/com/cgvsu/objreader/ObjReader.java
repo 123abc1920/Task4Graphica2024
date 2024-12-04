@@ -72,7 +72,6 @@ public class ObjReader {
 
 	protected static Vector2f parseTextureVertex(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
 		try {
-			System.out.println(wordsInLineWithoutToken.get(0));
 			return new Vector2f(
 					Double.parseDouble(wordsInLineWithoutToken.get(0)),
 					Double.parseDouble(wordsInLineWithoutToken.get(1)));

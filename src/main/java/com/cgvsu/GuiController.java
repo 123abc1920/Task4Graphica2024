@@ -247,7 +247,6 @@ public class GuiController {
 		}
 
 		mesh.polygons = ps;
-		System.out.println(mesh.textureVertices.get(0).getX());
 	}
 
 	@FXML

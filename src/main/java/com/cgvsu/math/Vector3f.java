@@ -123,4 +123,16 @@ public class Vector3f {
 		// Деление на W для преобразования в нормализованное устройство
 		return new Vector3f(x / w, y / w, z / w);
 	}
+
+	public void setX(double d) {
+		this.x = d;
+	}
+
+	public void setY(double d) {
+		this.y = d;
+	}
+
+	public void setZ(double d) {
+		this.z = d;
+	}
 }
