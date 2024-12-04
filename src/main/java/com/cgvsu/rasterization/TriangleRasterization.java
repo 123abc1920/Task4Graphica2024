@@ -33,7 +33,7 @@ public class TriangleRasterization {
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
 					if (z < zBuffer.get((int) x, (int) y)) {
 						pixelWriter.setColor((int) x, (int) y, getDotColor(colors[0], normals, barizenticCoordinate,
-								cameraPos.sub(new Vector3f(x, y, z))));
+								cameraPos.sub(new Vector3f(x, y, z)), isLight));
 						zBuffer.set((int) x, (int) y, z);
 					}
 				}
@@ -52,7 +52,7 @@ public class TriangleRasterization {
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
 					if (z < zBuffer.get((int) x, (int) y)) {
 						pixelWriter.setColor((int) x, (int) y, getDotColor(colors[0], normals, barizenticCoordinate,
-								cameraPos.sub(new Vector3f(x, y, z))));
+								cameraPos.sub(new Vector3f(x, y, z)), isLight));
 						zBuffer.set((int) x, (int) y, z);
 					}
 				}
@@ -60,7 +60,11 @@ public class TriangleRasterization {
 		}
 	}
 
-	private static Color getDotColor(Color c, Vector3f[] normals, double[] barizenticCoordinate, Vector3f toCamera) {
+	private static Color getDotColor(Color c, Vector3f[] normals, double[] barizenticCoordinate, Vector3f toCamera,
+			boolean isLight) {
+		if (!isLight) {
+			return c;
+		}
 		Vector3f dotNormal = new Vector3f();
 		dotNormal.setX(normals[0].getX() * barizenticCoordinate[0] + normals[1].getX() * barizenticCoordinate[1]
 				+ normals[2].getX() * barizenticCoordinate[2]);

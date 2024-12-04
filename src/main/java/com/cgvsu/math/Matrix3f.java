@@ -1,47 +1,45 @@
 package com.cgvsu.math;
 
-import com.cgvsu.math.Vector3f;
-
 public class Matrix3f {
-	private static final float esp = 1e-4f;
-	private float[][] matrix;
+	private static final double esp = 1e-4f;
+	private double[][] matrix;
 
 	public Matrix3f() {
-		this.matrix = new float[3][3];
+		this.matrix = new double[3][3];
 	}
 
 	public Matrix3f(boolean isUnitMatrix) {
 		if (isUnitMatrix) {
-			this.matrix = new float[][] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
+			this.matrix = new double[][] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
 		} else {
-			this.matrix = new float[3][3];
+			this.matrix = new double[3][3];
 		}
 	}
 
-	public Matrix3f(float[][] matrix) {
+	public Matrix3f(double[][] matrix) {
 		if (matrix.length != 3 || matrix[0].length != 3) {
 			throw new IllegalArgumentException("Matrix should have 3 rows and 3 columns");
 		}
 		this.matrix = matrix;
 	}
 
-	public float[][] getMatrix() {
+	public double[][] getMatrix() {
 		return matrix;
 	}
 
-	public float getCell(int row, int col) {
+	public double getCell(int row, int col) {
 		return matrix[row][col];
 	}
 
-	public void setCell(int row, int col, float f) {
+	public void setCell(int row, int col, double f) {
 		this.matrix[row][col] = f;
 	}
 
 	public void printMatrix() {
 		System.out.println("Matrix:");
-		for (float[] floats : matrix) {
+		for (double[] doubles : matrix) {
 			for (int j = 0; j < matrix[0].length; j++) {
-				System.out.print(floats[j] + " ");
+				System.out.print(doubles[j] + " ");
 			}
 			System.out.println();
 		}
@@ -51,7 +49,7 @@ public class Matrix3f {
 		if (matrix3f.getMatrix().length != 3 || matrix3f.getMatrix()[0].length != 3) {
 			throw new IllegalArgumentException("Matrix should have 3 rows and 3 columns");
 		}
-		float[][] values = new float[matrix.length][matrix[0].length];
+		double[][] values = new double[matrix.length][matrix[0].length];
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[0].length; j++) {
 				values[i][j] = matrix[i][j] + matrix3f.getCell(i, j);
@@ -64,7 +62,7 @@ public class Matrix3f {
 		if (matrix3f.getMatrix().length != 3 || matrix3f.getMatrix()[0].length != 3) {
 			throw new IllegalArgumentException("Matrix should have 3 rows and 3 columns");
 		}
-		float[][] values = new float[matrix.length][matrix[0].length];
+		double[][] values = new double[matrix.length][matrix[0].length];
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[0].length; j++) {
 				values[i][j] = matrix[i][j] - matrix3f.getCell(i, j);
@@ -77,7 +75,7 @@ public class Matrix3f {
 		if (vectorCol == null) {
 			throw new IllegalArgumentException("Vector should not be null");
 		}
-		float[] values = new float[3];
+		double[] values = new double[3];
 		for (int i = 0; i < matrix.length; i++) {
 			values[0] = 0;
 			for (int j = 0; j < matrix[0].length; j++) {
@@ -91,7 +89,7 @@ public class Matrix3f {
 		if (matrix3f.getMatrix().length != 3 || matrix3f.getMatrix()[0].length != 3) {
 			throw new IllegalArgumentException("Matrix should have 3 rows and 3 columns");
 		}
-		float[][] values = new float[3][3];
+		double[][] values = new double[3][3];
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[0].length; j++) {
 				values[i][j] = 0;
@@ -107,7 +105,7 @@ public class Matrix3f {
 		if (matrix.length != 3 || matrix[0].length != 3) {
 			throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 3 на 3.");
 		}
-		float[][] transposed = new float[3][3];
+		double[][] transposed = new double[3][3];
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[0].length; j++) {
 				transposed[j][i] = matrix[i][j];
@@ -116,7 +114,7 @@ public class Matrix3f {
 		return new Matrix3f(transposed);
 	}
 
-	public float determinate() {
+	public double determinate() {
 		if (matrix.length != 3 || matrix[0].length != 3) {
 			throw new IllegalArgumentException("Предоставленная матрица должна быть матрицей 3 на 3.");
 		}

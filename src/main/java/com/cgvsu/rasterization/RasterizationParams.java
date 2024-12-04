@@ -11,7 +11,7 @@ public class RasterizationParams {
 
 	public static boolean drawLine = false;
 	public static boolean drawTexture = false;
-	public static boolean isLight = false;
+	public static boolean isLight = true;
 
 	public static void setColor(Color color) {
 		colors[0] = colors[1] = colors[2] = color;

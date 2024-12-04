@@ -1,6 +1,5 @@
 package com.cgvsu.light;
 
-import com.cgvsu.math.Global;
 import com.cgvsu.math.Vector3f;
 
 import javafx.scene.paint.Color;
@@ -10,35 +9,46 @@ public class Light {
 	public static Vector3f target = new Vector3f(0, 0, 0);
 	public static Vector3f ray = target.sub(position);
 
-	public static double k = 0.3;
+	private static double k = 0.3;
+	private static double ks = 0.4;
+	private static double highLightShine = 31;
 
 	static {
-		ray.normalize();
+		ray = ray.normalize();
+	}
+
+	public static void setK(double k) {
+		Light.k = k;
+	}
+
+	public static void setKs(double ks) {
+		Light.ks = ks;
+	}
+
+	public static void setHighLightShine(double highLightShine) {
+		Light.highLightShine = highLightShine;
 	}
 
 	public static Color newRgb(Color start, Vector3f n, Vector3f cameraPos) {
 		double l = ray.dotProduct(n.multiplyScalar(-1));
 
-		if (l < 0)
+		if (l < 0) {
 			l = 0;
-
-		ray = ray.normalize();
-		cameraPos = cameraPos.normalize();
-		n = n.normalize();
-		Vector3f R = ray.sub(n.multiplyScalar(2 * ray.dotProduct(n)));
-		R = R.normalize();
-
-		double ks = 0.4;
-		double shine = 31;
-		double r = R.dotProduct(cameraPos);
-		double I_spec = ks * Math.pow(r, shine);
-		if (r < 0 || l == 0) {
-			I_spec = 0;
 		}
 
-		double red = Math.max(0, Math.min(1, start.getRed() * (1 - k) + start.getRed() * k * l + I_spec));
-		double green = Math.max(0, Math.min(1, start.getGreen() * (1 - k) + start.getGreen() * k * l + I_spec));
-		double blue = Math.max(0, Math.min(1, start.getBlue() * (1 - k) + start.getBlue() * k * l + I_spec));
+		cameraPos = cameraPos.normalize();
+		Vector3f reflectedRay = ray.sub(n.multiplyScalar(2 * ray.dotProduct(n)));
+		reflectedRay = reflectedRay.normalize();
+
+		double r = reflectedRay.dotProduct(cameraPos);
+		double highlight = ks * Math.pow(r, highLightShine);
+		if (r < 0 || l == 0) {
+			highlight = 0;
+		}
+
+		double red = Math.max(0, Math.min(1, start.getRed() * (1 - k) + start.getRed() * k * l + highlight));
+		double green = Math.max(0, Math.min(1, start.getGreen() * (1 - k) + start.getGreen() * k * l + highlight));
+		double blue = Math.max(0, Math.min(1, start.getBlue() * (1 - k) + start.getBlue() * k * l + highlight));
 
 		return new Color(red, green, blue, 1);
 	}

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cgvsu.math.Matrix3f;
 import com.cgvsu.math.Vector3f;
 import com.cgvsu.model.Model;
 import com.cgvsu.model.Polygon;
@@ -44,12 +45,12 @@ public class FindNormals {
 		Vector3f a = vs[0].sub(vs[1]);
 		Vector3f b = vs[0].sub(vs[2]);
 
-		Vector3f c = vectorProduct(a, b);
+		Vector3f c = a.vectorMultiply(b);
 		if (determinant(a, b, c) < 0) {
-			c = vectorProduct(b, a);
+			c = b.vectorMultiply(a);
 		}
 
-		return normalize(c);
+		return c.normalize();
 	}
 
 	public static Vector3f findVertexNormals(List<Vector3f> vs) {
@@ -65,32 +66,11 @@ public class FindNormals {
 		ys /= vs.size();
 		zs /= vs.size();
 
-		return normalize(new Vector3f(xs, ys, zs));
+		return new Vector3f(xs, ys, zs).normalize();
 	}
 
 	public static double determinant(Vector3f a, Vector3f b, Vector3f c) {
-		return a.getX() * (b.getY() * c.getZ()) - a.getY() * (b.getX() * c.getZ() - c.getX() * b.getZ()) + a.getZ() * (b.getX() * c.getY() - c.getX() * b.getY());
-	}
-
-	public static Vector3f normalize(Vector3f v) {
-		if (v == null) {
-			return null;
-		}
-
-		double length = Math.sqrt(v.getX() * v.getX() + v.getY() * v.getY() + v.getZ() * v.getZ());
-
-		if (length == 0) {
-			return new Vector3f(0, 0, 0);
-		}
-
-		v.setX(v.getX() / length);
-		v.setY(v.getY() / length);
-		v.setZ(v.getZ() / length);
-
-		return new Vector3f(v.getX(), v.getY(), v.getZ());
-	}
-
-	public static Vector3f vectorProduct(Vector3f a, Vector3f b) {
-		return new Vector3f(a.getY() * b.getZ() - b.getY() * a.getZ(), -a.getX() * b.getZ() + b.getX() * a.getZ(), a.getX() * b.getY() - b.getX() * a.getY());
+		return new Matrix3f(new double[][] { { a.getX(), a.getY(), a.getZ() }, { b.getX(), b.getY(), b.getZ() },
+				{ c.getX(), c.getY(), c.getZ() } }).determinate();
 	}
 }

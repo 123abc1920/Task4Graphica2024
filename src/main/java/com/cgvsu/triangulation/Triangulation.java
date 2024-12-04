@@ -6,8 +6,6 @@ import java.util.stream.IntStream;
 
 import com.cgvsu.math.Global;
 import com.cgvsu.math.Matrix2f;
-import com.cgvsu.math.Matrix3f;
-import com.cgvsu.math.Vector2f;
 import com.cgvsu.math.Vector2f;
 
 public final class Triangulation {
@@ -130,7 +128,7 @@ public final class Triangulation {
 		return area < 0;
 	}
 
-	static double direction(Vector2f a, Vector2f b, Vector2f c) {
+	public static double direction(Vector2f a, Vector2f b, Vector2f c) {
 		double dx1 = b.getX() - a.getX();
 		double dy1 = b.getY() - a.getY();
 		double dx2 = c.getX() - a.getX();
@@ -145,7 +143,7 @@ public final class Triangulation {
 		return matrix.determinant();
 	}
 
-	static boolean isPointInTriangle(Vector2f a, Vector2f b, Vector2f c, Vector2f p) {
+	public static boolean isPointInTriangle(Vector2f a, Vector2f b, Vector2f c, Vector2f p) {
 		double check1 = direction(a, b, p);
 		double check2 = direction(p, b, c);
 		double check3 = direction(p, c, a);
@@ -154,7 +152,7 @@ public final class Triangulation {
 				|| (check1 <= Global.eps && check2 <= Global.eps && check3 <= Global.eps);
 	}
 
-	static double edgeLength(Vector2f a, Vector2f b) {
+	public static double edgeLength(Vector2f a, Vector2f b) {
 		double dx = a.getX() - b.getX();
 		double dy = a.getY() - b.getY();
 		return (double) Math.sqrt(dx * dx + dy * dy);
