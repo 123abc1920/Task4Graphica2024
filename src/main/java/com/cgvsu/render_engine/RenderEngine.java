@@ -58,26 +58,21 @@ public class RenderEngine {
 						.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 			}
 
-			if (!RasterizationParams.drawTexture) {
+			if (!RasterizationParams.getDrawTexture(mesh)) {
 				drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition(),
-						RasterizationParams.isLight);
+						RasterizationParams.getIsLight());
 			} else {
-				if (mesh.image != null) {
-					Vector2f[] texturePoints = new Vector2f[3];
-					texturePoints[0] = mesh.textureVertices
-							.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(0));
-					texturePoints[1] = mesh.textureVertices
-							.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(1));
-					texturePoints[2] = mesh.textureVertices
-							.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(2));
-					drawTexture(graphicsContext, arrX, arrY, arrZ, texturePoints, mesh.image);
-				} else {
-					drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition(),
-							RasterizationParams.isLight);
-				}
+				Vector2f[] texturePoints = new Vector2f[3];
+				texturePoints[0] = mesh.textureVertices
+						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(0));
+				texturePoints[1] = mesh.textureVertices
+						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(1));
+				texturePoints[2] = mesh.textureVertices
+						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(2));
+				drawTexture(graphicsContext, arrX, arrY, arrZ, texturePoints, mesh.image);
 			}
 
-			if (RasterizationParams.drawLine) {
+			if (RasterizationParams.getDrawLine()) {
 				drawLines(graphicsContext, nVerticesInPolygon, resultPoints, RasterizationParams.zBuffer);
 			}
 
