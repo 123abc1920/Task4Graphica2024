@@ -2,8 +2,6 @@ package com.cgvsu.model;
 
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.math.Vector3f;
-import com.cgvsu.normals.FindNormals;
-import com.cgvsu.triangulation.Triangulation;
 
 import javafx.scene.image.Image;
 
