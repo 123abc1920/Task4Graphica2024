@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import com.cgvsu.math.Matrix4f;
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.model.Model;
+import com.cgvsu.rasterization.Line;
 import com.cgvsu.rasterization.RasterizationParams;
 import com.cgvsu.rasterization.TextureRasterization;
 import com.cgvsu.rasterization.TriangleRasterization;
@@ -88,19 +89,19 @@ public class RenderEngine {
 
 	private static void drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
 			Vector3f[] normals, Vector3f cameraPos, boolean isLight) {
-		TriangleRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors, normals,
-				RasterizationParams.zBuffer, cameraPos, isLight);
+		//TriangleRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors, normals,
+				//RasterizationParams.zBuffer, cameraPos, isLight);
 	}
 
 	private static void drawLines(GraphicsContext graphicsContext, int nVerticesInPolygon,
 			List<Vector3f> resultPoints) {
 		for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-			graphicsContext.strokeLine(resultPoints.get(vertexInPolygonInd - 1).getX(),
+			Line.drawLine(graphicsContext, resultPoints.get(vertexInPolygonInd - 1).getX(),
 					resultPoints.get(vertexInPolygonInd - 1).getY(), resultPoints.get(vertexInPolygonInd).getX(),
 					resultPoints.get(vertexInPolygonInd).getY());
 		}
 
-		graphicsContext.strokeLine(resultPoints.get(nVerticesInPolygon - 1).getX(),
+		Line.drawLine(graphicsContext, resultPoints.get(nVerticesInPolygon - 1).getX(),
 				resultPoints.get(nVerticesInPolygon - 1).getY(), resultPoints.get(0).getX(),
 				resultPoints.get(0).getY());
 	}
