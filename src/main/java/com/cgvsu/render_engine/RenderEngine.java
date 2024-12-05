@@ -57,10 +57,6 @@ public class RenderEngine {
 				normals[vertexInPolygonInd] = mesh.normals
 						.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 			}
-			
-			if (RasterizationParams.drawLine) {
-				drawLines(graphicsContext, nVerticesInPolygon, resultPoints, RasterizationParams.zBuffer);
-			}
 
 			if (!RasterizationParams.drawTexture) {
 				drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition(),
@@ -76,6 +72,9 @@ public class RenderEngine {
 				drawTexture(graphicsContext, arrX, arrY, arrZ, texturePoints, mesh.image);
 			}
 
+			if (RasterizationParams.drawLine) {
+				drawLines(graphicsContext, nVerticesInPolygon, resultPoints, RasterizationParams.zBuffer);
+			}
 		}
 	}
 

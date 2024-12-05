@@ -1,5 +1,6 @@
 package com.cgvsu.rasterization;
 
+import com.cgvsu.math.Global;
 import com.cgvsu.zbuffer.ZBuffer;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -31,9 +32,9 @@ public class Line {
 			deltaerr = (deltay + 1);
 
 			for (int x = x0; x != x1; x += dirx) {
-				double z = findZ(x, x00, x11, z00, z11);
+				double z = findZ(x, x00, x11, z00, z11) - Global.eps;
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
-					if (z < zBuffer.get(x, y)) {
+					if (z <= zBuffer.get(x, y)) {
 						pw.setColor(x, y, Color.DARKSLATEBLUE);
 						zBuffer.set(x, y, z);
 					}
@@ -50,9 +51,9 @@ public class Line {
 			deltaerr = (deltax + 1);
 
 			for (int y = y0; y != y1; y += diry) {
-				double z = findZ(x, x00, x11, z00, z11);
+				double z = findZ(x, x00, x11, z00, z11) - Global.eps;
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
-					if (z < zBuffer.get(x, y)) {
+					if (z <= zBuffer.get(x, y)) {
 						pw.setColor(x, y, Color.DARKSLATEBLUE);
 						zBuffer.set(x, y, z);
 					}
