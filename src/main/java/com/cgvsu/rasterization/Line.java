@@ -1,6 +1,6 @@
 package com.cgvsu.rasterization;
 
-import com.cgvsu.math.Global;
+import com.cgvsu.zbuffer.ZBuffer;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;
@@ -8,7 +8,8 @@ import javafx.scene.paint.Color;
 
 public class Line {
 
-	public static void drawLine(GraphicsContext gc, double x00, double y00, double x11, double y11) {
+	public static void drawLine(GraphicsContext gc, double x00, double y00, double x11, double y11, double z00,
+			double z11, ZBuffer zBuffer) {
 		PixelWriter pw = gc.getPixelWriter();
 
 		int x0 = (int) Math.round(x00);
@@ -21,7 +22,7 @@ public class Line {
 
 		int error = 0;
 		int deltaerr;
-		
+
 		int dirx = (x0 < x1) ? 1 : -1;
 		int diry = (y0 < y1) ? 1 : -1;
 
@@ -30,7 +31,13 @@ public class Line {
 			deltaerr = (deltay + 1);
 
 			for (int x = x0; x != x1; x += dirx) {
-				pw.setColor(x, y, Color.DARKSLATEBLUE);
+				double z = findZ(x, x00, x11, z00, z11);
+				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
+					if (z < zBuffer.get(x, y)) {
+						pw.setColor(x, y, Color.DARKSLATEBLUE);
+						zBuffer.set(x, y, z);
+					}
+				}
 				error += deltaerr;
 
 				if (error >= (deltax + 1)) {
@@ -43,7 +50,13 @@ public class Line {
 			deltaerr = (deltax + 1);
 
 			for (int y = y0; y != y1; y += diry) {
-				pw.setColor(x, y, Color.DARKSLATEBLUE);
+				double z = findZ(x, x00, x11, z00, z11);
+				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
+					if (z < zBuffer.get(x, y)) {
+						pw.setColor(x, y, Color.DARKSLATEBLUE);
+						zBuffer.set(x, y, z);
+					}
+				}
 				error += deltaerr;
 
 				if (error >= (deltay + 1)) {
@@ -52,5 +65,9 @@ public class Line {
 				}
 			}
 		}
+	}
+
+	private static double findZ(double x, double x0, double x1, double z0, double z1) {
+		return (x - x0) * (z1 - z0) / (x1 - x0) + z0;
 	}
 }

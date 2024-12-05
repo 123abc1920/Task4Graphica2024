@@ -57,6 +57,10 @@ public class RenderEngine {
 				normals[vertexInPolygonInd] = mesh.normals
 						.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 			}
+			
+			if (RasterizationParams.drawLine) {
+				drawLines(graphicsContext, nVerticesInPolygon, resultPoints, RasterizationParams.zBuffer);
+			}
 
 			if (!RasterizationParams.drawTexture) {
 				drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition(),
@@ -72,10 +76,6 @@ public class RenderEngine {
 				drawTexture(graphicsContext, arrX, arrY, arrZ, texturePoints, mesh.image);
 			}
 
-			if (RasterizationParams.drawLine) {
-				drawLines(graphicsContext, nVerticesInPolygon, resultPoints);
-			}
-
 		}
 	}
 
@@ -89,20 +89,21 @@ public class RenderEngine {
 
 	private static void drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
 			Vector3f[] normals, Vector3f cameraPos, boolean isLight) {
-		//TriangleRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors, normals,
-				//RasterizationParams.zBuffer, cameraPos, isLight);
+		TriangleRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors, normals,
+				RasterizationParams.zBuffer, cameraPos, isLight);
 	}
 
-	private static void drawLines(GraphicsContext graphicsContext, int nVerticesInPolygon,
-			List<Vector3f> resultPoints) {
+	private static void drawLines(GraphicsContext graphicsContext, int nVerticesInPolygon, List<Vector3f> resultPoints,
+			ZBuffer zbuffer) {
 		for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
 			Line.drawLine(graphicsContext, resultPoints.get(vertexInPolygonInd - 1).getX(),
 					resultPoints.get(vertexInPolygonInd - 1).getY(), resultPoints.get(vertexInPolygonInd).getX(),
-					resultPoints.get(vertexInPolygonInd).getY());
+					resultPoints.get(vertexInPolygonInd).getY(), resultPoints.get(vertexInPolygonInd - 1).getZ(),
+					resultPoints.get(vertexInPolygonInd).getZ(), zbuffer);
 		}
 
 		Line.drawLine(graphicsContext, resultPoints.get(nVerticesInPolygon - 1).getX(),
-				resultPoints.get(nVerticesInPolygon - 1).getY(), resultPoints.get(0).getX(),
-				resultPoints.get(0).getY());
+				resultPoints.get(nVerticesInPolygon - 1).getY(), resultPoints.get(0).getX(), resultPoints.get(0).getY(),
+				resultPoints.get(nVerticesInPolygon - 1).getZ(), resultPoints.get(0).getZ(), zbuffer);
 	}
 }
