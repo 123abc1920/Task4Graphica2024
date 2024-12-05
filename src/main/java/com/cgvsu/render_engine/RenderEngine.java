@@ -75,12 +75,12 @@ public class RenderEngine {
 			if (RasterizationParams.drawLine) {
 				drawLines(graphicsContext, nVerticesInPolygon, resultPoints, RasterizationParams.zBuffer);
 			}
+
 		}
 	}
 
 	private static void drawTexture(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
 			Vector2f[] texturePoints, Image image) {
-
 		TextureRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, texturePoints, RasterizationParams.zBuffer,
 				image);
 
