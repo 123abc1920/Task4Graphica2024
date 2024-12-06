@@ -1,10 +1,6 @@
 package com.cgvsu.math;
 
-import com.cgvsu.math.Vector3f;
-import com.cgvsu.math.Vector4f;
-
 public class Matrix4f {
-    private static final double esp = 1e-4f;
     private double[][] matrix;
 
     public Matrix4f() {

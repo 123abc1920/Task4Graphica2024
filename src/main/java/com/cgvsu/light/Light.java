@@ -7,29 +7,20 @@ import javafx.scene.paint.Color;
 public class Light {
 	public static Vector3f position = new Vector3f(0, 0, 100);
 	public static Vector3f target = new Vector3f(0, 0, 0);
-	public static Vector3f ray;
+	public static Vector3f ray = target.sub(position).normalize();
 
 	private static double k = 0.3;
 	private static double ks = 0.4;
 	private static double highLightShine = 31;
 
-	static {
-		newRay();
-	}
-
-	private static void newRay() {
-		ray = target.sub(position);
-		ray = ray.normalize();
-	}
-
 	public static void setPosition(Vector3f v) {
 		Light.position = v;
-		newRay();
+		ray = target.sub(position).normalize();
 	}
 
 	public static void setTarget(Vector3f v) {
-		Light.position = v;
-		newRay();
+		Light.target = v;
+		ray = target.sub(position).normalize();
 	}
 
 	public static void setK(double k) {

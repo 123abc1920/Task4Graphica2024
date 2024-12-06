@@ -1,7 +1,6 @@
 package com.cgvsu.math;
 
 public class Matrix3f {
-	private static final double esp = 1e-4f;
 	private double[][] matrix;
 
 	public Matrix3f() {

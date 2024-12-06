@@ -45,6 +45,13 @@ public class RenderEngine {
 				resultPoints.add(resultPoint);
 			}
 
+			for (int i = 0; i < resultPoints.size(); i++) {
+				if (resultPoints.get(i).getX() < 0 || resultPoints.get(i).getY() < 0
+						|| resultPoints.get(i).getZ() < 0) {
+					return;
+				}
+			}
+
 			Vector3f[] normals = new Vector3f[3];
 
 			double[] arrX = new double[3];

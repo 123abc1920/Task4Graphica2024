@@ -10,7 +10,7 @@ public class RasterizationParams {
 	public static Color[] colors = { Color.CRIMSON, Color.CRIMSON, Color.CRIMSON };
 	public static ZBuffer zBuffer;
 
-	private static boolean drawLine = true;
+	private static boolean drawLine = false;
 	private static boolean drawTexture = true;
 	private static boolean isLight = true;
 

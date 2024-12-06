@@ -1,7 +1,7 @@
 package com.cgvsu.render_engine;
 
+import com.cgvsu.math.Global;
 import com.cgvsu.math.Matrix4f;
-import com.cgvsu.math.Vector2f;
 import com.cgvsu.math.Vector3f;
 
 public class GraphicConveyor {
@@ -24,9 +24,15 @@ public class GraphicConveyor {
 		resultX = up.vectorMultiply(resultZ);
 		resultY = resultZ.vectorMultiply(resultX);
 
-		resultX = resultX.normalize();
-		resultY = resultY.normalize();
-		resultZ = resultZ.normalize();
+		if (resultX.getLength() > Global.eps) {
+			resultX = resultX.normalize();
+		}
+		if (resultY.getLength() > Global.eps) {
+			resultY = resultY.normalize();
+		}
+		if (resultZ.getLength() > Global.eps) {
+			resultZ = resultZ.normalize();
+		}
 
 		double[][] matrixTranslation = new double[][] { { 1, 0, 0, -resultX.dotProduct(eye) },
 				{ 0, 1, 0, -resultY.dotProduct(eye) }, { 0, 0, 1, -resultZ.dotProduct(eye) }, { 0, 0, 0, 1 } };

@@ -32,4 +32,8 @@ public class ZBuffer {
 	public double get(int row, int col) {
 		return matrix[row][col];
 	}
+
+	public boolean inZBuffer(int x, int y) {
+		return (x >= 0 && x < this.getWidth() && y >= 0 && y < this.getHeight()) ? true : false;
+	}
 }

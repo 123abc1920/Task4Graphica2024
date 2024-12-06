@@ -5,7 +5,6 @@ import com.cgvsu.zbuffer.ZBuffer;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;
-import javafx.scene.paint.Color;
 
 public class Line {
 
@@ -59,7 +58,7 @@ public class Line {
 	private static void putPxl(int x, int y, double x00, double x11, double z00, double z11, ZBuffer zBuffer,
 			PixelWriter pw) {
 		double z = findZ(x, x00, x11, z00, z11);
-		if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
+		if (RasterizationParams.zBuffer.inZBuffer(x, y)) {
 			if (z - zBuffer.get(x, y) <= 500 * Global.eps) {
 				pw.setColor(x, y, RasterizationParams.getLineColor());
 				zBuffer.set(x, y, z);

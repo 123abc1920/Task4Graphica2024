@@ -3,7 +3,6 @@ package com.cgvsu.rasterization;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 
-import com.cgvsu.math.Matrix3f;
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.zbuffer.ZBuffer;
 
@@ -116,12 +115,5 @@ public class TextureRasterization {
 		y[j] = tempY;
 		z[j] = tempZ;
 		texturePoints[j] = tempV;
-	}
-
-	private static double[] microSwap(double a, double b) {
-		double tempA = a;
-		a = b;
-		b = tempA;
-		return new double[] { b, a };
 	}
 }
