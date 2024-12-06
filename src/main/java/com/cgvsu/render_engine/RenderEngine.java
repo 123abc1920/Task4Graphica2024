@@ -94,6 +94,7 @@ public class RenderEngine {
 
 	private static void drawLines(GraphicsContext graphicsContext, int nVerticesInPolygon, List<Vector3f> resultPoints,
 			ZBuffer zbuffer) {
+
 		for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
 			Line.drawLine(graphicsContext, resultPoints.get(vertexInPolygonInd - 1).getX(),
 					resultPoints.get(vertexInPolygonInd - 1).getY(), resultPoints.get(vertexInPolygonInd).getX(),

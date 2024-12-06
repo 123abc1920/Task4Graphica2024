@@ -10,9 +10,19 @@ public class RasterizationParams {
 	public static Color[] colors = { Color.CRIMSON, Color.CRIMSON, Color.CRIMSON };
 	public static ZBuffer zBuffer;
 
-	private static boolean drawLine = false;
+	private static boolean drawLine = true;
 	private static boolean drawTexture = true;
 	private static boolean isLight = true;
+
+	private static Color lineColor = Color.DARKSLATEBLUE;
+	
+	public static Color getLineColor() {
+		return lineColor;
+	}
+	
+	public static void setLineColor(Color lineColor) {
+		RasterizationParams.lineColor = lineColor;
+	}
 
 	public static void setColor(Color color) {
 		colors[0] = colors[1] = colors[2] = color;

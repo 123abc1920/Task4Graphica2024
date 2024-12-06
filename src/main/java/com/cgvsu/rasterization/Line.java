@@ -32,13 +32,7 @@ public class Line {
 			deltaerr = (deltay + 1);
 
 			for (int x = x0; x != x1; x += dirx) {
-				double z = findZ(x, x00, x11, z00, z11);
-				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
-					if (z - zBuffer.get(x, y) <= 500 * Global.eps) {
-						pw.setColor(x, y, Color.DARKSLATEBLUE);
-						zBuffer.set(x, y, z);
-					}
-				}
+				putPxl(x, y, x00, x11, z00, z11, zBuffer, pw);
 				error += deltaerr;
 
 				if (error >= (deltax + 1)) {
@@ -51,19 +45,24 @@ public class Line {
 			deltaerr = (deltax + 1);
 
 			for (int y = y0; y != y1; y += diry) {
-				double z = findZ(x, x00, x11, z00, z11);
-				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
-					if (z - zBuffer.get(x, y) <= 500 * Global.eps) {
-						pw.setColor(x, y, Color.DARKSLATEBLUE);
-						zBuffer.set(x, y, z);
-					}
-				}
+				putPxl(x, y, x00, x11, z00, z11, zBuffer, pw);
 				error += deltaerr;
 
 				if (error >= (deltay + 1)) {
 					x += dirx;
 					error -= (deltay + 1);
 				}
+			}
+		}
+	}
+
+	private static void putPxl(int x, int y, double x00, double x11, double z00, double z11, ZBuffer zBuffer,
+			PixelWriter pw) {
+		double z = findZ(x, x00, x11, z00, z11);
+		if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
+			if (z - zBuffer.get(x, y) <= 500 * Global.eps) {
+				pw.setColor(x, y, RasterizationParams.getLineColor());
+				zBuffer.set(x, y, z);
 			}
 		}
 	}
