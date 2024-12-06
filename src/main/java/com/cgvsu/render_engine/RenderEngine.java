@@ -46,10 +46,9 @@ public class RenderEngine {
 			}
 
 			for (int i = 0; i < resultPoints.size(); i++) {
-				if (resultPoints.get(i).getX() < 0 || resultPoints.get(i).getY() < 0
-						|| resultPoints.get(i).getZ() < 0) {
-					return;
-				}
+				resultPoints.get(i).setX(Math.max(0, resultPoints.get(i).getX()));
+				resultPoints.get(i).setY(Math.max(0, resultPoints.get(i).getY()));
+				resultPoints.get(i).setZ(Math.max(0, resultPoints.get(i).getZ()));
 			}
 
 			Vector3f[] normals = new Vector3f[3];

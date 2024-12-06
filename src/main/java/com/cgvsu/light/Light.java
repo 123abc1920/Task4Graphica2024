@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 public class Light {
 	public static Vector3f position = new Vector3f(0, 0, 100);
 	public static Vector3f target = new Vector3f(0, 0, 0);
-	public static Vector3f ray = target.sub(position).normalize();
+	private static Vector3f ray = target.sub(position).normalize();
 
 	private static double k = 0.3;
 	private static double ks = 0.4;
