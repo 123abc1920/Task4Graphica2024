@@ -7,6 +7,7 @@ import com.cgvsu.math.Vector3f;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import com.cgvsu.camera.Camera;
 import com.cgvsu.math.Matrix4f;
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.model.Model;
@@ -64,8 +65,10 @@ public class RenderEngine {
 						.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 			}
 
+			boolean drawnPolygon = false;
+
 			if (!RasterizationParams.getDrawTexture(mesh)) {
-				drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition(),
+				drawnPolygon = drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition(),
 						RasterizationParams.getIsLight());
 			} else {
 				Vector2f[] texturePoints = new Vector2f[3];
@@ -75,27 +78,29 @@ public class RenderEngine {
 						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(1));
 				texturePoints[2] = mesh.textureVertices
 						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(2));
-				drawTexture(graphicsContext, arrX, arrY, arrZ, texturePoints, mesh.image);
+				drawnPolygon = drawTexture(graphicsContext, arrX, arrY, arrZ, texturePoints, mesh.image);
 			}
 
 			if (RasterizationParams.getDrawLine()) {
-				drawLines(graphicsContext, nVerticesInPolygon, resultPoints, RasterizationParams.zBuffer);
+				if (drawnPolygon) {
+					drawLines(graphicsContext, nVerticesInPolygon, resultPoints, RasterizationParams.zBuffer);
+				}
 			}
 
 		}
 	}
 
-	private static void drawTexture(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
+	private static boolean drawTexture(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
 			Vector2f[] texturePoints, Image image) {
-		TextureRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, texturePoints, RasterizationParams.zBuffer,
-				image);
+		return TextureRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, texturePoints,
+				RasterizationParams.zBuffer, image);
 
 	}
 
-	private static void drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
+	private static boolean drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
 			Vector3f[] normals, Vector3f cameraPos, boolean isLight) {
-		TriangleRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors, normals,
-				RasterizationParams.zBuffer, cameraPos, isLight);
+		return TriangleRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors,
+				normals, RasterizationParams.zBuffer, cameraPos, isLight);
 	}
 
 	private static void drawLines(GraphicsContext graphicsContext, int nVerticesInPolygon, List<Vector3f> resultPoints,

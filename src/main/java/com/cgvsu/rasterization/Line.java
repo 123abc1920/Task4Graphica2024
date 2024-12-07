@@ -57,9 +57,9 @@ public class Line {
 
 	private static void putPxl(int x, int y, double x00, double x11, double z00, double z11, ZBuffer zBuffer,
 			PixelWriter pw) {
-		double z = findZ(x, x00, x11, z00, z11);
+		double z = findZ(x, x00, x11, z00, z11) - 200 * Global.eps;
 		if (RasterizationParams.zBuffer.inZBuffer(x, y)) {
-			if (z - zBuffer.get(x, y) <= 500 * Global.eps) {
+			if (z - zBuffer.get(x, y) <= Global.eps) {
 				pw.setColor(x, y, RasterizationParams.getLineColor());
 				zBuffer.set(x, y, z);
 			}

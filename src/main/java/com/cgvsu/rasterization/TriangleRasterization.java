@@ -9,13 +9,17 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
 public class TriangleRasterization {
-	public static void fillTriangle(final GraphicsContext graphicsContext, final double[] arrX, final double[] arrY,
+	public static boolean fillTriangle(final GraphicsContext graphicsContext, final double[] arrX, final double[] arrY,
 			final double[] arrZ, final Color[] colors, Vector3f[] normals, ZBuffer zBuffer, Vector3f cameraPos,
 			boolean isLight) {
 
 		final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
 
 		sort(arrX, arrY, arrZ, normals);
+
+		if ((arrX[0] * (arrY[1] - arrY[2]) + arrX[1] * (arrY[2] - arrY[0]) + arrX[2] * (arrY[0] - arrY[1])) == 0) {
+			return false;
+		}
 
 		if (arrX.length < 3 || arrY.length < 3 || arrZ.length < 3 || colors.length < 3) {
 			throw new IllegalArgumentException("Массивы должны содержать как минимум 3 элемента.");
@@ -40,6 +44,8 @@ public class TriangleRasterization {
 				putPxl(x, y, arrX, arrY, arrZ, colors[0], normals, cameraPos, pixelWriter);
 			}
 		}
+
+		return true;
 	}
 
 	private static void putPxl(int x, int y, double[] arrX, double[] arrY, double[] arrZ, Color c, Vector3f[] normals,

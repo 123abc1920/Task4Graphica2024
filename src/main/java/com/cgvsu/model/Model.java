@@ -18,6 +18,19 @@ public class Model {
 	public ArrayList<Polygon> polygons = new ArrayList<Polygon>();
 
 	public Image image = null;
+	private String imageSource = "";
+
+	public String getTextureSource() {
+		if (image == null) {
+			return "";
+		}
+		return this.imageSource;
+	}
+
+	public void deleteTexture() {
+		this.image = null;
+		this.imageSource = "";
+	}
 
 	public void setTexture(String s) {
 		// C:\\Users\\annam\\OneDrive\\Рабочий стол\\textures\\fox\\animalia_fox_1.png
@@ -27,6 +40,7 @@ public class Model {
 		if (s == null || s.equals("")) {
 			return;
 		}
+		imageSource = s;
 		InputStream stream = null;
 		try {
 			stream = new FileInputStream(s);

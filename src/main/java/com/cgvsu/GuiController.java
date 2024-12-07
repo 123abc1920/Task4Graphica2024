@@ -13,34 +13,23 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.input.SwipeEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
-import javafx.scene.image.Image;
 
-import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
-import com.cgvsu.math.Vector2f;
+import com.cgvsu.camera.Camera;
+import com.cgvsu.camera.CameraManager;
 import com.cgvsu.math.Vector3f;
 
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
-import com.cgvsu.render_engine.Camera;
-import com.cgvsu.model.Polygon;
 import com.cgvsu.normals.FindNormals;
 
 public class GuiController {
@@ -81,7 +70,7 @@ public class GuiController {
 
 	private Model mesh = null;
 
-	private Camera camera = new Camera(new Vector3f(0, 00, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100);
+	private Camera camera = CameraManager.getActive();
 
 	private Timeline timeline;
 
@@ -115,11 +104,15 @@ public class GuiController {
 			double width = canvas.getWidth();
 			double height = canvas.getHeight();
 
+			camera = CameraManager.getActive();
+			System.out.println(camera.toString());
+
 			canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
 			camera.setAspectRatio((float) (width / height));
 
 			if (mesh != null) {
-				RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+				RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
+						(int) height);
 //				VBoxMain.setVisible(true);
 			}
 		});
