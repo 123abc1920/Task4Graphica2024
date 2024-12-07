@@ -8,18 +8,18 @@ import javafx.scene.paint.Color;
 public class RasterizationParams {
 
 	public static Color[] colors = { Color.CRIMSON, Color.CRIMSON, Color.CRIMSON };
-	public static ZBuffer zBuffer;
+	public static ZBuffer zBuffer = new ZBuffer(800, 450);
 
 	private static boolean drawLine = false;
 	private static boolean drawTexture = true;
 	private static boolean isLight = true;
 
 	private static Color lineColor = Color.DARKSLATEBLUE;
-	
+
 	public static Color getLineColor() {
 		return lineColor;
 	}
-	
+
 	public static void setLineColor(Color lineColor) {
 		RasterizationParams.lineColor = lineColor;
 	}

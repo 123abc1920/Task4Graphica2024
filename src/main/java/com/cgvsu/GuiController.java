@@ -105,7 +105,6 @@ public class GuiController {
 			double height = canvas.getHeight();
 
 			camera = CameraManager.getActive();
-			System.out.println(camera.toString());
 
 			canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
 			camera.setAspectRatio((float) (width / height));

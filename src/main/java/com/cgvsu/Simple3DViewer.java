@@ -11,24 +11,23 @@ import java.util.Objects;
 
 public class Simple3DViewer extends Application {
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        AnchorPane viewport = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("fxml/gui.fxml")));
+	@Override
+	public void start(Stage stage) throws IOException {
+		AnchorPane viewport = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("fxml/gui.fxml")));
 
-        Scene scene = new Scene(viewport);
-        stage.setWidth(800);
-        stage.setMinWidth(800);
-        stage.setHeight(450);
-        stage.setMinHeight(450);
-        viewport.prefWidthProperty().bind(scene.widthProperty());
-        viewport.prefHeightProperty().bind(scene.heightProperty());
+		Scene scene = new Scene(viewport);
+		stage.setWidth(800);
+		stage.setMinWidth(800);
+		stage.setHeight(450);
+		stage.setMinHeight(450);
+		viewport.prefWidthProperty().bind(scene.widthProperty());
+		viewport.prefHeightProperty().bind(scene.heightProperty());
+		stage.setTitle("Simple3DViewer");
+		stage.setScene(scene);
+		stage.show();
+	}
 
-        stage.setTitle("Simple3DViewer");
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch();
-    }
+	public static void main(String[] args) {
+		launch();
+	}
 }
