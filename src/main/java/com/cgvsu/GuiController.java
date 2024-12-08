@@ -11,12 +11,14 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -76,6 +78,12 @@ public class GuiController {
 
 	@FXML
 	private CheckBox checkBoxTexture;
+
+	@FXML
+	private ColorPicker colorPickerModel;
+
+	@FXML
+	private ColorPicker colorPickerLines;
 
 	private boolean isInLightMode = true;
 
@@ -143,9 +151,21 @@ public class GuiController {
 		textFieldTarZ.setText(Double.toString(camera.getTarget().getZ()));
 		checkBoxLight.setSelected(true);
 		checkBoxTexture.setSelected(true);
+		colorPickerLines.setValue(RasterizationParams.getLineColor());
+		colorPickerModel.setValue(Color.CRIMSON);
 	}
 
-	//todo: добавить цвета линий и модели: зеленый, синий, красный
+	@FXML
+	private void handleColorPickerLinesOnAction() {
+		Color newLinesColor = colorPickerLines.getValue();
+		RasterizationParams.setLineColor(newLinesColor);
+	}
+
+	@FXML
+	private void handleColorPickerModelOnAction() {
+		Color newModelColor = colorPickerModel.getValue();
+		RasterizationParams.setColor(newModelColor);
+	}
 
 	@FXML
 	private void handleCheckBoxLinesOnAction() {

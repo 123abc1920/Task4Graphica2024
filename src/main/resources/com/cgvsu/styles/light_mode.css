@@ -4,18 +4,15 @@
 @font-face {
     src: url("resources/fonts/DaysOne.ttf");
 }
-Label {
-    -fx-padding: 5px 5px 5px 5px;
-}
-TextField {
+Label, TextField {
     -fx-padding: 5px;
 }
-TextField:hover {
+/* TextField:hover {
     -fx-border-color: rgb(153, 204, 238);
     -fx-border-radius: 2px;
     -fx-padding: 4px; 
     -fx-border-width: 1px;
-}
+} */
 VBox {
     -fx-background-color: rgb(215, 215, 215);
 }
@@ -49,17 +46,26 @@ MenuBar {
     -fx-background-radius: 10px 0 0 10px;
     /* -fx-padding: 1px; */
 }
-.vBoxFirst {
+.vBoxFirst, .vBoxSecond, .vBoxThird {
     -fx-background-radius: 10px 0 0 10px;
     -fx-padding: 5px;
     /* -fx-border-color: black; */
     -fx-border-radius: 10px;
 }
-.stakePaneFirst {
+.stakePaneFirst, .stakePaneSecond, .stakePaneThird {
     -fx-background-radius: 10px;
     -fx-background-color: rgb(190, 190, 190);
     -fx-padding: 3px 0 3px 0;
     -fx-font-family: "DaysOne";
     -fx-font-size: 16px;
     -fx-font-weight: bold;
+}
+CheckBox {
+    -fx-padding: 5px 5px 5px 0;
+}
+.hBoxLines {
+    -fx-padding: 5px 0 5px 0;
+}
+.labelTar, .labelPos {
+    -fx-padding: 5px 5px 0 5px;
 }

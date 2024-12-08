@@ -7,19 +7,21 @@
 AnchorPane {
     -fx-background-color: rgb(170,170,170);
 }
-Label {
-    -fx-padding: 5px 5px 5px 5px;
-}
-TextField {
+Label, TextField {
     -fx-padding: 5px;
+}
+TextField, ColorPicker Label {
     -fx-text-fill: black;
 }
-TextField:hover {
+TextField {
+    -fx-background-color: rgb(228,228,228);
+}
+/* TextField:hover {
     -fx-border-color: rgb(153, 204, 238);
     -fx-border-radius: 2px;
     -fx-padding: 4px;
     -fx-border-width: 1px;
-}
+} */
 VBox {
     -fx-background-color: rgb(140,140,140);
 }
@@ -56,17 +58,26 @@ MenuBar {
     -fx-background-radius: 10px 0 0 10px;
         /* -fx-padding: 1px; */
 }
-.vBoxFirst {
+.vBoxFirst, .vBoxSecond, .vBoxThird {
     -fx-background-radius: 10px 0 0 10px;
     -fx-padding: 5px;
     /* -fx-border-color: black; */
     -fx-border-radius: 10px;
 }
-.stakePaneFirst {
+.stakePaneFirst, .stakePaneSecond, .stakePaneThird {
     -fx-background-radius: 10px;
     -fx-background-color: rgb(100, 100, 100);
     -fx-padding: 3px 0 3px 0;
     -fx-font-family: "DaysOne";
     -fx-font-size: 16px;
     -fx-font-weight: bold;
+}
+CheckBox {
+    -fx-padding: 5px 5px 5px 0;
+}
+.hBoxLines {
+    -fx-padding: 5px 0 5px 0;
+}
+.labelTar, .labelPos {
+    -fx-padding: 5px 5px 0 5px;
 }

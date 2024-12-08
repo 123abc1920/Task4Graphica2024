@@ -58,16 +58,16 @@
     </MenuBar>
 
     <Canvas fx:id="canvas" height="870" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" onScroll="#handleMouseScroll" width="1400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
-   <VBox fx:id="vBoxMain" alignment="TOP_CENTER" maxWidth="300.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#handleMouseClickedVBoxMain" styleClass="vBoxMain" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+   <VBox fx:id="vBoxMain" alignment="TOP_CENTER" maxWidth="300.0" minWidth="200.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#handleMouseClickedVBoxMain" prefWidth="250.0" styleClass="vBoxMain" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-         <VBox fx:id="VBoxCamera" alignment="CENTER" styleClass="vBoxFirst">
+         <VBox fx:id="VBoxCamera" alignment="CENTER" maxHeight="1.7976931348623157E308" styleClass="vBoxFirst">
             <children>
                <StackPane styleClass="stakePaneFirst">
                   <children>
                      <Label alignment="CENTER" contentDisplay="CENTER" text="Камера" textAlignment="CENTER" />
                   </children>
                </StackPane>
-               <Label maxWidth="1.7976931348623157E308" text="Position" textAlignment="JUSTIFY" />
+               <Label maxWidth="1.7976931348623157E308" styleClass="labelPos" text="Position" textAlignment="JUSTIFY" />
                <HBox alignment="CENTER_LEFT">
                   <children>
                      <Label text="x">
@@ -96,7 +96,7 @@
                         </HBox.margin></TextField>
                   </children>
                </HBox>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Target">
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelTar" text="Target">
                   <VBox.margin>
                      <Insets />
                   </VBox.margin></Label>
@@ -133,51 +133,55 @@
                <Insets />
             </opaqueInsets>
          </VBox>
-         <VBox alignment="TOP_CENTER">
+         <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" styleClass="vBoxSecond">
             <children>
-               <StackPane alignment="TOP_CENTER">
+               <StackPane alignment="TOP_CENTER" styleClass="stakePaneSecond">
                   <children>
                      <Label text="Растеризация" />
                   </children>
                </StackPane>
-               <HBox>
+               <HBox maxWidth="1.7976931348623157E308" styleClass="hBoxLines">
                   <children>
-                     <SplitMenuButton mnemonicParsing="false" text="Цвет модели">
-                       <items>
-                         <MenuItem mnemonicParsing="false" text="Action 1" />
-                         <MenuItem mnemonicParsing="false" text="Action 2" />
-                       </items>
-                     </SplitMenuButton>
+                     <Label text="Цвет линий" />
+                     <ColorPicker fx:id="colorPickerLines" focusTraversable="false" onAction="#handleColorPickerLinesOnAction" styleClass="picker">
+                        <HBox.margin>
+                           <Insets />
+                        </HBox.margin></ColorPicker>
                   </children>
                </HBox>
-               <HBox>
+               <HBox maxWidth="1.7976931348623157E308">
                   <children>
-                     <SplitMenuButton mnemonicParsing="false" text="Цвет линий">
-                       <items>
-                         <MenuItem mnemonicParsing="false" text="Action 1" />
-                         <MenuItem mnemonicParsing="false" text="Action 2" />
-                       </items>
-                     </SplitMenuButton>
+                     <Label text="Цвет модели" />
+                     <ColorPicker fx:id="colorPickerModel" focusTraversable="false" onAction="#handleColorPickerModelOnAction" styleClass="picker" />
                   </children>
                </HBox>
-               <HBox>
+               <HBox maxWidth="1.7976931348623157E308">
                   <children>
                      <Label text="Линии" />
                      <CheckBox fx:id="checkBoxLines" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxLinesOnAction" />
+                     <HBox>
+                        <children>
+                           <Label text="Освещение" />
+                           <CheckBox fx:id="checkBoxLight" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxLightOnAction" />
+                        </children>
+                     </HBox>
+                     <HBox>
+                        <children>
+                           <Label text="Текстура" />
+                           <CheckBox fx:id="checkBoxTexture" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxTextureOnAction" />
+                        </children>
+                     </HBox>
                   </children>
                </HBox>
-               <HBox>
+            </children>
+         </VBox>
+         <VBox styleClass="vBoxThird">
+            <children>
+               <StackPane styleClass="stakePaneThird">
                   <children>
                      <Label text="Освещение" />
-                     <CheckBox fx:id="checkBoxLight" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxLightOnAction" />
                   </children>
-               </HBox>
-               <HBox>
-                  <children>
-                     <Label text="Текстура" />
-                     <CheckBox fx:id="checkBoxTexture" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxTextureOnAction" />
-                  </children>
-               </HBox>
+               </StackPane>
             </children>
          </VBox>
       </children></VBox>
