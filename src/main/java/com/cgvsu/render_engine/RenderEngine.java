@@ -11,6 +11,7 @@ import com.cgvsu.camera.Camera;
 import com.cgvsu.math.Matrix4f;
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.model.Model;
+import com.cgvsu.normals.FindNormals;
 import com.cgvsu.rasterization.Line;
 import com.cgvsu.rasterization.RasterizationParams;
 import com.cgvsu.rasterization.TextureRasterization;
@@ -67,9 +68,14 @@ public class RenderEngine {
 
 			boolean drawnPolygon = false;
 
+			Vector3f polyNormal = FindNormals.findPolygonsNormals(
+					mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(0)),
+					mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(1)),
+					mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(2)));
+
 			if (!RasterizationParams.getDrawTexture(mesh)) {
 				drawnPolygon = drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition(),
-						RasterizationParams.getIsLight());
+						polyNormal, RasterizationParams.getIsLight());
 			} else {
 				Vector2f[] texturePoints = new Vector2f[3];
 				texturePoints[0] = mesh.textureVertices
@@ -98,9 +104,9 @@ public class RenderEngine {
 	}
 
 	private static boolean drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
-			Vector3f[] normals, Vector3f cameraPos, boolean isLight) {
+			Vector3f[] normals, Vector3f cameraPos, Vector3f polyNormal, boolean isLight) {
 		return TriangleRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors,
-				normals, RasterizationParams.zBuffer, cameraPos, isLight);
+				normals, polyNormal, RasterizationParams.zBuffer, cameraPos, isLight);
 	}
 
 	private static void drawLines(GraphicsContext graphicsContext, int nVerticesInPolygon, List<Vector3f> resultPoints,

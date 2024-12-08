@@ -1,5 +1,6 @@
 package com.cgvsu.light;
 
+import com.cgvsu.math.Global;
 import com.cgvsu.math.Vector3f;
 
 import javafx.scene.paint.Color;
@@ -35,8 +36,12 @@ public class Light {
 		Light.highLightShine = highLightShine;
 	}
 
-	public static Color newRgb(Color start, Vector3f n, Vector3f cameraPos) {
+	public static Color newRgb(Color start, Vector3f n, Vector3f cameraPos, Vector3f polyNormal) {
 		double l = ray.dotProduct(n.multiplyScalar(-1));
+
+		if (ray.dotProduct(polyNormal.multiplyScalar(-1)) == 0) {
+			l = 0.3;
+		}
 
 		if (l < 0) {
 			l = 0;

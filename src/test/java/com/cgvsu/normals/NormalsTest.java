@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
+import com.cgvsu.triangulation.Triangulation;
 
 class NormalsTest {
 	private static Model m = ObjReader.read("# Blender 4.0.1\r\n" + "# www.blender.org\r\n" + "o Cube\r\n"
@@ -31,7 +32,11 @@ class NormalsTest {
 
 	@BeforeAll
 	static void init() {
+		Triangulation.triangulateModel(m);
 		m.normals = FindNormals.findNormals(m);
+		/*
+		 * for (Vector3f v : m.normals) { System.out.println(v.toString()); }
+		 */
 	}
 
 	@ParameterizedTest
