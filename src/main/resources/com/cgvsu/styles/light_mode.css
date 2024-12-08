@@ -1,33 +1,65 @@
 * {
     -fx-text-fill: black;
 }
+@font-face {
+    src: url("resources/fonts/DaysOne.ttf");
+}
 Label {
     -fx-padding: 5px 5px 5px 5px;
 }
 TextField {
     -fx-padding: 5px;
 }
+TextField:hover {
+    -fx-border-color: rgb(153, 204, 238);
+    -fx-border-radius: 2px;
+    -fx-padding: 4px; 
+    -fx-border-width: 1px;
+}
 VBox {
     -fx-background-color: rgb(215, 215, 215);
 }
 MenuBar {
     -fx-background-color: rgb(215, 215, 215);
+    -fx-background-radius: 0 0 10px 10px;
     -fx-padding: 0px;
+    -fx-border-radius: 5px;
 }
 .menu {
-    -fx-background-color: rgb(215, 215, 215);
-    -fx-padding: 5px;
+    -fx-padding: 7px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 0 0 10px 10px;
 }
 .menu-item {
-    -fx-padding: 0px 0px 3px 3px;
-    -fx-background-color: rgb(215, 215, 215);
+    -fx-padding: 3px 0 3px 3px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
 }
 .context-menu {
     -fx-padding: 0px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
 }
 .menu:hover, .menu-item:hover {
-    -fx-background-color: rgb(52, 156, 226);
+    -fx-background-color: rgb(81, 175, 238);
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
 }
-.backgroundNeeded {
+.vBoxMain {
+    -fx-background-radius: 10px 0 0 10px;
+    /* -fx-padding: 1px; */
+}
+.vBoxFirst {
+    -fx-background-radius: 10px 0 0 10px;
+    -fx-padding: 5px;
+    /* -fx-border-color: black; */
+    -fx-border-radius: 10px;
+}
+.stakePaneFirst {
+    -fx-background-radius: 10px;
     -fx-background-color: rgb(190, 190, 190);
+    -fx-padding: 3px 0 3px 0;
+    -fx-font-family: "DaysOne";
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
 }

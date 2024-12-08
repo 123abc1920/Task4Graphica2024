@@ -5,7 +5,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
 <AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
     <MenuBar>
@@ -61,15 +60,11 @@
     <Canvas fx:id="canvas" height="870" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" onScroll="#handleMouseScroll" width="1400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
    <VBox fx:id="vBoxMain" alignment="TOP_CENTER" maxWidth="300.0" minWidth="200.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#handleMouseClickedVBoxMain" styleClass="vBoxMain" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-         <VBox fx:id="VBoxCamera" alignment="CENTER" VBox.vgrow="NEVER">
+         <VBox fx:id="VBoxCamera" alignment="CENTER" styleClass="vBoxFirst" VBox.vgrow="NEVER">
             <children>
-               <StackPane styleClass="backgroundNeeded">
+               <StackPane styleClass="stakePaneFirst">
                   <children>
-                     <Label alignment="CENTER" contentDisplay="CENTER" text="Камера" textAlignment="CENTER">
-                        <font>
-                           <Font size="14.0" />
-                        </font>
-                     </Label>
+                     <Label alignment="CENTER" contentDisplay="CENTER" text="Камера" textAlignment="CENTER" />
                   </children>
                </StackPane>
                <Label maxWidth="1.7976931348623157E308" text="Position" textAlignment="JUSTIFY" />
@@ -134,6 +129,9 @@
                   </children>
                </HBox>
             </children>
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
          </VBox>
       </children></VBox>
 </AnchorPane>
