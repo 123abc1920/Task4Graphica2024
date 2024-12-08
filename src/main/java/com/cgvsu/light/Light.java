@@ -39,10 +39,6 @@ public class Light {
 	public static Color newRgb(Color start, Vector3f n, Vector3f cameraPos, Vector3f polyNormal) {
 		double l = ray.dotProduct(n.multiplyScalar(-1));
 
-		if (ray.dotProduct(polyNormal.multiplyScalar(-1)) == 0) {
-			l = 0.3;
-		}
-
 		if (l < 0) {
 			l = 0;
 		}
@@ -55,6 +51,10 @@ public class Light {
 		double highlight = ks * Math.pow(r, highLightShine);
 		if (r < 0 || l == 0) {
 			highlight = 0;
+		}
+		
+		if (ray.dotProduct(polyNormal.multiplyScalar(-1)) == 0) {
+			l = 0.3;
 		}
 
 		double red = Math.max(0, Math.min(1, start.getRed() * (1 - k) + start.getRed() * k * l + highlight));
