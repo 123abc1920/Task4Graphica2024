@@ -142,13 +142,23 @@ public class GuiController {
 		timeline.play();
 	}
 
+	private void setTextInTextFields() {
+		textFieldPosX.setText(Double.toString((double) Math.round((camera.getPosition().getX() * 100)) / 100));
+		textFieldPosY.setText(Double.toString((double) (Math.round(camera.getPosition().getY() * 100)) / 100));
+		textFieldPosZ.setText(Double.toString((double) (Math.round(camera.getPosition().getZ() * 100)) / 100));
+		textFieldTarX.setText(Double.toString((double) (Math.round(camera.getTarget().getX() * 100)) / 100));
+		textFieldTarY.setText(Double.toString((double) (Math.round(camera.getTarget().getY() * 100)) / 100));
+		textFieldTarZ.setText(Double.toString((double) (Math.round(camera.getTarget().getZ() * 100)) / 100));
+//		textFieldPosX.setText(Double.toString(camera.getPosition().getX()));
+//		textFieldPosY.setText(Double.toString(camera.getPosition().getY()));
+//		textFieldPosZ.setText(Double.toString(camera.getPosition().getZ()));
+//		textFieldTarX.setText(Double.toString(camera.getTarget().getX()));
+//		textFieldTarY.setText(Double.toString(camera.getTarget().getY()));
+//		textFieldTarZ.setText(Double.toString(camera.getTarget().getZ()));
+	}
+
 	private void showStartInfo() {
-		textFieldPosX.setText(Double.toString(camera.getPosition().getX()));
-		textFieldPosY.setText(Double.toString(camera.getPosition().getY()));
-		textFieldPosZ.setText(Double.toString(camera.getPosition().getZ()));
-		textFieldTarX.setText(Double.toString(camera.getTarget().getX()));
-		textFieldTarY.setText(Double.toString(camera.getTarget().getY()));
-		textFieldTarZ.setText(Double.toString(camera.getTarget().getZ()));
+		setTextInTextFields();
 		checkBoxLight.setSelected(true);
 		checkBoxTexture.setSelected(true);
 		colorPickerLines.setValue(RasterizationParams.getLineColor());
@@ -224,6 +234,7 @@ public class GuiController {
 
 			startXLMB = mouseEvent.getSceneX();
 			startYLMB = mouseEvent.getSceneY();
+			setTextInTextFields();
 		} /*
 			 * else if (mouseEvent.getButton() == MouseButton.SECONDARY) { endXRMB =
 			 * mouseEvent.getX(); endYRMB = mouseEvent.getY(); double shiftXRBM = endXRMB -
@@ -233,10 +244,14 @@ public class GuiController {
 
 	@FXML
 	private void handleMouseScroll(ScrollEvent scrollEvent) {
-		if (scrollEvent.getDeltaY() > 0)
+		if (scrollEvent.getDeltaY() > 0) {
 			camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
-		else
+			setTextInTextFields();
+		}
+		else {
 			camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
+			setTextInTextFields();
+		}
 	}
 
 	@FXML
