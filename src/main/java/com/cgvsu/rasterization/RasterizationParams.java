@@ -11,7 +11,7 @@ public class RasterizationParams {
 	public static ZBuffer zBuffer = new ZBuffer(800, 450);
 
 	private static boolean drawLine = false;
-	private static boolean drawTexture = true;
+	private static boolean drawTexture = false;
 	private static boolean isLight = true;
 
 	private static Color lineColor = Color.DARKSLATEBLUE;

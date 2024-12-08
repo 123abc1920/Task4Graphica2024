@@ -6,6 +6,15 @@ public class Vector3f {
 	private double z;
 
 	public Vector3f(double x, double y, double z) {
+		if (x == -0.0) {
+			x = 0;
+		}
+		if (y == -0.0) {
+			y = 0;
+		}
+		if (z == -0.0) {
+			z = 0;
+		}
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -103,6 +112,14 @@ public class Vector3f {
 			return false;
 		return Math.abs(x - other.x) < Global.eps && Math.abs(y - other.y) < Global.eps
 				&& Math.abs(z - other.z) < Global.eps;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Double.hashCode(x);
+		result = 31 * result + Double.hashCode(y);
+		result = 31 * result + Double.hashCode(z);
+		return result;
 	}
 
 	@Override
