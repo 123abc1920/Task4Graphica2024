@@ -1,5 +1,6 @@
 package com.cgvsu;
 
+import com.cgvsu.rasterization.RasterizationParams;
 import com.cgvsu.render_engine.RenderEngine;
 import com.cgvsu.triangulation.Triangulation;
 
@@ -9,6 +10,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -65,6 +67,15 @@ public class GuiController {
 
 	@FXML
 	private TextField textFieldTarZ;
+
+	@FXML
+	private CheckBox checkBoxLines;
+
+	@FXML
+	private CheckBox checkBoxLight;
+
+	@FXML
+	private CheckBox checkBoxTexture;
 
 	private boolean isInLightMode = true;
 
@@ -130,6 +141,37 @@ public class GuiController {
 		textFieldTarX.setText(Double.toString(camera.getTarget().getX()));
 		textFieldTarY.setText(Double.toString(camera.getTarget().getY()));
 		textFieldTarZ.setText(Double.toString(camera.getTarget().getZ()));
+		checkBoxLight.setSelected(true);
+		checkBoxTexture.setSelected(true);
+	}
+
+	//todo: добавить цвета линий и модели: зеленый, синий, красный
+
+	@FXML
+	private void handleCheckBoxLinesOnAction() {
+		if (checkBoxLines.isSelected()) {
+			RasterizationParams.setLine(true);
+		} else {
+			RasterizationParams.setLine(false);
+		}
+	}
+
+	@FXML
+	private void handleCheckBoxLightOnAction() {
+		if (checkBoxLight.isSelected()) {
+			RasterizationParams.setLight(true);
+		} else {
+			RasterizationParams.setLight(false);
+		}
+	}
+
+	@FXML
+	private void handleCheckBoxTextureOnAction() {
+		if (checkBoxTexture.isSelected()) {
+			RasterizationParams.setTexture(true);
+		} else {
+			RasterizationParams.setTexture(false);
+		}
 	}
 
 	@FXML
