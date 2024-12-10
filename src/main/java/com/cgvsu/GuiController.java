@@ -9,7 +9,9 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
@@ -85,6 +87,15 @@ public class GuiController {
 	@FXML
 	private ColorPicker colorPickerLines;
 
+	@FXML
+	private Button addTextureBtn;
+
+	@FXML
+	private Button chooseFileBtn;
+
+	@FXML
+	private TextField textureText;
+
 	private boolean isInLightMode = true;
 
 	private Model mesh = null;
@@ -129,6 +140,8 @@ public class GuiController {
 			camera.setAspectRatio((float) (width / height));
 
 			if (mesh != null) {
+				textureText.setText(mesh.getTextureSource());
+
 				RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
 						(int) height);
 //				VBoxMain.setVisible(true);
@@ -160,9 +173,38 @@ public class GuiController {
 	private void showStartInfo() {
 		setTextInTextFields();
 		checkBoxLight.setSelected(true);
-		checkBoxTexture.setSelected(true);
+		checkBoxTexture.setSelected(false);
 		colorPickerLines.setValue(RasterizationParams.getLineColor());
-		colorPickerModel.setValue(Color.CRIMSON);
+		colorPickerModel.setValue(RasterizationParams.getColor());
+
+		addTextureBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if (mesh != null) {
+					mesh.setTexture(textureText.getText());
+				}
+			}
+		});
+
+		chooseFileBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				if (mesh != null) {
+					FileChooser fileChooser = new FileChooser();
+					fileChooser.getExtensionFilters()
+							.add(new FileChooser.ExtensionFilter("Images (*.png, *.jpg)", "*.png", "*.jpg"));
+					fileChooser.setTitle("Choose texture image");
+					File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+					if (file == null) {
+						return;
+					}
+
+					Path fileName = Path.of(file.getAbsolutePath());
+					mesh.setTexture(fileName.toString());
+				}
+			}
+		});
 	}
 
 	@FXML
@@ -247,8 +289,7 @@ public class GuiController {
 		if (scrollEvent.getDeltaY() > 0) {
 			camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
 			setTextInTextFields();
-		}
-		else {
+		} else {
 			camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
 			setTextInTextFields();
 		}

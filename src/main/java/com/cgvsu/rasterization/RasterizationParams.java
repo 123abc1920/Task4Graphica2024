@@ -28,6 +28,10 @@ public class RasterizationParams {
 		colors[0] = colors[1] = colors[2] = color;
 	}
 
+	public static Color getColor() {
+		return colors[0];
+	}
+
 	public static boolean getDrawTexture(Model m) {
 		if (m.image == null) {
 			return false;

@@ -22,7 +22,7 @@ public class Model {
 
 	public String getTextureSource() {
 		if (image == null) {
-			return "";
+			return "Нет текстуры";
 		}
 		return this.imageSource;
 	}
