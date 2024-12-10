@@ -8,11 +8,14 @@ import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
@@ -96,6 +99,9 @@ public class GuiController {
 	@FXML
 	private TextField textureText;
 
+	@FXML
+	private ChoiceBox<String> cameraList;
+
 	private boolean isInLightMode = true;
 
 	private Model mesh = null;
@@ -156,13 +162,13 @@ public class GuiController {
 	}
 
 	private void setTextInTextFields() {
-		textFieldPosX.setText(Double.toString((double) Math.round((camera.getPosition().getX() * 100)) / 100));
-		textFieldPosY.setText(Double.toString((double) (Math.round(camera.getPosition().getY() * 100)) / 100));
-		textFieldPosZ.setText(Double.toString((double) (Math.round(camera.getPosition().getZ() * 100)) / 100));
-		textFieldTarX.setText(Double.toString((double) (Math.round(camera.getTarget().getX() * 100)) / 100));
-		textFieldTarY.setText(Double.toString((double) (Math.round(camera.getTarget().getY() * 100)) / 100));
-		textFieldTarZ.setText(Double.toString((double) (Math.round(camera.getTarget().getZ() * 100)) / 100));
-//		textFieldPosX.setText(Double.toString(camera.getPosition().getX()));
+		textFieldPosX.setText(Double.toString((double) Math.round((CameraManager.getActive().getPosition().getX() * 100)) / 100));
+		textFieldPosY.setText(Double.toString((double) (Math.round(CameraManager.getActive().getPosition().getY() * 100)) / 100));
+		textFieldPosZ.setText(Double.toString((double) (Math.round(CameraManager.getActive().getPosition().getZ() * 100)) / 100));
+		textFieldTarX.setText(Double.toString((double) (Math.round(CameraManager.getActive().getTarget().getX() * 100)) / 100));
+		textFieldTarY.setText(Double.toString((double) (Math.round(CameraManager.getActive().getTarget().getY() * 100)) / 100));
+		textFieldTarZ.setText(Double.toString((double) (Math.round(CameraManager.getActive().getTarget().getZ() * 100)) / 100));
+//		textFieldPosX.setText(Double.toString(CameraManager.getActive().getPosition().getX()));
 //		textFieldPosY.setText(Double.toString(camera.getPosition().getY()));
 //		textFieldPosZ.setText(Double.toString(camera.getPosition().getZ()));
 //		textFieldTarX.setText(Double.toString(camera.getTarget().getX()));
@@ -203,6 +209,20 @@ public class GuiController {
 					Path fileName = Path.of(file.getAbsolutePath());
 					mesh.setTexture(fileName.toString());
 				}
+			}
+		});
+
+		for (int i = 0; i < CameraManager.getCamerasCount(); i++) {
+			cameraList.getItems().add(CameraManager.printCamera(i));
+		}
+
+		cameraList.setValue(cameraList.getItems().get(0));
+
+		cameraList.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+				CameraManager.setActiveCamera(CameraManager.getCamera((Integer) number2));
+				setTextInTextFields();
 			}
 		});
 	}

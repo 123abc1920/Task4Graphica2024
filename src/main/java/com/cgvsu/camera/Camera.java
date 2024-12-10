@@ -61,7 +61,7 @@ public class Camera {
 
 	@Override
 	public String toString() {
-		return String.format("Position: %s, Target: %s, Far Plane: %f, Near Plane: %f, Aspect Ratio: %f, FOV: %f",
-				this.position, this.target, this.farPlane, this.nearPlane, this.aspectRatio, this.fov);
+		return String.format("Position: %s, Target: %s", this.position, this.target, this.farPlane, this.nearPlane,
+				this.aspectRatio, this.fov);
 	}
 }
