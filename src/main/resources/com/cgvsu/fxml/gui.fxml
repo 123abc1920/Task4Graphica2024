@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
+<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
     <MenuBar>
         <Menu mnemonicParsing="false" text="File">
             <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
@@ -142,7 +142,13 @@
                <Label text="Список камер" />
                <VBox styleClass="vBoxThird">
                   <children>
-                     <ChoiceBox fx:id="cameraList" maxWidth="1.7976931348623157E308" />
+                     <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
+                        <children>
+                           <ChoiceBox fx:id="cameraList" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                           <Button fx:id="addCameraBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="+" />
+                           <Button fx:id="deleteCameraBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="-" />
+                        </children>
+                     </HBox>
                   </children>
                </VBox>
             </children>
@@ -193,8 +199,9 @@
                <HBox maxWidth="1.7976931348623157E308">
                   <children>
                      <TextField fx:id="textureText" promptText="Модель не открыта" />
-                     <Button fx:id="addTextureBtn" mnemonicParsing="false" text="Ok" />
+                     <Button fx:id="addTextureBtn" mnemonicParsing="false" text="+" />
                      <Button fx:id="chooseFileBtn" mnemonicParsing="false" text="Files..." />
+                     <Button fx:id="deleteTextureBtn" mnemonicParsing="false" text="-" />
                   </children>
                </HBox>
             </children>

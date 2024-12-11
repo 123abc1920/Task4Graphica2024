@@ -43,6 +43,10 @@ public class CameraManager {
 		cameras.remove(id);
 	}
 
+	public static int getCameraId(Camera c) {
+		return cameras.indexOf(c);
+	}
+
 	public static int getCamerasCount() {
 		return cameras.size();
 	}

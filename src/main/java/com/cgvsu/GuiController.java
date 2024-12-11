@@ -94,7 +94,16 @@ public class GuiController {
 	private Button addTextureBtn;
 
 	@FXML
+	private Button deleteTextureBtn;
+
+	@FXML
 	private Button chooseFileBtn;
+
+	@FXML
+	private Button addCameraBtn;
+
+	@FXML
+	private Button deleteCameraBtn;
 
 	@FXML
 	private TextField textureText;
@@ -162,13 +171,13 @@ public class GuiController {
 	}
 
 	private void setTextInTextFields() {
-		textFieldPosX.setText(Double.toString((double) Math.round((CameraManager.getActive().getPosition().getX() * 100)) / 100));
-		textFieldPosY.setText(Double.toString((double) (Math.round(CameraManager.getActive().getPosition().getY() * 100)) / 100));
-		textFieldPosZ.setText(Double.toString((double) (Math.round(CameraManager.getActive().getPosition().getZ() * 100)) / 100));
-		textFieldTarX.setText(Double.toString((double) (Math.round(CameraManager.getActive().getTarget().getX() * 100)) / 100));
-		textFieldTarY.setText(Double.toString((double) (Math.round(CameraManager.getActive().getTarget().getY() * 100)) / 100));
-		textFieldTarZ.setText(Double.toString((double) (Math.round(CameraManager.getActive().getTarget().getZ() * 100)) / 100));
-//		textFieldPosX.setText(Double.toString(CameraManager.getActive().getPosition().getX()));
+		textFieldPosX.setText(Double.toString((double) Math.round((camera.getPosition().getX() * 100)) / 100));
+		textFieldPosY.setText(Double.toString((double) (Math.round(camera.getPosition().getY() * 100)) / 100));
+		textFieldPosZ.setText(Double.toString((double) (Math.round(camera.getPosition().getZ() * 100)) / 100));
+		textFieldTarX.setText(Double.toString((double) (Math.round(camera.getTarget().getX() * 100)) / 100));
+		textFieldTarY.setText(Double.toString((double) (Math.round(camera.getTarget().getY() * 100)) / 100));
+		textFieldTarZ.setText(Double.toString((double) (Math.round(camera.getTarget().getZ() * 100)) / 100));
+//		textFieldPosX.setText(Double.toString(camera().getPosition().getX()));
 //		textFieldPosY.setText(Double.toString(camera.getPosition().getY()));
 //		textFieldPosZ.setText(Double.toString(camera.getPosition().getZ()));
 //		textFieldTarX.setText(Double.toString(camera.getTarget().getX()));
@@ -188,6 +197,16 @@ public class GuiController {
 			public void handle(ActionEvent event) {
 				if (mesh != null) {
 					mesh.setTexture(textureText.getText());
+				}
+			}
+		});
+
+		deleteTextureBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				if (mesh != null) {
+					mesh.deleteTexture();
 				}
 			}
 		});
@@ -212,6 +231,30 @@ public class GuiController {
 			}
 		});
 
+		addCameraBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				CameraManager
+						.addCamera(new Camera(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100));
+				cameraList.getItems().add(CameraManager.printCamera(CameraManager.getCamerasCount() - 1));
+			}
+		});
+
+		deleteCameraBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				CameraManager.deleteCamera(CameraManager.getActive());
+				CameraManager.setActiveCamera(0);
+				cameraList.getItems().clear();
+				for (int i = 0; i < CameraManager.getCamerasCount(); i++) {
+					cameraList.getItems().add(CameraManager.printCamera(i));
+				}
+				cameraList.setValue(cameraList.getItems().get(0));
+			}
+		});
+
 		for (int i = 0; i < CameraManager.getCamerasCount(); i++) {
 			cameraList.getItems().add(CameraManager.printCamera(i));
 		}
@@ -221,8 +264,11 @@ public class GuiController {
 		cameraList.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-				CameraManager.setActiveCamera(CameraManager.getCamera((Integer) number2));
-				setTextInTextFields();
+				if (!number2.equals(-1)) {
+					CameraManager.setActiveCamera(CameraManager.getCamera((Integer) number2));
+					camera = CameraManager.getActive();
+					setTextInTextFields();
+				}
 			}
 		});
 	}

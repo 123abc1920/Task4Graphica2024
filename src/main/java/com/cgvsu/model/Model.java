@@ -21,6 +21,9 @@ public class Model {
 	private String imageSource = "";
 
 	public String getTextureSource() {
+		if (textureVertices.size() == 0) {
+			return "Нет текстурных вершин";
+		}
 		if (image == null) {
 			return "Нет текстуры";
 		}
