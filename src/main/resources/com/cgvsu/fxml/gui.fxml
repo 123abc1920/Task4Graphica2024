@@ -69,7 +69,7 @@
             <children>
                <VBox fx:id="vBoxMain" alignment="TOP_CENTER" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#handleMouseClickedVBoxMain" styleClass="vBoxMain" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <children>
-                     <VBox fx:id="VBoxCamera" alignment="CENTER" maxHeight="1.7976931348623157E308" styleClass="vBoxFirst">
+                     <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" styleClass="vBoxFirst">
                         <children>
                            <StackPane styleClass="stakePaneFirst">
                               <children>
@@ -223,7 +223,7 @@
                                  </HBox>
                               </children>
                            </HBox>
-                           <HBox maxWidth="1.7976931348623157E308">
+                           <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
                               <children>
                                  <TextField fx:id="textureText" editable="false" focusTraversable="false" promptText="Модель не открыта" styleClass="textFieldTexture" HBox.hgrow="ALWAYS">
                                     <HBox.margin>
@@ -259,11 +259,11 @@
                            <HBox alignment="CENTER_LEFT">
                               <children>
                                  <Label alignment="CENTER" styleClass="firstLabel" text="x" />
-                                 <TextField focusTraversable="false" prefWidth="50.0" />
+                                 <TextField fx:id="textFieldPosLightX" focusTraversable="false" prefWidth="50.0" />
                                  <Label text="y" />
-                                 <TextField focusTraversable="false" prefWidth="50.0" />
+                                 <TextField fx:id="textFieldPosLightY" focusTraversable="false" prefWidth="50.0" />
                                  <Label text="z" />
-                                 <TextField focusTraversable="false" prefWidth="50.0" />
+                                 <TextField fx:id="textFieldPosLightZ" focusTraversable="false" prefWidth="50.0" />
                                  <Button focusTraversable="false" mnemonicParsing="false" text="✔">
                                     <HBox.margin>
                                        <Insets left="10.0" />
@@ -275,11 +275,11 @@
                            <HBox alignment="CENTER_LEFT">
                               <children>
                                  <Label styleClass="firstLabel" text="x" />
-                                 <TextField focusTraversable="false" prefWidth="50.0" />
+                                 <TextField fx:id="textFieldTarLightX" focusTraversable="false" prefWidth="50.0" />
                                  <Label text="y" />
-                                 <TextField focusTraversable="false" prefWidth="50.0" />
+                                 <TextField fx:id="textFieldTarLightY" focusTraversable="false" prefWidth="50.0" />
                                  <Label text="z" />
-                                 <TextField focusTraversable="false" prefWidth="50.0" />
+                                 <TextField fx:id="textFieldTarLightZ" focusTraversable="false" prefWidth="50.0" />
                                  <Button focusTraversable="false" mnemonicParsing="false" text="✔">
                                     <HBox.margin>
                                        <Insets left="10.0" />
@@ -290,18 +290,18 @@
                            <HBox alignment="CENTER_LEFT" styleClass="hBoxTopPadding">
                               <children>
                                  <Label styleClass="firstLabel" text="Сила источника света" />
-                                 <TextField focusTraversable="false" prefWidth="50.0" />
+                                 <TextField fx:id="textFieldLightSourceStrength" focusTraversable="false" onAction="#handleTextFieldLightSourceStrengthAction" prefWidth="50.0" />
                               </children></HBox>
                            <HBox alignment="CENTER_LEFT" styleClass="hBoxTopPadding">
                               <children>
                                  <Label styleClass="firstLabel" text="Яркость блика" />
-                                 <TextField focusTraversable="false" prefWidth="50.0" />
+                                 <TextField fx:id="textFieldGlareBrightness" focusTraversable="false" onAction="#handleTextFieldGlareBrightnessAction" prefWidth="50.0" />
                               </children>
                            </HBox>
                            <HBox alignment="CENTER_LEFT" fillHeight="false" styleClass="hBoxTopPadding">
                               <children>
                                  <Label styleClass="firstLabel" text="Площадь блика" />
-                                 <TextField focusTraversable="false" prefWidth="50.0" />
+                                 <TextField fx:id="textFieldGlareArea" focusTraversable="false" onAction="#handleTextFieldGlareAreaAction" prefWidth="50.0" />
                               </children></HBox>
                         </children>
                      </VBox>

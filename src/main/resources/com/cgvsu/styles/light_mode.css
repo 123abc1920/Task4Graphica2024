@@ -1,8 +1,13 @@
-* {
-    -fx-text-fill: black;
+@font-face {
+    font-family: "DaysOne";
+    src: url("../fonts/DaysOne.ttf");
 }
 @font-face {
-    src: url("resources/fonts/DaysOne.ttf");
+    font-family: "OpenSans";
+    src: url("../fonts/OpenSans.ttf");
+}
+* {
+    -fx-text-fill: black;
 }
 /* Боковая панель */
 Label, TextField {
@@ -39,7 +44,6 @@ VBox {
 .stakePaneFirst, .stakePaneSecond, .stakePaneThird {
     -fx-background-radius: 10px;
     -fx-background-color: rgb(190, 190, 190);
-    -fx-font-family: "DaysOne";
     -fx-font-size: 20px;
     -fx-font-weight: bold;
 }
@@ -50,7 +54,8 @@ Button, ColorPicker, ChoiceBox {
     -fx-padding: 5px 0 0 0;
 }
 .textFieldTexture:disabled {
-    -fx-opacity: 1.0;
+    -fx-padding: 3px;
+    -fx-opacity: 1;
     -fx-background-color: white;
     -fx-prompt-text-fill: black;
 }

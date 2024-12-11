@@ -1,5 +1,6 @@
 package com.cgvsu;
 
+import com.cgvsu.light.Light;
 import com.cgvsu.rasterization.RasterizationParams;
 import com.cgvsu.render_engine.RenderEngine;
 import com.cgvsu.triangulation.Triangulation;
@@ -11,7 +12,6 @@ import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -20,6 +20,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -36,6 +37,7 @@ import com.cgvsu.math.Vector3f;
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.normals.FindNormals;
+import org.w3c.dom.Text;
 
 public class GuiController {
 
@@ -49,9 +51,6 @@ public class GuiController {
 
     @FXML
     private VBox vBoxMain;
-
-    @FXML
-    private VBox VBoxCamera;
 
     @FXML
     private TextField textFieldPosX;
@@ -110,6 +109,33 @@ public class GuiController {
     @FXML
     private ScrollPane scrollPaneMain;
 
+    @FXML
+    private TextField textFieldPosLightX;
+
+    @FXML
+    private TextField textFieldPosLightY;
+
+    @FXML
+    private TextField textFieldPosLightZ;
+
+    @FXML
+    private TextField textFieldTarLightX;
+
+    @FXML
+    private TextField textFieldTarLightY;
+
+    @FXML
+    private TextField textFieldTarLightZ;
+
+    @FXML
+    private TextField textFieldLightSourceStrength;
+
+    @FXML
+    private TextField textFieldGlareBrightness;
+
+    @FXML
+    private TextField textFieldGlareArea;
+
     private boolean isInLightMode = true;
 
     private boolean isPanelRemoved = true;
@@ -138,6 +164,9 @@ public class GuiController {
 
     @FXML
     private void initialize() {
+
+        Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/DaysOne.ttf"), 16);
+        System.out.println(font);
         anchorPane.prefWidthProperty()
                 .addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - scrollPaneMain.getWidth()));
         anchorPane.prefHeightProperty()
@@ -185,14 +214,14 @@ public class GuiController {
                 if (!number2.equals(-1)) {
                     CameraManager.setActiveCamera(CameraManager.getCamera((Integer) number2));
                     camera = CameraManager.getActive();
-                    setTextInTextFields();
+                    uploadInfoInTextFields();
                 }
             }
         });
     }
 
     private void prepareGUI() {
-        setTextInTextFields();
+        uploadInfoInTextFields();
         checkBoxLight.setSelected(true);
 
         colorPickerLines.setDisable(true);
@@ -225,13 +254,105 @@ public class GuiController {
         deleteTextureBtn.setDisable(false);
     }
 
-    private void setTextInTextFields() {
+    private void uploadInfoInTextFields() {
         textFieldPosX.setText(Double.toString((double) Math.round((camera.getPosition().getX() * 100)) / 100));
         textFieldPosY.setText(Double.toString((double) (Math.round(camera.getPosition().getY() * 100)) / 100));
         textFieldPosZ.setText(Double.toString((double) (Math.round(camera.getPosition().getZ() * 100)) / 100));
+
         textFieldTarX.setText(Double.toString((double) (Math.round(camera.getTarget().getX() * 100)) / 100));
         textFieldTarY.setText(Double.toString((double) (Math.round(camera.getTarget().getY() * 100)) / 100));
         textFieldTarZ.setText(Double.toString((double) (Math.round(camera.getTarget().getZ() * 100)) / 100));
+
+        textFieldPosLightX.setText(Double.toString((double) Math.round((Light.position.getX() * 100)) / 100));
+        textFieldPosLightY.setText(Double.toString((double) Math.round((Light.position.getY() * 100)) / 100));
+        textFieldPosLightZ.setText(Double.toString((double) Math.round((Light.position.getZ() * 100)) / 100));
+
+        textFieldTarLightX.setText(Double.toString((double) Math.round((Light.target.getX() * 100)) / 100));
+        textFieldTarLightY.setText(Double.toString((double) Math.round((Light.target.getY() * 100)) / 100));
+        textFieldTarLightZ.setText(Double.toString((double) Math.round((Light.target.getZ() * 100)) / 100));
+
+//        textFieldLightSourceStrength.setText(Double.toString((double) Math.round((Light.getK * 100)) / 100));
+//        textFieldGlareBrightness.setText(Double.toString((double) Math.round((Light.getKs * 100)) / 100));
+//        textFieldGlareArea.setText(Double.toString((double) Math.round((Light.getHighLightShine * 100)) / 100));
+    }
+
+    private Alert createAlertWithError(String valueName,String errorMessage) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Ошибка!");
+        alert.setContentText(valueName + "\n" + errorMessage);
+        return alert;
+    }
+
+    @FXML
+    private void handleTextFieldLightSourceStrengthAction(ActionEvent actionEvent) {
+        String sourceStrengthString = textFieldLightSourceStrength.getText();
+        Double sourceStrength = 0d;
+        try {
+            sourceStrength = Double.parseDouble(sourceStrengthString);
+        } catch (Exception e) {
+            textFieldLightSourceStrength.setText("0.0");
+            Light.setK(sourceStrength);
+            String errorMessage = e.getMessage();
+            Alert alert = createAlertWithError("Неправильное значение силы источника света.", errorMessage);
+            alert.showAndWait();
+        }
+        if (sourceStrength >= 1) {
+            sourceStrength = 1d;
+            textFieldLightSourceStrength.setText(sourceStrength.toString());
+        } else if (sourceStrength <= 0) {
+            sourceStrength = 0d;
+            textFieldLightSourceStrength.setText(sourceStrength.toString());
+        }
+        Light.setK(sourceStrength);
+        anchorPane.requestFocus();
+    }
+
+    @FXML
+    private void handleTextFieldGlareBrightnessAction(ActionEvent actionEvent) {
+        String glareBrightnessString = textFieldGlareBrightness.getText();
+        Double glareBrightness = 0d;
+        try {
+            glareBrightness = Double.parseDouble(glareBrightnessString);
+        } catch (Exception e) {
+            textFieldGlareBrightness.setText("0.0");
+            Light.setKs(glareBrightness);
+            String errorMessage = e.getMessage();
+            Alert alert = createAlertWithError("Неправильное значение яркости блика.", errorMessage);
+            alert.showAndWait();
+        }
+        if (glareBrightness >= 1) {
+            glareBrightness = 1d;
+            textFieldGlareBrightness.setText(glareBrightness.toString());
+        } else if (glareBrightness <= 0) {
+            glareBrightness = 0d;
+            textFieldGlareBrightness.setText(glareBrightness.toString());
+        }
+        Light.setKs(glareBrightness);
+        anchorPane.requestFocus();
+    }
+
+    @FXML
+    private void handleTextFieldGlareAreaAction(ActionEvent actionEvent) {
+        String glareAreaString = textFieldGlareArea.getText();
+        Double glareArea = 1d;
+        try {
+            glareArea = Double.parseDouble(glareAreaString);
+        } catch (Exception e) {
+            textFieldGlareArea.setText("1.0");
+            Light.setHighLightShine(glareArea);
+            String errorMessage = e.getMessage();
+            Alert alert = createAlertWithError("Неправильное значение площади блика.", errorMessage);
+            alert.showAndWait();
+        }
+        if (glareArea >= 50) {
+            glareArea = 50d;
+            textFieldGlareArea.setText(glareArea.toString());
+        } else if (glareArea <= 1) {
+            glareArea = 1d;
+            textFieldGlareArea.setText(glareArea.toString());
+        }
+        Light.setHighLightShine(glareArea);
+        anchorPane.requestFocus();
     }
 
     @FXML
@@ -352,7 +473,7 @@ public class GuiController {
 
             startXLMB = mouseEvent.getSceneX();
             startYLMB = mouseEvent.getSceneY();
-            setTextInTextFields();
+            uploadInfoInTextFields();
         } /*
          * else if (mouseEvent.getButton() == MouseButton.SECONDARY) { endXRMB =
          * mouseEvent.getX(); endYRMB = mouseEvent.getY(); double shiftXRBM = endXRMB -
@@ -364,10 +485,10 @@ public class GuiController {
     private void handleMouseScroll(ScrollEvent scrollEvent) {
         if (scrollEvent.getDeltaY() > 0) {
             camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
-            setTextInTextFields();
+            uploadInfoInTextFields();
         } else {
             camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
-            setTextInTextFields();
+            uploadInfoInTextFields();
         }
     }
 

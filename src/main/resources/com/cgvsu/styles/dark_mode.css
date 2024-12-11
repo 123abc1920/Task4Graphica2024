@@ -1,8 +1,13 @@
-* {
-    -fx-text-fill: white;
+@font-face {
+    font-family: "DaysOne";
+    src: url("../fonts/DaysOne.ttf");
 }
 @font-face {
-    src: url("resources/fonts/DaysOne.ttf");
+    font-family: "OpenSans";
+    src: url("../fonts/OpenSans.ttf");
+}
+* {
+    -fx-text-fill: white;
 }
 /* Черная тема */
 AnchorPane {
@@ -49,7 +54,6 @@ VBox {
 .stakePaneFirst, .stakePaneSecond, .stakePaneThird {
     -fx-background-radius: 10px;
     -fx-background-color: rgb(100, 100, 100);
-    -fx-font-family: "DaysOne";
     -fx-font-size: 20px;
     -fx-font-weight: bold;
 }
