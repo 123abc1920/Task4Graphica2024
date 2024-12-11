@@ -1,23 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.ColorPicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.input.KeyCodeCombination?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
+<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
     <MenuBar>
         <Menu mnemonicParsing="false" text="File">
             <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
@@ -84,59 +73,72 @@
                      <Label text="x">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></Label>
+                        </HBox.margin>
+                     </Label>
                      <TextField fx:id="textFieldPosX" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></TextField>
+                        </HBox.margin>
+                     </TextField>
                      <Label text="y">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></Label>
+                        </HBox.margin>
+                     </Label>
                      <TextField fx:id="textFieldPosY" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></TextField>
+                        </HBox.margin>
+                     </TextField>
                      <Label text="z">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></Label>
+                        </HBox.margin>
+                     </Label>
                      <TextField fx:id="textFieldPosZ" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></TextField>
+                        </HBox.margin>
+                     </TextField>
                   </children>
                </HBox>
                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelTar" text="Target">
                   <VBox.margin>
                      <Insets />
-                  </VBox.margin></Label>
+                  </VBox.margin>
+               </Label>
                <HBox alignment="CENTER_LEFT">
                   <children>
                      <Label text="x">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></Label>
+                        </HBox.margin>
+                     </Label>
                      <TextField fx:id="textFieldTarX" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></TextField>
+                        </HBox.margin>
+                     </TextField>
                      <Label text="y">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></Label>
+                        </HBox.margin>
+                     </Label>
                      <TextField fx:id="textFieldTarY" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></TextField>
+                        </HBox.margin>
+                     </TextField>
                      <Label text="z">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></Label>
+                        </HBox.margin>
+                     </Label>
                      <TextField fx:id="textFieldTarZ" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></TextField>
+                        </HBox.margin>
+                     </TextField>
                   </children>
                </HBox>
                <Label text="Список камер" />
@@ -144,9 +146,9 @@
                   <children>
                      <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
                         <children>
-                           <ChoiceBox fx:id="cameraList" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                           <Button fx:id="addCameraBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="+" />
-                           <Button fx:id="deleteCameraBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="-" />
+                           <ChoiceBox fx:id="cameraList" focusTraversable="false" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                           <Button fx:id="addCameraBtn" focusTraversable="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAddCameraBtnAction" text="+" />
+                           <Button fx:id="deleteCameraBtn" focusTraversable="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleDeleteCameraBtnAction" text="-" />
                         </children>
                      </HBox>
                   </children>
@@ -166,42 +168,43 @@
                <HBox maxWidth="1.7976931348623157E308" styleClass="hBoxLines">
                   <children>
                      <Label text="Цвет линий" />
-                     <ColorPicker fx:id="colorPickerLines" focusTraversable="false" onAction="#handleColorPickerLinesOnAction" styleClass="picker">
+                     <ColorPicker fx:id="colorPickerLines" focusTraversable="false" onAction="#handleColorPickerLinesAction" styleClass="picker">
                         <HBox.margin>
                            <Insets />
-                        </HBox.margin></ColorPicker>
+                        </HBox.margin>
+                     </ColorPicker>
                   </children>
                </HBox>
                <HBox maxWidth="1.7976931348623157E308">
                   <children>
                      <Label text="Цвет модели" />
-                     <ColorPicker fx:id="colorPickerModel" focusTraversable="false" onAction="#handleColorPickerModelOnAction" styleClass="picker" />
+                     <ColorPicker fx:id="colorPickerModel" focusTraversable="false" onAction="#handleColorPickerModelAction" styleClass="picker" />
                   </children>
                </HBox>
                <HBox maxWidth="1.7976931348623157E308">
                   <children>
                      <Label text="Линии" />
-                     <CheckBox fx:id="checkBoxLines" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxLinesOnAction" />
+                     <CheckBox fx:id="checkBoxLines" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxLinesAction" />
                      <HBox>
                         <children>
                            <Label text="Освещение" />
-                           <CheckBox fx:id="checkBoxLight" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxLightOnAction" />
+                           <CheckBox fx:id="checkBoxLight" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxLightAction" />
                         </children>
                      </HBox>
                      <HBox>
                         <children>
                            <Label text="Текстура" />
-                           <CheckBox fx:id="checkBoxTexture" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxTextureOnAction" />
+                           <CheckBox fx:id="checkBoxTexture" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxTextureAction" />
                         </children>
                      </HBox>
                   </children>
                </HBox>
                <HBox maxWidth="1.7976931348623157E308">
                   <children>
-                     <TextField fx:id="textureText" promptText="Модель не открыта" />
-                     <Button fx:id="addTextureBtn" mnemonicParsing="false" text="+" />
-                     <Button fx:id="chooseFileBtn" mnemonicParsing="false" text="Files..." />
-                     <Button fx:id="deleteTextureBtn" mnemonicParsing="false" text="-" />
+                     <TextField fx:id="textureText" editable="false" focusTraversable="false" promptText="Модель не открыта" />
+                     <Button fx:id="addTextureBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleAddTextureBtnAction" text="+" />
+                     <Button fx:id="chooseFileBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleChooseFileBtnAction" text="Files..." />
+                     <Button fx:id="deleteTextureBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleDeleteTextureBtnAction" text="-" />
                   </children>
                </HBox>
             </children>
@@ -215,5 +218,6 @@
                </StackPane>
             </children>
          </VBox>
-      </children></VBox>
+      </children>
+   </VBox>
 </AnchorPane>
