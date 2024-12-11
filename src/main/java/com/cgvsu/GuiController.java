@@ -13,11 +13,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -111,7 +107,12 @@ public class GuiController {
     @FXML
     private ChoiceBox<String> cameraList;
 
+    @FXML
+    private ScrollPane scrollPaneMain;
+
     private boolean isInLightMode = true;
+
+    private boolean isPanelRemoved = true;
 
     private Model mesh = null;
 
@@ -138,7 +139,7 @@ public class GuiController {
     @FXML
     private void initialize() {
         anchorPane.prefWidthProperty()
-                .addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - vBoxMain.getWidth()));
+                .addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - scrollPaneMain.getWidth()));
         anchorPane.prefHeightProperty()
                 .addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
@@ -154,100 +155,23 @@ public class GuiController {
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
             camera.setAspectRatio((float) (width / height));
 
+            canvas.setWidth(anchorPane.getWidth()-scrollPaneMain.getWidth());
+
             if (mesh != null) {
                 textureText.setText(mesh.getTextureSource());
 
                 RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
                         (int) height);
-//				VBoxMain.setVisible(true);
+
+                showModelInfo();
             }
         });
-
-        anchorPane.getStylesheets().add(getClass().getResource("styles/light_mode.css").toExternalForm());
-        showStartInfo();
 
         timeline.getKeyFrames().add(frame);
         timeline.play();
-    }
 
-    private void setTextInTextFields() {
-        textFieldPosX.setText(Double.toString((double) Math.round((camera.getPosition().getX() * 100)) / 100));
-        textFieldPosY.setText(Double.toString((double) (Math.round(camera.getPosition().getY() * 100)) / 100));
-        textFieldPosZ.setText(Double.toString((double) (Math.round(camera.getPosition().getZ() * 100)) / 100));
-        textFieldTarX.setText(Double.toString((double) (Math.round(camera.getTarget().getX() * 100)) / 100));
-        textFieldTarY.setText(Double.toString((double) (Math.round(camera.getTarget().getY() * 100)) / 100));
-        textFieldTarZ.setText(Double.toString((double) (Math.round(camera.getTarget().getZ() * 100)) / 100));
-    }
-
-    private void showStartInfo() {
-        setTextInTextFields();
-        checkBoxLight.setSelected(true);
-        checkBoxTexture.setSelected(false);
-        colorPickerLines.setValue(RasterizationParams.getLineColor());
-        colorPickerModel.setValue(RasterizationParams.getColor());
-
-        addTextureBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (mesh != null) {
-                    mesh.setTexture(textureText.getText());
-                }
-            }
-        });
-
-        deleteTextureBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                if (mesh != null) {
-                    mesh.deleteTexture();
-                }
-            }
-        });
-
-		chooseFileBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				if (mesh != null) {
-					FileChooser fileChooser = new FileChooser();
-					fileChooser.getExtensionFilters()
-							.add(new FileChooser.ExtensionFilter("Images (*.png, *.jpg)", "*.png", "*.jpg"));
-					fileChooser.setTitle("Choose texture image");
-					File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
-					if (file == null) {
-						return;
-					}
-
-					Path fileName = Path.of(file.getAbsolutePath());
-					mesh.setTexture(fileName.toString());
-				}
-			}
-		});
-
-		addCameraBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				CameraManager
-						.addCamera(new Camera(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100));
-				cameraList.getItems().add(CameraManager.printCamera(CameraManager.getCamerasCount() - 1));
-			}
-		});
-
-		deleteCameraBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				CameraManager.deleteCamera(CameraManager.getActive());
-				CameraManager.setActiveCamera(0);
-				cameraList.getItems().clear();
-				for (int i = 0; i < CameraManager.getCamerasCount(); i++) {
-					cameraList.getItems().add(CameraManager.printCamera(i));
-				}
-				cameraList.setValue(cameraList.getItems().get(0));
-			}
-		});
+        anchorPane.getStylesheets().add(getClass().getResource("styles/light_mode.css").toExternalForm());
+        prepareGUI();
 
         for (int i = 0; i < CameraManager.getCamerasCount(); i++) {
             cameraList.getItems().add(CameraManager.printCamera(i));
@@ -265,6 +189,49 @@ public class GuiController {
                 }
             }
         });
+    }
+
+    private void prepareGUI() {
+        setTextInTextFields();
+        checkBoxLight.setSelected(true);
+
+        colorPickerLines.setDisable(true);
+        colorPickerModel.setDisable(true);
+
+        checkBoxLines.setDisable(true);
+        checkBoxLight.setDisable(true);
+        checkBoxTexture.setDisable(true);
+
+        textureText.setDisable(true);
+        chooseFileBtn.setDisable(true);
+        addTextureBtn.setDisable(true);
+        deleteTextureBtn.setDisable(true);
+
+        scrollPaneMain.setVisible(true); // изменить
+    }
+
+    private void showModelInfo() {
+        colorPickerLines.setValue(RasterizationParams.getLineColor());
+        colorPickerModel.setValue(RasterizationParams.getColor());
+        colorPickerLines.setDisable(false);
+        colorPickerModel.setDisable(false);
+
+        checkBoxLines.setDisable(false);
+        checkBoxLight.setDisable(false);
+        checkBoxTexture.setDisable(false);
+
+        chooseFileBtn.setDisable(false);
+        addTextureBtn.setDisable(false);
+        deleteTextureBtn.setDisable(false);
+    }
+
+    private void setTextInTextFields() {
+        textFieldPosX.setText(Double.toString((double) Math.round((camera.getPosition().getX() * 100)) / 100));
+        textFieldPosY.setText(Double.toString((double) (Math.round(camera.getPosition().getY() * 100)) / 100));
+        textFieldPosZ.setText(Double.toString((double) (Math.round(camera.getPosition().getZ() * 100)) / 100));
+        textFieldTarX.setText(Double.toString((double) (Math.round(camera.getTarget().getX() * 100)) / 100));
+        textFieldTarY.setText(Double.toString((double) (Math.round(camera.getTarget().getY() * 100)) / 100));
+        textFieldTarZ.setText(Double.toString((double) (Math.round(camera.getTarget().getZ() * 100)) / 100));
     }
 
     @FXML
@@ -404,6 +371,14 @@ public class GuiController {
         }
     }
 
+    // доделать
+    @FXML
+    private void handleSidePanelRemove() {
+        isPanelRemoved = !isPanelRemoved;
+        if (isPanelRemoved) {
+        } else {
+        }
+    }
     @FXML
     private void handleThemeChange() {
         isInLightMode = !isInLightMode;

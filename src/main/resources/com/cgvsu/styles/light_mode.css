@@ -4,36 +4,75 @@
 @font-face {
     src: url("resources/fonts/DaysOne.ttf");
 }
+/* Боковая панель */
 Label, TextField {
     -fx-padding: 5px;
+    -fx-background-radius: 5px;
 }
-/* TextField:hover {
-    -fx-border-color: rgb(153, 204, 238);
-    -fx-border-radius: 2px;
-    -fx-padding: 4px; 
-    -fx-border-width: 1px;
-} */
+.firstLabel, CheckBox {
+    -fx-padding: 5px 5px 5px 0;
+}
+.firstLabelHeader {
+    -fx-padding: 5px 0 0 0;
+}
+.scroll-pane {
+    -fx-padding: 0px;
+}
+ScrollBar {
+    -fx-border-color: lightgray;
+    -fx-padding: 0px;
+}
+.scroll-pane:focused {
+    -fx-background-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
 VBox {
     -fx-background-color: rgb(215, 215, 215);
 }
+.vBoxFirst {
+    -fx-padding: 5px 5px 5px 5px;
+}
+.vBoxSecond, .vBoxThird {
+    -fx-padding: 20px 5px 5px 5px;
+}
+.stakePaneFirst, .stakePaneSecond, .stakePaneThird {
+    -fx-background-radius: 10px;
+    -fx-background-color: rgb(190, 190, 190);
+    -fx-font-family: "DaysOne";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+Button, ColorPicker, ChoiceBox {
+    -fx-background-radius: 5px;
+}
+.hBoxTopPadding {
+    -fx-padding: 5px 0 0 0;
+}
+.textFieldTexture:disabled {
+    -fx-opacity: 1.0;
+    -fx-background-color: white;
+    -fx-prompt-text-fill: black;
+}
+/* Меню */
 MenuBar {
     -fx-background-color: rgb(215, 215, 215);
     -fx-background-radius: 0 0 10px 10px;
+    -fx-border-radius: 10px;
     -fx-padding: 0px;
-    -fx-border-radius: 5px;
 }
 .menu {
-    -fx-padding: 7px;
+    -fx-padding: 6px;
     -fx-background-radius: 10px;
     -fx-border-radius: 0 0 10px 10px;
 }
-.menu-item {
-    -fx-padding: 3px 0 3px 3px;
+.context-menu {
+    -fx-padding: 0px;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
 }
-.context-menu {
-    -fx-padding: 0px;
+.menu-item {
+    -fx-padding: 2px;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
 }
@@ -42,30 +81,6 @@ MenuBar {
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
 }
-.vBoxMain {
-    -fx-background-radius: 10px 0 0 10px;
-    /* -fx-padding: 1px; */
-}
-.vBoxFirst, .vBoxSecond, .vBoxThird {
-    -fx-background-radius: 10px 0 0 10px;
+ChoiceBox .menu-item {
     -fx-padding: 5px;
-    /* -fx-border-color: black; */
-    -fx-border-radius: 10px;
-}
-.stakePaneFirst, .stakePaneSecond, .stakePaneThird {
-    -fx-background-radius: 10px;
-    -fx-background-color: rgb(190, 190, 190);
-    -fx-padding: 3px 0 3px 0;
-    -fx-font-family: "DaysOne";
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-}
-CheckBox {
-    -fx-padding: 5px 5px 5px 0;
-}
-.hBoxLines {
-    -fx-padding: 5px 0 5px 0;
-}
-.labelTar, .labelPos {
-    -fx-padding: 5px 5px 0 5px;
 }
