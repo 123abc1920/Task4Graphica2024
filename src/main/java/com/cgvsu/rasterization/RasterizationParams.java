@@ -33,7 +33,8 @@ public class RasterizationParams {
 	}
 
 	public static boolean getDrawTexture(Model m) {
-		if (m.image == null) {
+		//if (m.image == null) {
+		if (m.getImage() == null) {
 			return false;
 		}
 		return drawTexture;

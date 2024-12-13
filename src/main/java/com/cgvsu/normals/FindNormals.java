@@ -14,8 +14,10 @@ import com.cgvsu.model.Polygon;
 
 public class FindNormals {
 	public static ArrayList<Vector3f> findNormals(Model m) {
-		List<Polygon> polygons = m.polygons;
-		List<Vector3f> vertices = m.vertices;
+		List<Polygon> polygons = m.getPolygons();
+		List<Vector3f> vertices = m.getVertices();
+		/*List<Polygon> polygons = m.polygons;
+		List<Vector3f> vertices = m.vertices;*/
 
 		ArrayList<Vector3f> temporaryNormals = new ArrayList<>();
 		ArrayList<Vector3f> normals = new ArrayList<>();

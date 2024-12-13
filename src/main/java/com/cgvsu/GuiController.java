@@ -534,7 +534,8 @@ public class GuiController {
         }
 
         Triangulation.triangulateModel(mesh);
-        mesh.normals = FindNormals.findNormals(mesh);
+        mesh.setNormals(FindNormals.findNormals(mesh));
+        //mesh.normals = FindNormals.findNormals(mesh);
         mesh.setTexture(null);
     }
 

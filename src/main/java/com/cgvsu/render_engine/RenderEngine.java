@@ -33,13 +33,15 @@ public class RenderEngine {
 
 		RasterizationParams.zBuffer = new ZBuffer(width, height);
 
-		final int nPolygons = mesh.polygons.size();
+		//final int nPolygons = mesh.polygons.size();
+		final int nPolygons = mesh.getPolygons().size();
 		for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
-			final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
+			final int nVerticesInPolygon = mesh.getPolygons().get(polygonInd).getVertexIndices().size();
+			//final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
 			ArrayList<Vector3f> resultPoints = new ArrayList<>();
 			for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-				Vector3f vertex = mesh.vertices
-						.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+				Vector3f vertex = mesh.getVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+				//Vector3f vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 
 				Vector3f vertexVecmath = new Vector3f(vertex.getX(), vertex.getY(), vertex.getZ());
 				Vector3f resultPoint = vertexToPoint(projectionViewModelMatrix.multiplyVectorDivW(vertexVecmath), width,
@@ -62,29 +64,36 @@ public class RenderEngine {
 				arrX[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getX();
 				arrY[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getY();
 				arrZ[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getZ();
-				normals[vertexInPolygonInd] = mesh.normals
-						.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+				//normals[vertexInPolygonInd] = mesh.normals.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+				normals[vertexInPolygonInd] = mesh.getNormals().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 			}
 
 			boolean drawnPolygon = false;
 
 			Vector3f polyNormal = FindNormals.findPolygonsNormals(
-					mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(0)),
+					/*mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(0)),
 					mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(1)),
-					mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(2)));
+					mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(2)));*/
+					mesh.getVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(0)),
+					mesh.getVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(1)),
+					mesh.getVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(2)));
 
 			if (!RasterizationParams.getDrawTexture(mesh)) {
 				drawnPolygon = drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition(),
 						polyNormal, RasterizationParams.getIsLight());
 			} else {
 				Vector2f[] texturePoints = new Vector2f[3];
-				texturePoints[0] = mesh.textureVertices
+				/*texturePoints[0] = mesh.textureVertices
 						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(0));
 				texturePoints[1] = mesh.textureVertices
 						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(1));
 				texturePoints[2] = mesh.textureVertices
-						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(2));
-				drawnPolygon = drawTexture(graphicsContext, arrX, arrY, arrZ, texturePoints, mesh.image);
+						.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(2));*/
+				texturePoints[0] = mesh.getTextureVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(0));
+				texturePoints[1] = mesh.getTextureVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(1));
+				texturePoints[2] = mesh.getTextureVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(2));
+				//drawnPolygon = drawTexture(graphicsContext, arrX, arrY, arrZ, texturePoints, mesh.image);
+				drawnPolygon = drawTexture(graphicsContext,arrX,arrY,arrZ,texturePoints,mesh.getImage());
 			}
 
 			if (RasterizationParams.getDrawLine()) {
