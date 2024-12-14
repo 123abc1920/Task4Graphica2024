@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
+<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
     <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
         <Menu mnemonicParsing="false" text="File">
             <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
@@ -176,11 +176,11 @@
                            <HBox alignment="CENTER_LEFT">
                               <children>
                                  <Label text="fov" />
-                                 <TextField fx:id="fovTextField" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0" />
+                                 <TextField fx:id="fovTextField" focusTraversable="false" maxHeight="-Infinity" onAction="#setFovAction" prefWidth="50.0" />
                                  <Label text="near" />
-                                 <TextField fx:id="nearTextFiled" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0" />
+                                 <TextField fx:id="nearTextField" focusTraversable="false" maxHeight="-Infinity" onAction="#setNearAction" prefWidth="50.0" />
                                  <Label text="far" />
-                                 <TextField fx:id="farTextField" focusTraversable="false" maxHeight="-Infinity" prefWidth="50.0" />
+                                 <TextField fx:id="farTextField" focusTraversable="false" maxHeight="-Infinity" onAction="#setFarAction" prefWidth="50.0" />
                                  <Button focusTraversable="false" mnemonicParsing="false" text="✔">
                                     <HBox.margin>
                                        <Insets left="10.0" />

@@ -133,6 +133,15 @@ public class GuiController {
 	@FXML
 	private TextField textFieldGlareArea;
 
+	@FXML
+	private TextField fovTextField;
+
+	@FXML
+	private TextField nearTextField;
+
+	@FXML
+	private TextField farTextField;
+
 	private boolean isInLightMode = true;
 
 	private boolean isPanelRemoved = true;
@@ -236,6 +245,10 @@ public class GuiController {
 		textFieldGlareArea.setText(Light.getHighLightShine() + "");
 		textFieldGlareBrightness.setText(Light.getKs() + "");
 
+		fovTextField.setText(camera.getFov() + "");
+		nearTextField.setText(camera.getNearPlane() + "");
+		farTextField.setText(camera.getFarPlane() + "");
+
 		scrollPaneMain.setVisible(true); // изменить
 	}
 
@@ -269,6 +282,10 @@ public class GuiController {
 		textFieldTarLightX.setText(Double.toString((double) Math.round((Light.target.getX() * 100)) / 100));
 		textFieldTarLightY.setText(Double.toString((double) Math.round((Light.target.getY() * 100)) / 100));
 		textFieldTarLightZ.setText(Double.toString((double) Math.round((Light.target.getZ() * 100)) / 100));
+		
+		fovTextField.setText(camera.getFov() + "");
+		nearTextField.setText(camera.getNearPlane() + "");
+		farTextField.setText(camera.getFarPlane() + "");
 
 //        textFieldLightSourceStrength.setText(Double.toString((double) Math.round((Light.getK * 100)) / 100));
 //        textFieldGlareBrightness.setText(Double.toString((double) Math.round((Light.getKs * 100)) / 100));
@@ -418,6 +435,63 @@ public class GuiController {
 		} else {
 			RasterizationParams.setLight(false);
 		}
+	}
+
+	@FXML
+	private void setFovAction() {
+		String newFov = fovTextField.getText();
+		Double newFovDouble = 0d;
+
+		try {
+			newFovDouble = Double.parseDouble(newFov);
+		} catch (Exception e) {
+			fovTextField.setText(camera.getFov() + "");
+			String errorMessage = e.getMessage();
+			Alert alert = createAlertWithError("Неправильное значение угла.", errorMessage);
+			alert.showAndWait();
+		}
+
+		camera.setFov(newFovDouble);
+		fovTextField.setText(camera.getFov() + "");
+		anchorPane.requestFocus();
+	}
+
+	@FXML
+	private void setNearAction() {
+		String newNear = nearTextField.getText();
+		Double newNearDouble = 0d;
+
+		try {
+			newNearDouble = Double.parseDouble(newNear);
+		} catch (Exception e) {
+			nearTextField.setText(camera.getNearPlane() + "");
+			String errorMessage = e.getMessage();
+			Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+			alert.showAndWait();
+		}
+
+		camera.setNearPlane(newNearDouble);
+		nearTextField.setText(camera.getNearPlane() + "");
+		anchorPane.requestFocus();
+	}
+
+	@FXML
+	private void setFarAction() {
+		String newFar = farTextField.getText();
+		Double newFarDouble = 0d;
+
+		try {
+			newFarDouble = Double.parseDouble(newFar);
+		} catch (Exception e) {
+			farTextField.setText(camera.getFarPlane() + "");
+			String errorMessage = e.getMessage();
+			Alert alert = createAlertWithError("Неправильное значение дальнего плана.", errorMessage);
+			alert.showAndWait();
+		}
+
+		camera.setFarPlane(newFarDouble);
+		farTextField.setText(camera.getFarPlane() + "");
+		anchorPane.requestFocus();
 	}
 
 	@FXML
