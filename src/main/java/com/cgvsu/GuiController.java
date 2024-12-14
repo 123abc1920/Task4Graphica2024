@@ -41,531 +41,517 @@ import org.w3c.dom.Text;
 
 public class GuiController {
 
-    final private float TRANSLATION = 0.5F; // 10.0F;
+	final private float TRANSLATION = 0.5F; // 10.0F;
 
-    @FXML
-    AnchorPane anchorPane;
+	@FXML
+	AnchorPane anchorPane;
 
-    @FXML
-    private Canvas canvas;
+	@FXML
+	private Canvas canvas;
 
-    @FXML
-    private VBox vBoxMain;
+	@FXML
+	private VBox vBoxMain;
 
-    @FXML
-    private TextField textFieldPosX;
+	@FXML
+	private TextField textFieldPosX;
 
-    @FXML
-    private TextField textFieldPosY;
+	@FXML
+	private TextField textFieldPosY;
 
-    @FXML
-    private TextField textFieldPosZ;
+	@FXML
+	private TextField textFieldPosZ;
 
-    @FXML
-    private TextField textFieldTarX;
+	@FXML
+	private TextField textFieldTarX;
 
-    @FXML
-    private TextField textFieldTarY;
+	@FXML
+	private TextField textFieldTarY;
 
-    @FXML
-    private TextField textFieldTarZ;
+	@FXML
+	private TextField textFieldTarZ;
 
-    @FXML
-    private CheckBox checkBoxLines;
+	@FXML
+	private CheckBox checkBoxLines;
 
-    @FXML
-    private CheckBox checkBoxLight;
+	@FXML
+	private CheckBox checkBoxLight;
 
-    @FXML
-    private CheckBox checkBoxTexture;
+	@FXML
+	private CheckBox checkBoxTexture;
 
-    @FXML
-    private ColorPicker colorPickerModel;
+	@FXML
+	private ColorPicker colorPickerModel;
 
-    @FXML
-    private ColorPicker colorPickerLines;
+	@FXML
+	private ColorPicker colorPickerLines;
 
-    @FXML
-    private Button addTextureBtn;
+	@FXML
+	private Button deleteTextureBtn;
 
-    @FXML
-    private Button deleteTextureBtn;
+	@FXML
+	private Button chooseFileBtn;
 
-    @FXML
-    private Button chooseFileBtn;
+	@FXML
+	private Button addCameraBtn;
 
-    @FXML
-    private Button addCameraBtn;
+	@FXML
+	private Button deleteCameraBtn;
 
-    @FXML
-    private Button deleteCameraBtn;
+	@FXML
+	private TextField textureText;
 
-    @FXML
-    private TextField textureText;
+	@FXML
+	private ChoiceBox<String> cameraList;
 
-    @FXML
-    private ChoiceBox<String> cameraList;
+	@FXML
+	private ScrollPane scrollPaneMain;
 
-    @FXML
-    private ScrollPane scrollPaneMain;
+	@FXML
+	private TextField textFieldPosLightX;
 
-    @FXML
-    private TextField textFieldPosLightX;
+	@FXML
+	private TextField textFieldPosLightY;
 
-    @FXML
-    private TextField textFieldPosLightY;
+	@FXML
+	private TextField textFieldPosLightZ;
 
-    @FXML
-    private TextField textFieldPosLightZ;
+	@FXML
+	private TextField textFieldTarLightX;
 
-    @FXML
-    private TextField textFieldTarLightX;
+	@FXML
+	private TextField textFieldTarLightY;
 
-    @FXML
-    private TextField textFieldTarLightY;
+	@FXML
+	private TextField textFieldTarLightZ;
 
-    @FXML
-    private TextField textFieldTarLightZ;
+	@FXML
+	private TextField textFieldLightSourceStrength;
 
-    @FXML
-    private TextField textFieldLightSourceStrength;
+	@FXML
+	private TextField textFieldGlareBrightness;
 
-    @FXML
-    private TextField textFieldGlareBrightness;
+	@FXML
+	private TextField textFieldGlareArea;
 
-    @FXML
-    private TextField textFieldGlareArea;
+	private boolean isInLightMode = true;
 
-    private boolean isInLightMode = true;
+	private boolean isPanelRemoved = true;
 
-    private boolean isPanelRemoved = true;
+	private Model mesh = null;
 
-    private Model mesh = null;
+	private Camera camera = CameraManager.getActive();
 
-    private Camera camera = CameraManager.getActive();
+	private Timeline timeline;
 
-    private Timeline timeline;
+	private double startXLMB;
 
-    private double startXLMB;
+	private double startYLMB;
 
-    private double startYLMB;
+	private double endXLMB;
 
-    private double endXLMB;
+	private double endYLMB;
 
-    private double endYLMB;
+	private double startXRMB;
 
-    private double startXRMB;
+	private double startYRMB;
 
-    private double startYRMB;
+	private double endXRMB;
 
-    private double endXRMB;
+	private double endYRMB;
 
-    private double endYRMB;
+	@FXML
+	private void initialize() {
 
-    @FXML
-    private void initialize() {
+		Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/DaysOne.ttf"), 16);
+		System.out.println(font);
+		anchorPane.prefWidthProperty().addListener(
+				(ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - scrollPaneMain.getWidth()));
+		anchorPane.prefHeightProperty()
+				.addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
-        Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/DaysOne.ttf"), 16);
-        System.out.println(font);
-        anchorPane.prefWidthProperty()
-                .addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - scrollPaneMain.getWidth()));
-        anchorPane.prefHeightProperty()
-                .addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
+		timeline = new Timeline();
+		timeline.setCycleCount(Animation.INDEFINITE);
 
-        timeline = new Timeline();
-        timeline.setCycleCount(Animation.INDEFINITE);
+		KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
+			double width = canvas.getWidth();
+			double height = canvas.getHeight();
 
-        KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
-            double width = canvas.getWidth();
-            double height = canvas.getHeight();
+			camera = CameraManager.getActive();
 
-            camera = CameraManager.getActive();
+			canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
+			camera.setAspectRatio((float) (width / height));
 
-            canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
-            camera.setAspectRatio((float) (width / height));
+			canvas.setWidth(anchorPane.getWidth() - scrollPaneMain.getWidth());
 
-            canvas.setWidth(anchorPane.getWidth()-scrollPaneMain.getWidth());
+			if (mesh != null) {
+				textureText.setText(mesh.getTextureSource());
 
-            if (mesh != null) {
-                textureText.setText(mesh.getTextureSource());
+				RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
+						(int) height);
 
-                RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
-                        (int) height);
+				showModelInfo();
+			}
+		});
 
-                showModelInfo();
-            }
-        });
+		timeline.getKeyFrames().add(frame);
+		timeline.play();
 
-        timeline.getKeyFrames().add(frame);
-        timeline.play();
+		anchorPane.getStylesheets().add(getClass().getResource("styles/light_mode.css").toExternalForm());
+		prepareGUI();
 
-        anchorPane.getStylesheets().add(getClass().getResource("styles/light_mode.css").toExternalForm());
-        prepareGUI();
+		for (int i = 0; i < CameraManager.getCamerasCount(); i++) {
+			cameraList.getItems().add(CameraManager.printCamera(i));
+		}
 
-        for (int i = 0; i < CameraManager.getCamerasCount(); i++) {
-            cameraList.getItems().add(CameraManager.printCamera(i));
-        }
+		cameraList.setValue(cameraList.getItems().get(0));
 
-        cameraList.setValue(cameraList.getItems().get(0));
+		cameraList.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+				if (!number2.equals(-1)) {
+					CameraManager.setActiveCamera(CameraManager.getCamera((Integer) number2));
+					camera = CameraManager.getActive();
+					uploadInfoInTextFields();
+				}
+			}
+		});
+	}
 
-        cameraList.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                if (!number2.equals(-1)) {
-                    CameraManager.setActiveCamera(CameraManager.getCamera((Integer) number2));
-                    camera = CameraManager.getActive();
-                    uploadInfoInTextFields();
-                }
-            }
-        });
-    }
+	private void prepareGUI() {
+		uploadInfoInTextFields();
+		checkBoxLight.setSelected(true);
 
-    private void prepareGUI() {
-        uploadInfoInTextFields();
-        checkBoxLight.setSelected(true);
+		colorPickerLines.setDisable(true);
+		colorPickerModel.setDisable(true);
 
-        colorPickerLines.setDisable(true);
-        colorPickerModel.setDisable(true);
+		checkBoxLines.setDisable(true);
+		checkBoxLight.setDisable(true);
+		checkBoxTexture.setDisable(true);
 
-        checkBoxLines.setDisable(true);
-        checkBoxLight.setDisable(true);
-        checkBoxTexture.setDisable(true);
+		textureText.setDisable(true);
+		chooseFileBtn.setDisable(true);
+		deleteTextureBtn.setDisable(true);
 
-        textureText.setDisable(true);
-        chooseFileBtn.setDisable(true);
-        addTextureBtn.setDisable(true);
-        deleteTextureBtn.setDisable(true);
+		textFieldLightSourceStrength.setText(Light.getK() + "");
+		textFieldGlareArea.setText(Light.getHighLightShine() + "");
+		textFieldGlareBrightness.setText(Light.getKs() + "");
 
-        scrollPaneMain.setVisible(true); // изменить
-    }
+		scrollPaneMain.setVisible(true); // изменить
+	}
 
-    private void showModelInfo() {
-        colorPickerLines.setValue(RasterizationParams.getLineColor());
-        colorPickerModel.setValue(RasterizationParams.getColor());
-        colorPickerLines.setDisable(false);
-        colorPickerModel.setDisable(false);
+	private void showModelInfo() {
+		colorPickerLines.setValue(RasterizationParams.getLineColor());
+		colorPickerModel.setValue(RasterizationParams.getColor());
+		colorPickerLines.setDisable(false);
+		colorPickerModel.setDisable(false);
 
-        checkBoxLines.setDisable(false);
-        checkBoxLight.setDisable(false);
-        checkBoxTexture.setDisable(false);
+		checkBoxLines.setDisable(false);
+		checkBoxLight.setDisable(false);
+		checkBoxTexture.setDisable(false);
 
-        chooseFileBtn.setDisable(false);
-        addTextureBtn.setDisable(false);
-        deleteTextureBtn.setDisable(false);
-    }
+		chooseFileBtn.setDisable(false);
+		deleteTextureBtn.setDisable(false);
+	}
 
-    private void uploadInfoInTextFields() {
-        textFieldPosX.setText(Double.toString((double) Math.round((camera.getPosition().getX() * 100)) / 100));
-        textFieldPosY.setText(Double.toString((double) (Math.round(camera.getPosition().getY() * 100)) / 100));
-        textFieldPosZ.setText(Double.toString((double) (Math.round(camera.getPosition().getZ() * 100)) / 100));
+	private void uploadInfoInTextFields() {
+		textFieldPosX.setText(Double.toString((double) Math.round((camera.getPosition().getX() * 100)) / 100));
+		textFieldPosY.setText(Double.toString((double) (Math.round(camera.getPosition().getY() * 100)) / 100));
+		textFieldPosZ.setText(Double.toString((double) (Math.round(camera.getPosition().getZ() * 100)) / 100));
 
-        textFieldTarX.setText(Double.toString((double) (Math.round(camera.getTarget().getX() * 100)) / 100));
-        textFieldTarY.setText(Double.toString((double) (Math.round(camera.getTarget().getY() * 100)) / 100));
-        textFieldTarZ.setText(Double.toString((double) (Math.round(camera.getTarget().getZ() * 100)) / 100));
+		textFieldTarX.setText(Double.toString((double) (Math.round(camera.getTarget().getX() * 100)) / 100));
+		textFieldTarY.setText(Double.toString((double) (Math.round(camera.getTarget().getY() * 100)) / 100));
+		textFieldTarZ.setText(Double.toString((double) (Math.round(camera.getTarget().getZ() * 100)) / 100));
 
-        textFieldPosLightX.setText(Double.toString((double) Math.round((Light.position.getX() * 100)) / 100));
-        textFieldPosLightY.setText(Double.toString((double) Math.round((Light.position.getY() * 100)) / 100));
-        textFieldPosLightZ.setText(Double.toString((double) Math.round((Light.position.getZ() * 100)) / 100));
+		textFieldPosLightX.setText(Double.toString((double) Math.round((Light.position.getX() * 100)) / 100));
+		textFieldPosLightY.setText(Double.toString((double) Math.round((Light.position.getY() * 100)) / 100));
+		textFieldPosLightZ.setText(Double.toString((double) Math.round((Light.position.getZ() * 100)) / 100));
 
-        textFieldTarLightX.setText(Double.toString((double) Math.round((Light.target.getX() * 100)) / 100));
-        textFieldTarLightY.setText(Double.toString((double) Math.round((Light.target.getY() * 100)) / 100));
-        textFieldTarLightZ.setText(Double.toString((double) Math.round((Light.target.getZ() * 100)) / 100));
+		textFieldTarLightX.setText(Double.toString((double) Math.round((Light.target.getX() * 100)) / 100));
+		textFieldTarLightY.setText(Double.toString((double) Math.round((Light.target.getY() * 100)) / 100));
+		textFieldTarLightZ.setText(Double.toString((double) Math.round((Light.target.getZ() * 100)) / 100));
 
 //        textFieldLightSourceStrength.setText(Double.toString((double) Math.round((Light.getK * 100)) / 100));
 //        textFieldGlareBrightness.setText(Double.toString((double) Math.round((Light.getKs * 100)) / 100));
 //        textFieldGlareArea.setText(Double.toString((double) Math.round((Light.getHighLightShine * 100)) / 100));
-    }
+	}
 
-    private Alert createAlertWithError(String valueName,String errorMessage) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Ошибка!");
-        alert.setContentText(valueName + "\n" + errorMessage);
-        return alert;
-    }
+	private Alert createAlertWithError(String valueName, String errorMessage) {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle("Ошибка!");
+		alert.setContentText(valueName + "\n" + errorMessage);
+		return alert;
+	}
 
-    @FXML
-    private void handleTextFieldLightSourceStrengthAction(ActionEvent actionEvent) {
-        String sourceStrengthString = textFieldLightSourceStrength.getText();
-        Double sourceStrength = 0d;
-        try {
-            sourceStrength = Double.parseDouble(sourceStrengthString);
-        } catch (Exception e) {
-            textFieldLightSourceStrength.setText("0.0");
-            Light.setK(sourceStrength);
-            String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение силы источника света.", errorMessage);
-            alert.showAndWait();
-        }
-        if (sourceStrength >= 1) {
-            sourceStrength = 1d;
-            textFieldLightSourceStrength.setText(sourceStrength.toString());
-        } else if (sourceStrength <= 0) {
-            sourceStrength = 0d;
-            textFieldLightSourceStrength.setText(sourceStrength.toString());
-        }
-        Light.setK(sourceStrength);
-        anchorPane.requestFocus();
-    }
+	@FXML
+	private void handleTextFieldLightSourceStrengthAction(ActionEvent actionEvent) {
+		String sourceStrengthString = textFieldLightSourceStrength.getText();
+		Double sourceStrength = 0d;
 
-    @FXML
-    private void handleTextFieldGlareBrightnessAction(ActionEvent actionEvent) {
-        String glareBrightnessString = textFieldGlareBrightness.getText();
-        Double glareBrightness = 0d;
-        try {
-            glareBrightness = Double.parseDouble(glareBrightnessString);
-        } catch (Exception e) {
-            textFieldGlareBrightness.setText("0.0");
-            Light.setKs(glareBrightness);
-            String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение яркости блика.", errorMessage);
-            alert.showAndWait();
-        }
-        if (glareBrightness >= 1) {
-            glareBrightness = 1d;
-            textFieldGlareBrightness.setText(glareBrightness.toString());
-        } else if (glareBrightness <= 0) {
-            glareBrightness = 0d;
-            textFieldGlareBrightness.setText(glareBrightness.toString());
-        }
-        Light.setKs(glareBrightness);
-        anchorPane.requestFocus();
-    }
+		try {
+			sourceStrength = Double.parseDouble(sourceStrengthString);
+		} catch (Exception e) {
+			textFieldLightSourceStrength.setText(Light.getK() + "");
+			Light.setK(sourceStrength);
+			String errorMessage = e.getMessage();
+			Alert alert = createAlertWithError("Неправильное значение силы источника света.", errorMessage);
+			alert.showAndWait();
+		}
 
-    @FXML
-    private void handleTextFieldGlareAreaAction(ActionEvent actionEvent) {
-        String glareAreaString = textFieldGlareArea.getText();
-        Double glareArea = 1d;
-        try {
-            glareArea = Double.parseDouble(glareAreaString);
-        } catch (Exception e) {
-            textFieldGlareArea.setText("1.0");
-            Light.setHighLightShine(glareArea);
-            String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение площади блика.", errorMessage);
-            alert.showAndWait();
-        }
-        if (glareArea >= 50) {
-            glareArea = 50d;
-            textFieldGlareArea.setText(glareArea.toString());
-        } else if (glareArea <= 1) {
-            glareArea = 1d;
-            textFieldGlareArea.setText(glareArea.toString());
-        }
-        Light.setHighLightShine(glareArea);
-        anchorPane.requestFocus();
-    }
+		Light.setK(sourceStrength);
+		textFieldLightSourceStrength.setText(Light.getK() + "");
+		anchorPane.requestFocus();
+	}
 
-    @FXML
-    private void handleAddCameraBtnAction(ActionEvent actionEvent) {
-        CameraManager
-                .addCamera(new Camera(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100));
-        cameraList.getItems().add(CameraManager.printCamera(CameraManager.getCamerasCount() - 1));
-    }
+	@FXML
+	private void handleTextFieldGlareBrightnessAction(ActionEvent actionEvent) {
+		String glareBrightnessString = textFieldGlareBrightness.getText();
+		Double glareBrightness = 0d;
 
-    @FXML
-    private void handleChooseFileBtnAction(ActionEvent actionEvent) {
-        if (mesh != null) {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters()
-                    .add(new FileChooser.ExtensionFilter("Images (*.png, *.jpg)", "*.png", "*.jpg"));
-            fileChooser.setTitle("Choose texture image");
-            File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
-            if (file == null) {
-                return;
-            }
+		try {
+			glareBrightness = Double.parseDouble(glareBrightnessString);
+		} catch (Exception e) {
+			textFieldGlareBrightness.setText(Light.getKs() + "");
+			Light.setKs(glareBrightness);
+			String errorMessage = e.getMessage();
+			Alert alert = createAlertWithError("Неправильное значение яркости блика.", errorMessage);
+			alert.showAndWait();
+		}
 
-            Path fileName = Path.of(file.getAbsolutePath());
-            mesh.setTexture(fileName.toString());
-        }
-    }
+		Light.setKs(glareBrightness);
+		textFieldGlareBrightness.setText(Light.getKs() + "");
+		anchorPane.requestFocus();
+	}
 
-    @FXML
-    private void handleDeleteCameraBtnAction(ActionEvent actionEvent) {
-        CameraManager.deleteCamera(CameraManager.getActive());
-        CameraManager.setActiveCamera(0);
-        cameraList.getItems().clear();
-        for (int i = 0; i < CameraManager.getCamerasCount(); i++) {
-            cameraList.getItems().add(CameraManager.printCamera(i));
-        }
-        cameraList.setValue(cameraList.getItems().get(0));
-    }
+	@FXML
+	private void handleTextFieldGlareAreaAction(ActionEvent actionEvent) {
+		String glareAreaString = textFieldGlareArea.getText();
+		Double glareArea = 0d;
 
-    @FXML
-    private void handleAddTextureBtnAction(ActionEvent actionEvent) {
-        if (mesh != null) {
-            mesh.setTexture(textureText.getText());
-        }
-    }
+		try {
+			glareArea = Double.parseDouble(glareAreaString);
+		} catch (Exception e) {
+			textFieldGlareArea.setText(Light.getHighLightShine() + "");
+			Light.setHighLightShine(glareArea);
+			String errorMessage = e.getMessage();
+			Alert alert = createAlertWithError("Неправильное значение площади блика.", errorMessage);
+			alert.showAndWait();
+		}
 
-    @FXML
-    private void handleDeleteTextureBtnAction(ActionEvent actionEvent) {
-        if (mesh != null) {
-            mesh.deleteTexture();
-        }
-    }
+		Light.setHighLightShine(glareArea);
+		textFieldGlareArea.setText(Light.getHighLightShine() + "");
+		anchorPane.requestFocus();
+	}
 
-    @FXML
-    private void handleColorPickerLinesAction(ActionEvent actionEvent) {
-        Color newLinesColor = colorPickerLines.getValue();
-        RasterizationParams.setLineColor(newLinesColor);
-    }
+	@FXML
+	private void handleAddCameraBtnAction(ActionEvent actionEvent) {
+		CameraManager.addCamera(new Camera(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100));
+		cameraList.getItems().add(CameraManager.printCamera(CameraManager.getCamerasCount() - 1));
+	}
 
-    @FXML
-    private void handleColorPickerModelAction(ActionEvent actionEvent) {
-        Color newModelColor = colorPickerModel.getValue();
-        RasterizationParams.setColor(newModelColor);
-    }
+	@FXML
+	private void handleChooseFileBtnAction(ActionEvent actionEvent) {
+		if (mesh != null) {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.getExtensionFilters()
+					.add(new FileChooser.ExtensionFilter("Images (*.png, *.jpg)", "*.png", "*.jpg"));
+			fileChooser.setTitle("Choose texture image");
+			File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+			if (file == null) {
+				return;
+			}
 
-    @FXML
-    private void handleCheckBoxLinesAction(ActionEvent actionEvent) {
-        if (checkBoxLines.isSelected()) {
-            RasterizationParams.setLine(true);
-        } else {
-            RasterizationParams.setLine(false);
-        }
-    }
+			Path fileName = Path.of(file.getAbsolutePath());
+			mesh.setTexture(fileName.toString());
+		}
+	}
 
-    @FXML
-    private void handleCheckBoxLightAction(ActionEvent actionEvent) {
-        if (checkBoxLight.isSelected()) {
-            RasterizationParams.setLight(true);
-        } else {
-            RasterizationParams.setLight(false);
-        }
-    }
+	@FXML
+	private void handleDeleteCameraBtnAction(ActionEvent actionEvent) {
+		CameraManager.deleteCamera(CameraManager.getActive());
+		CameraManager.setActiveCamera(0);
+		cameraList.getItems().clear();
+		for (int i = 0; i < CameraManager.getCamerasCount(); i++) {
+			cameraList.getItems().add(CameraManager.printCamera(i));
+		}
+		cameraList.setValue(cameraList.getItems().get(0));
+	}
 
-    @FXML
-    private void handleCheckBoxTextureAction(ActionEvent actionEvent) {
-        if (checkBoxTexture.isSelected()) {
-            RasterizationParams.setTexture(true);
-        } else {
-            RasterizationParams.setTexture(false);
-        }
-    }
+	@FXML
+	private void handleAddTextureBtnAction(ActionEvent actionEvent) {
+		if (mesh != null) {
+			mesh.setTexture(textureText.getText());
+		}
+	}
 
-    @FXML
-    private void handleMousePressed(MouseEvent mouseEvent) {
-        anchorPane.requestFocus();
-        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-            startXLMB = mouseEvent.getSceneX();
-            startYLMB = mouseEvent.getSceneY();
-        } /*
-         * else if (mouseEvent.getButton() == MouseButton.SECONDARY) { startXRMB =
-         * mouseEvent.getSceneX(); startYRMB = mouseEvent.getSceneY(); }
-         */
-    }
+	@FXML
+	private void handleDeleteTextureBtnAction(ActionEvent actionEvent) {
+		if (mesh != null) {
+			mesh.deleteTexture();
+		}
+	}
 
-    @FXML
-    private void handleMouseClickedVBoxMain(MouseEvent mouseEvent) {
-        vBoxMain.requestFocus();
-    }
+	@FXML
+	private void handleColorPickerLinesAction(ActionEvent actionEvent) {
+		Color newLinesColor = colorPickerLines.getValue();
+		RasterizationParams.setLineColor(newLinesColor);
+	}
 
-    @FXML
-    private void handleMouseDragged(MouseEvent mouseEvent) {
-        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-            endXLMB = mouseEvent.getSceneX();
-            endYLMB = mouseEvent.getSceneY();
-            double shiftXLBM = endXLMB - startXLMB;
-            double shiftYLMB = endYLMB - startYLMB;
+	@FXML
+	private void handleColorPickerModelAction(ActionEvent actionEvent) {
+		Color newModelColor = colorPickerModel.getValue();
+		RasterizationParams.setColor(newModelColor);
+	}
 
-            camera.movePosition(new Vector3f((float) shiftXLBM * 0.05f, (float) shiftYLMB * 0.05f, 0));
-            camera.moveTarget(new Vector3f((float) shiftXLBM * 0.05f, (float) shiftYLMB * 0.05f, 0));
+	@FXML
+	private void handleCheckBoxLinesAction(ActionEvent actionEvent) {
+		if (checkBoxLines.isSelected()) {
+			RasterizationParams.setLine(true);
+		} else {
+			RasterizationParams.setLine(false);
+		}
+	}
 
-            startXLMB = mouseEvent.getSceneX();
-            startYLMB = mouseEvent.getSceneY();
-            uploadInfoInTextFields();
-        } /*
-         * else if (mouseEvent.getButton() == MouseButton.SECONDARY) { endXRMB =
-         * mouseEvent.getX(); endYRMB = mouseEvent.getY(); double shiftXRBM = endXRMB -
-         * startXRMB; double shiftYRMB = endYRMB - startYRMB; }
-         */
-    }
+	@FXML
+	private void handleCheckBoxLightAction(ActionEvent actionEvent) {
+		if (checkBoxLight.isSelected()) {
+			RasterizationParams.setLight(true);
+		} else {
+			RasterizationParams.setLight(false);
+		}
+	}
 
-    @FXML
-    private void handleMouseScroll(ScrollEvent scrollEvent) {
-        if (scrollEvent.getDeltaY() > 0) {
-            camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
-            uploadInfoInTextFields();
-        } else {
-            camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
-            uploadInfoInTextFields();
-        }
-    }
+	@FXML
+	private void handleCheckBoxTextureAction(ActionEvent actionEvent) {
+		if (checkBoxTexture.isSelected()) {
+			RasterizationParams.setTexture(true);
+		} else {
+			RasterizationParams.setTexture(false);
+		}
+	}
 
-    // доделать
-    @FXML
-    private void handleSidePanelRemove() {
-        isPanelRemoved = !isPanelRemoved;
-        if (isPanelRemoved) {
-        } else {
-        }
-    }
-    @FXML
-    private void handleThemeChange() {
-        isInLightMode = !isInLightMode;
-        anchorPane.getStylesheets().clear();
-        String filePath = isInLightMode ? "styles/light_mode.css" : "styles/dark_mode.css";
-        anchorPane.getStylesheets().add(getClass().getResource(filePath).toExternalForm());
-    }
+	@FXML
+	private void handleMousePressed(MouseEvent mouseEvent) {
+		anchorPane.requestFocus();
+		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+			startXLMB = mouseEvent.getSceneX();
+			startYLMB = mouseEvent.getSceneY();
+		} /*
+			 * else if (mouseEvent.getButton() == MouseButton.SECONDARY) { startXRMB =
+			 * mouseEvent.getSceneX(); startYRMB = mouseEvent.getSceneY(); }
+			 */
+	}
 
-    /**
-     * Добавить обработчик событий дял всех textField по нажатии кнопки Enter
-     */
+	@FXML
+	private void handleMouseClickedVBoxMain(MouseEvent mouseEvent) {
+		vBoxMain.requestFocus();
+	}
 
-    @FXML
-    private void onOpenModelMenuItemClick() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
-        fileChooser.setTitle("Load Model");
+	@FXML
+	private void handleMouseDragged(MouseEvent mouseEvent) {
+		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+			endXLMB = mouseEvent.getSceneX();
+			endYLMB = mouseEvent.getSceneY();
+			double shiftXLBM = endXLMB - startXLMB;
+			double shiftYLMB = endYLMB - startYLMB;
 
-        File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
-        if (file == null) {
-            return;
-        }
+			camera.movePosition(new Vector3f((float) shiftXLBM * 0.05f, (float) shiftYLMB * 0.05f, 0));
+			camera.moveTarget(new Vector3f((float) shiftXLBM * 0.05f, (float) shiftYLMB * 0.05f, 0));
 
-        Path fileName = Path.of(file.getAbsolutePath());
+			startXLMB = mouseEvent.getSceneX();
+			startYLMB = mouseEvent.getSceneY();
+			uploadInfoInTextFields();
+		} /*
+			 * else if (mouseEvent.getButton() == MouseButton.SECONDARY) { endXRMB =
+			 * mouseEvent.getX(); endYRMB = mouseEvent.getY(); double shiftXRBM = endXRMB -
+			 * startXRMB; double shiftYRMB = endYRMB - startYRMB; }
+			 */
+	}
 
-        try {
-            String fileContent = Files.readString(fileName);
-            mesh = ObjReader.read(fileContent);
-            // todo: обработка ошибок
-        } catch (IOException exception) {
+	@FXML
+	private void handleMouseScroll(ScrollEvent scrollEvent) {
+		if (scrollEvent.getDeltaY() > 0) {
+			camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
+			uploadInfoInTextFields();
+		} else {
+			camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
+			uploadInfoInTextFields();
+		}
+	}
 
-        }
+	// доделать
+	@FXML
+	private void handleSidePanelRemove() {
+		isPanelRemoved = !isPanelRemoved;
+		if (isPanelRemoved) {
+		} else {
+		}
+	}
 
-        Triangulation.triangulateModel(mesh);
-        mesh.setNormals(FindNormals.findNormals(mesh));
-        //mesh.normals = FindNormals.findNormals(mesh);
-        mesh.setTexture(null);
-    }
+	@FXML
+	private void handleThemeChange() {
+		isInLightMode = !isInLightMode;
+		anchorPane.getStylesheets().clear();
+		String filePath = isInLightMode ? "styles/light_mode.css" : "styles/dark_mode.css";
+		anchorPane.getStylesheets().add(getClass().getResource(filePath).toExternalForm());
+	}
 
-    @FXML
-    public void handleCameraForward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
-    }
+	/**
+	 * Добавить обработчик событий дял всех textField по нажатии кнопки Enter
+	 */
 
-    @FXML
-    public void handleCameraBackward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, TRANSLATION));
-    }
+	@FXML
+	private void onOpenModelMenuItemClick() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
+		fileChooser.setTitle("Load Model");
 
-    @FXML
-    public void handleCameraLeft(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
-    }
+		File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+		if (file == null) {
+			return;
+		}
 
-    @FXML
-    public void handleCameraRight(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
-    }
+		Path fileName = Path.of(file.getAbsolutePath());
 
-    @FXML
-    public void handleCameraUp(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, TRANSLATION, 0));
-    }
+		try {
+			String fileContent = Files.readString(fileName);
+			mesh = ObjReader.read(fileContent);
+			// todo: обработка ошибок
+		} catch (IOException exception) {
 
-    @FXML
-    public void handleCameraDown(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
-    }
+		}
+
+		Triangulation.triangulateModel(mesh);
+		mesh.setNormals(FindNormals.findNormals(mesh));
+		mesh.setTexture(null);
+	}
+
+	@FXML
+	public void handleCameraForward(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
+	}
+
+	@FXML
+	public void handleCameraBackward(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, 0, TRANSLATION));
+	}
+
+	@FXML
+	public void handleCameraLeft(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
+	}
+
+	@FXML
+	public void handleCameraRight(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
+	}
+
+	@FXML
+	public void handleCameraUp(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, TRANSLATION, 0));
+	}
+
+	@FXML
+	public void handleCameraDown(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
+	}
 }

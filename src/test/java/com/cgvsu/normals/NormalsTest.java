@@ -33,7 +33,7 @@ class NormalsTest {
 	@BeforeAll
 	static void init() {
 		Triangulation.triangulateModel(m);
-		m.normals = FindNormals.findNormals(m);
+		m.setNormals(FindNormals.findNormals(m));
 		/*
 		 * for (Vector3f v : m.normals) { System.out.println(v.toString()); }
 		 */
@@ -42,19 +42,19 @@ class NormalsTest {
 	@ParameterizedTest
 	@ValueSource(ints = { 0, 1, 2, 3 })
 	void findVertexTestX(int i) {
-		assertEquals(Math.abs(Math.round(m.normals.get(i).getX() * 100)), 58);
+		assertEquals(Math.abs(Math.round(m.getNormals().get(i).getX() * 100)), 58);
 	}
 
 	@ParameterizedTest
 	@ValueSource(ints = { 0, 1, 2, 3 })
 	void findVertexTestY(int i) {
-		assertEquals(Math.abs(Math.round(m.normals.get(i).getY() * 100)), 58);
+		assertEquals(Math.abs(Math.round(m.getNormals().get(i).getY() * 100)), 58);
 	}
 
 	@ParameterizedTest
 	@ValueSource(ints = { 0, 1, 2, 3 })
 	void findVertexTestZ(int i) {
-		assertEquals(Math.abs(Math.round(m.normals.get(i).getZ() * 100)), 58);
+		assertEquals(Math.abs(Math.round(m.getNormals().get(i).getZ() * 100)), 58);
 	}
 
 }
