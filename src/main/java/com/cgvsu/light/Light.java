@@ -1,6 +1,5 @@
 package com.cgvsu.light;
 
-import com.cgvsu.math.Global;
 import com.cgvsu.math.Vector3f;
 
 import javafx.scene.paint.Color;
@@ -25,15 +24,30 @@ public class Light {
 	}
 
 	public static void setK(double k) {
-		Light.k = k;
+		k = Math.max(0, Math.min(1, k));
+		Light.k = Math.round(k * 100.0) / 100.0;
 	}
 
 	public static void setKs(double ks) {
-		Light.ks = ks;
+		ks = Math.max(0, Math.min(1, ks));
+		Light.ks = Math.round(ks * 100.0) / 100.0;
 	}
 
 	public static void setHighLightShine(double highLightShine) {
-		Light.highLightShine = highLightShine;
+		highLightShine = Math.max(1, Math.min(64, highLightShine));
+		Light.highLightShine = Math.round(highLightShine);
+	}
+
+	public static double getK() {
+		return k;
+	}
+
+	public static double getKs() {
+		return ks;
+	}
+
+	public static double getHighLightShine() {
+		return highLightShine;
 	}
 
 	public static Color newRgb(Color start, Vector3f n, Vector3f cameraPos, Vector3f polyNormal) {
@@ -52,7 +66,7 @@ public class Light {
 		if (r < 0 || l == 0) {
 			highlight = 0;
 		}
-		
+
 		if (ray.dotProduct(polyNormal.multiplyScalar(-1)) == 0) {
 			l = 0.3;
 		}
