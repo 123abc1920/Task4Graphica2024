@@ -1,6 +1,7 @@
 package com.cgvsu.rasterization;
 
 import com.cgvsu.model.Model;
+import com.cgvsu.zbuffer.DrawBuffer;
 import com.cgvsu.zbuffer.ZBuffer;
 
 import javafx.scene.paint.Color;
@@ -9,6 +10,7 @@ public class RasterizationParams {
 
 	public static Color[] colors = { Color.CRIMSON, Color.CRIMSON, Color.CRIMSON };
 	public static ZBuffer zBuffer = new ZBuffer(800, 450);
+	public static DrawBuffer drawBuffer = new DrawBuffer(800, 450, null);
 
 	private static boolean drawLine = false;
 	private static boolean drawTexture = false;
@@ -33,7 +35,7 @@ public class RasterizationParams {
 	}
 
 	public static boolean getDrawTexture(Model m) {
-		//if (m.image == null) {
+		// if (m.image == null) {
 		if (m.getImage() == null) {
 			return false;
 		}

@@ -55,9 +55,11 @@ public class TriangleRasterization {
 				+ barizenticCoordinate[2] * arrZ[2]);
 		if (RasterizationParams.zBuffer.inZBuffer(x, y)) {
 			if (z < RasterizationParams.zBuffer.get((int) x, (int) y)) {
-				pixelWriter.setColor((int) x, (int) y, getDotColor(c, normals, barizenticCoordinate,
-						cameraPos.sub(new Vector3f(x, y, z)), polyNormal, RasterizationParams.getIsLight()));
+				Color dotColor = getDotColor(c, normals, barizenticCoordinate, cameraPos.sub(new Vector3f(x, y, z)),
+						polyNormal, RasterizationParams.getIsLight());
+				pixelWriter.setColor((int) x, (int) y, dotColor);
 				RasterizationParams.zBuffer.set((int) x, (int) y, z);
+				RasterizationParams.drawBuffer.set(x, y, c);
 			}
 		}
 	}
@@ -104,6 +106,5 @@ public class TriangleRasterization {
 		y[j] = tempY;
 		z[j] = tempZ;
 		n[j] = tempN;
-
 	}
 }

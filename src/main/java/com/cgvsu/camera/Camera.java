@@ -68,7 +68,6 @@ public class Camera {
 	public void setNearPlane(double nearPlane) {
 		if (nearPlane < this.farPlane) {
 			this.nearPlane = Math.round(nearPlane * 1000.0) / 1000.0;
-			System.out.println("kkk");
 		}
 	}
 
@@ -87,6 +86,10 @@ public class Camera {
 
 	public double getFov() {
 		return fov;
+	}
+
+	public Vector3f getVectorToCamera() {
+		return this.target.sub(this.position);
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import com.cgvsu.math.Vector3f;
 import javafx.scene.paint.Color;
 
 public class Light {
-	public static Vector3f position = new Vector3f(0, 0, 100);
+	public static Vector3f position = new Vector3f(0, 50, -100);
 	public static Vector3f target = new Vector3f(0, 0, 0);
 	private static Vector3f ray = target.sub(position).normalize();
 
@@ -68,7 +68,7 @@ public class Light {
 		}
 
 		if (ray.dotProduct(polyNormal.multiplyScalar(-1)) == 0) {
-			l = 0.3;
+			l = 0.7;
 		}
 
 		double red = Math.max(0, Math.min(1, start.getRed() * (1 - k) + start.getRed() * k * l + highlight));
