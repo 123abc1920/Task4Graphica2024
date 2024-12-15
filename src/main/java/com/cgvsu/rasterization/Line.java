@@ -60,7 +60,7 @@ public class Line {
 		double z = findZ(x, x00, x11, z00, z11) - 200 * Global.eps;
 		if (RasterizationParams.zBuffer.inZBuffer(x, y)) {
 			if (z - zBuffer.get(x, y) <= Global.eps) {
-				pw.setColor(x, y, RasterizationParams.getLineColor());
+				RasterizationParams.drawBuffer.set(x, y, RasterizationParams.getLineColor());
 				zBuffer.set(x, y, z);
 			}
 		}

@@ -24,8 +24,7 @@ public final class Triangulation {
 
 	public static void triangulateModel(Model m) {
 		ArrayList<Polygon> ps = new ArrayList<>();
-		//for (Polygon p : m.polygons) {
-		for(Polygon p : m.getPolygons()) {
+		for (Polygon p : m.getPolygons()) {
 			List<int[]> l = Triangulation.convexPolygonTriangulate(p.getVertexIndices());
 			List<int[]> l1 = Triangulation.convexPolygonTriangulate(p.getTextureVertexIndices());
 			for (int i = 0; i < l.size(); i++) {
@@ -42,7 +41,6 @@ public final class Triangulation {
 			}
 		}
 
-		//m.polygons = ps;
 		m.setPolygons(ps);
 	}
 

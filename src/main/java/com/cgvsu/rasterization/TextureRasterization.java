@@ -7,14 +7,11 @@ import com.cgvsu.math.Vector2f;
 import com.cgvsu.zbuffer.ZBuffer;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
 public class TextureRasterization {
 	public static boolean fillTriangle(final GraphicsContext graphicsContext, final double[] arrX, final double[] arrY,
 			final double[] arrZ, final Vector2f[] texturePoints, ZBuffer zBuffer, Image image) {
-
-		final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
 
 		sort(arrX, arrY, arrZ, texturePoints);
 
@@ -26,36 +23,38 @@ public class TextureRasterization {
 			throw new IllegalArgumentException("Массивы должны содержать как минимум 3 элемента.");
 		}
 
-		for (double y = arrY[1]; y < arrY[2]; y++) {
+		for (int y = (int) Math.ceil(arrY[1]); y <= (int) Math.floor(arrY[2]); y++) {
 			final double x1 = (arrY[2] - arrY[1] == 0) ? arrX[1]
 					: (y - arrY[1]) * (arrX[2] - arrX[1]) / (arrY[2] - arrY[1]) + arrX[1];
 			final double x2 = (arrY[0] - arrY[2] == 0) ? arrX[2]
 					: (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
-			for (double x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-				double[] barizenticCoordinate = barizentricCalculator(x, y, arrX, arrY);
+			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
+				double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y, arrX, arrY);
 				double z = (double) (barizenticCoordinate[0] * arrZ[0] + barizenticCoordinate[1] * arrZ[1]
 						+ barizenticCoordinate[2] * arrZ[2]);
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
 					if (z < zBuffer.get((int) x, (int) y)) {
-						pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, texturePoints, image));
+						RasterizationParams.drawBuffer.set((int) x, (int) y,
+								getColor(barizenticCoordinate, texturePoints, image));
 						zBuffer.set((int) x, (int) y, z);
 					}
 				}
 			}
 		}
 
-		for (double y = arrY[1]; y >= arrY[0]; y--) {
+		for (int y = (int) Math.floor(arrY[1]); y >= Math.ceil(arrY[0]); y--) {
 			final double x1 = (arrY[1] - arrY[0] == 0) ? arrX[0]
 					: (y - arrY[0]) * (arrX[1] - arrX[0]) / (arrY[1] - arrY[0]) + arrX[0];
 			final double x2 = (arrY[0] - arrY[2] == 0) ? arrX[2]
 					: (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
-			for (double x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-				double[] barizenticCoordinate = barizentricCalculator(x, y, arrX, arrY);
+			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
+				double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y, arrX, arrY);
 				double z = (double) (barizenticCoordinate[0] * arrZ[0] + barizenticCoordinate[1] * arrZ[1]
 						+ barizenticCoordinate[2] * arrZ[2]);
 				if (x >= 0 && x < zBuffer.getWidth() && y >= 0 && y < zBuffer.getHeight()) {
 					if (z < zBuffer.get((int) x, (int) y)) {
-						pixelWriter.setColor((int) x, (int) y, getColor(barizenticCoordinate, texturePoints, image));
+						RasterizationParams.drawBuffer.set((int) x, (int) y,
+								getColor(barizenticCoordinate, texturePoints, image));
 						zBuffer.set((int) x, (int) y, z);
 					}
 				}
@@ -65,22 +64,6 @@ public class TextureRasterization {
 		return true;
 	}
 
-	private static double determinator(double[][] arr) {
-		return arr[0][0] * arr[1][1] * arr[2][2] + arr[1][0] * arr[0][2] * arr[2][1] + arr[0][1] * arr[1][2] * arr[2][0]
-				- arr[0][2] * arr[1][1] * arr[2][0] - arr[0][0] * arr[1][2] * arr[2][1]
-				- arr[0][1] * arr[1][0] * arr[2][2];
-	}
-
-	private static double[] barizentricCalculator(double x, double y, double[] arrX, double[] arrY) {
-		final double generalDeterminant = determinator(new double[][] { arrX, arrY, new double[] { 1, 1, 1 } });
-		final double coordinate0 = determinator(new double[][] { new double[] { x, arrX[1], arrX[2] },
-				new double[] { y, arrY[1], arrY[2] }, new double[] { 1, 1, 1 } }) / generalDeterminant;
-		final double coordinate1 = determinator(new double[][] { new double[] { arrX[0], x, arrX[2] },
-				new double[] { arrY[0], y, arrY[2] }, new double[] { 1, 1, 1 } }) / generalDeterminant;
-		final double coordinate2 = 1.0 - coordinate0 - coordinate1;
-		return new double[] { coordinate0, coordinate1, coordinate2 };
-	}
-
 	private static Color getColor(double[] barycentricCoords, Vector2f[] texturePoints, Image image) {
 		double u = texturePoints[0].getX() * barycentricCoords[0] + texturePoints[1].getX() * barycentricCoords[1]
 				+ texturePoints[2].getX() * barycentricCoords[2];
@@ -88,8 +71,8 @@ public class TextureRasterization {
 				+ texturePoints[2].getY() * barycentricCoords[2];
 
 		PixelReader reader = image.getPixelReader();
-		int x = (int) Math.round(u * (image.getWidth() - 1));
-		int y = (int) Math.round(v * (image.getHeight() - 1));
+		int x = (int) Math.ceil(u * (image.getWidth() - 1));
+		int y = (int) Math.ceil(v * (image.getHeight() - 1));
 
 		x = (int) Math.max(0, Math.min(x, image.getWidth() - 1));
 		y = (int) Math.max(0, Math.min(y, image.getHeight() - 1));
