@@ -19,7 +19,7 @@ public class DrawBuffer {
 	public void refill() {
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
-				this.matrix[i][j] = Color.TRANSPARENT;
+				this.matrix[i][j] = null;
 			}
 		}
 	}
@@ -49,7 +49,10 @@ public class DrawBuffer {
 
 		for (int i = 0; i < this.getWidth(); i++) {
 			for (int j = 0; j < this.getHeight(); j++) {
-				px.setColor(i, j, get(i, j));
+				Color c = get(i, j);
+				if (c != null) {
+					px.setColor(i, j, c);
+				}
 			}
 		}
 	}

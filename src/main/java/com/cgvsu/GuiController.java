@@ -325,6 +325,7 @@ public class GuiController {
 		Light.setK(sourceStrength);
 		textFieldLightSourceStrength.setText(Light.getK() + "");
 		anchorPane.requestFocus();
+		remakeModel();
 	}
 
 	@FXML
@@ -345,6 +346,7 @@ public class GuiController {
 		Light.setKs(glareBrightness);
 		textFieldGlareBrightness.setText(Light.getKs() + "");
 		anchorPane.requestFocus();
+		remakeModel();
 	}
 
 	@FXML
@@ -365,6 +367,7 @@ public class GuiController {
 		Light.setHighLightShine(glareArea);
 		textFieldGlareArea.setText(Light.getHighLightShine() + "");
 		anchorPane.requestFocus();
+		remakeModel();
 	}
 
 	@FXML
@@ -388,6 +391,7 @@ public class GuiController {
 			Path fileName = Path.of(file.getAbsolutePath());
 			mesh.setTexture(fileName.toString());
 		}
+		remakeModel();
 	}
 
 	@FXML
@@ -399,6 +403,7 @@ public class GuiController {
 			cameraList.getItems().add(CameraManager.printCamera(i));
 		}
 		cameraList.setValue(cameraList.getItems().get(0));
+		remakeModel();
 	}
 
 	@FXML
@@ -406,6 +411,7 @@ public class GuiController {
 		if (mesh != null) {
 			mesh.setTexture(textureText.getText());
 		}
+		remakeModel();
 	}
 
 	@FXML
@@ -413,18 +419,21 @@ public class GuiController {
 		if (mesh != null) {
 			mesh.deleteTexture();
 		}
+		remakeModel();
 	}
 
 	@FXML
 	private void handleColorPickerLinesAction(ActionEvent actionEvent) {
 		Color newLinesColor = colorPickerLines.getValue();
 		RasterizationParams.setLineColor(newLinesColor);
+		remakeModel();
 	}
 
 	@FXML
 	private void handleColorPickerModelAction(ActionEvent actionEvent) {
 		Color newModelColor = colorPickerModel.getValue();
 		RasterizationParams.setColor(newModelColor);
+		remakeModel();
 	}
 
 	@FXML
@@ -434,6 +443,7 @@ public class GuiController {
 		} else {
 			RasterizationParams.setLine(false);
 		}
+		remakeModel();
 	}
 
 	@FXML
@@ -443,6 +453,7 @@ public class GuiController {
 		} else {
 			RasterizationParams.setLight(false);
 		}
+		remakeModel();
 	}
 
 	@FXML
@@ -462,6 +473,7 @@ public class GuiController {
 		camera.setFov(newFovDouble);
 		fovTextField.setText(camera.getFov() + "");
 		anchorPane.requestFocus();
+		remakeModel();
 	}
 
 	@FXML
@@ -481,6 +493,7 @@ public class GuiController {
 		camera.setNearPlane(newNearDouble);
 		nearTextField.setText(camera.getNearPlane() + "");
 		anchorPane.requestFocus();
+		remakeModel();
 	}
 
 	@FXML
@@ -500,6 +513,7 @@ public class GuiController {
 		camera.setFarPlane(newFarDouble);
 		farTextField.setText(camera.getFarPlane() + "");
 		anchorPane.requestFocus();
+		remakeModel();
 	}
 
 	@FXML
@@ -542,12 +556,7 @@ public class GuiController {
 			startXLMB = mouseEvent.getSceneX();
 			startYLMB = mouseEvent.getSceneY();
 			uploadInfoInTextFields();
-		}
-		if (mesh != null) {
-			textureText.setText(mesh.getTextureSource());
-			RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
-					(int) height);
-			showModelInfo();
+			remakeModel();
 		}
 		/*
 		 * else if (mouseEvent.getButton() == MouseButton.SECONDARY) { endXRMB =
@@ -565,12 +574,7 @@ public class GuiController {
 			camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
 			uploadInfoInTextFields();
 		}
-		if (mesh != null) {
-			textureText.setText(mesh.getTextureSource());
-			RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
-					(int) height);
-			showModelInfo();
-		}
+		remakeModel();
 	}
 
 	// доделать
@@ -619,42 +623,43 @@ public class GuiController {
 		mesh.setNormals(FindNormals.findNormals(mesh));
 		mesh.setTexture(null);
 
-		if (mesh != null) {
-			textureText.setText(mesh.getTextureSource());
-			RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
-					(int) height);
-			showModelInfo();
-		}
+		remakeModel();
 	}
 
 	@FXML
 	public void handleCameraForward(ActionEvent actionEvent) {
 		camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
+		remakeModel();
 	}
 
 	@FXML
 	public void handleCameraBackward(ActionEvent actionEvent) {
 		camera.movePosition(new Vector3f(0, 0, TRANSLATION));
+		remakeModel();
 	}
 
 	@FXML
 	public void handleCameraLeft(ActionEvent actionEvent) {
 		camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
+		remakeModel();
 	}
 
 	@FXML
 	public void handleCameraRight(ActionEvent actionEvent) {
 		camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
+		remakeModel();
 	}
 
 	@FXML
 	public void handleCameraUp(ActionEvent actionEvent) {
 		camera.movePosition(new Vector3f(0, TRANSLATION, 0));
+		remakeModel();
 	}
 
 	@FXML
 	public void handleCameraDown(ActionEvent actionEvent) {
 		camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
+		remakeModel();
 	}
 
 	@FXML
@@ -804,6 +809,15 @@ public class GuiController {
 			for (String activeModel : activeModels) {
 				Model.scaleModelOnXBackward(meshes.get(activeModel));
 			}
+		}
+	}
+	
+	private void remakeModel() {
+		if (mesh != null) {
+			textureText.setText(mesh.getTextureSource());
+			RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
+					(int) height);
+			showModelInfo();
 		}
 	}
 
