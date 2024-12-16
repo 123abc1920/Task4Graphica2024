@@ -33,6 +33,9 @@ public class DrawBuffer {
 	}
 
 	public void set(int row, int col, Color z) {
+		if (!inDrawBuffer(row, col)){
+			return;
+		}
 		matrix[row][col] = z;
 	}
 

@@ -68,7 +68,7 @@ public class Light {
 		}
 
 		if (ray.dotProduct(polyNormal.multiplyScalar(-1)) == 0) {
-			l = 0.7;
+			l = 0.3;
 		}
 
 		double red = Math.max(0, Math.min(1, start.getRed() * (1 - k) + start.getRed() * k * l + highlight));

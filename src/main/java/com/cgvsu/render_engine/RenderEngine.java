@@ -49,12 +49,6 @@ public class RenderEngine {
 				resultPoints.add(resultPoint);
 			}
 
-			for (int i = 0; i < resultPoints.size(); i++) {
-				resultPoints.get(i).setX(Math.max(0, resultPoints.get(i).getX()));
-				resultPoints.get(i).setY(Math.max(0, resultPoints.get(i).getY()));
-				resultPoints.get(i).setZ(Math.max(0, resultPoints.get(i).getZ()));
-			}
-
 			Vector3f[] normals = new Vector3f[3];
 
 			double[] arrX = new double[3];

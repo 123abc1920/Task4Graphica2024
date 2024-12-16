@@ -794,7 +794,7 @@ public class GuiController {
         }else{
             Model.rotateModelOnXClockwise(newNearInt,mesh);
         }
-        nearTextField.setText(camera.getNearPlane() + "");
+        rotateModelX.setText("");
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -816,7 +816,7 @@ public class GuiController {
         }else{
             Model.rotateModelOnYDown(newNearInt,mesh);
         }
-        nearTextField.setText(camera.getNearPlane() + "");
+        rotateModelY.setText("");
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -838,8 +838,7 @@ public class GuiController {
         }else{
             Model.rotateModelOnZNotClockwise(newNearInt,mesh);
         }
-
-        nearTextField.setText(camera.getNearPlane() + "");
+        rotateModelZ.setText("");
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -857,8 +856,13 @@ public class GuiController {
             alert.showAndWait();
         }
 
-        camera.setNearPlane(newNearDouble);
-        nearTextField.setText(camera.getNearPlane() + "");
+        if(newNearDouble>0){
+            Model.moveModelLeft(newNearDouble,mesh);
+        }else{
+            Model.moveModelRight(newNearDouble,mesh);
+        }
+
+        translateModelX.setText("");
         anchorPane.requestFocus();
         remakeModel();
     }
