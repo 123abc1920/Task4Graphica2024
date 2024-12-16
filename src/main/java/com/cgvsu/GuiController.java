@@ -824,18 +824,21 @@ public class GuiController {
     @FXML
     private void rotatingModelZ() {
         String newNear = nearTextField.getText();
-        Double newNearDouble = 0d;
+        Integer newNearInt = 0;
 
         try {
-            newNearDouble = Double.parseDouble(newNear);
+            newNearInt = Integer.parseInt(newNear);
         } catch (Exception e) {
-            nearTextField.setText(camera.getNearPlane() + "");
             String errorMessage = e.getMessage();
             Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
+        if(newNearInt>0){
+            Model.rotateModelOnZClockwise(newNearInt,mesh);
+        }else{
+            Model.rotateModelOnZNotClockwise(newNearInt,mesh);
+        }
 
-        camera.setNearPlane(newNearDouble);
         nearTextField.setText(camera.getNearPlane() + "");
         anchorPane.requestFocus();
         remakeModel();
