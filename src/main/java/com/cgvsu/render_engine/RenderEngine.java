@@ -64,6 +64,12 @@ public class RenderEngine {
 
 			boolean drawnPolygon = false;
 
+			Vector3f[] vectorsToCamera = new Vector3f[3];
+			for (int i = 0; i < mesh.getPolygons().get(polygonInd).getVertexIndices().size(); i++) {
+				Vector3f vertex = mesh.getVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(i));
+				vectorsToCamera[i] = camera.getPosition().sub(vertex);
+			}
+
 			Vector3f polyNormal = FindNormals.findPolygonsNormals(
 					mesh.getVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(0)),
 					mesh.getVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(1)),
@@ -71,7 +77,7 @@ public class RenderEngine {
 
 			if (!RasterizationParams.getDrawTexture(mesh)) {
 				drawnPolygon = drawSolidColor(graphicsContext, arrX, arrY, arrZ, normals, camera.getPosition(),
-						polyNormal, RasterizationParams.getIsLight());
+						polyNormal, vectorsToCamera, RasterizationParams.getIsLight());
 			} else {
 				Vector2f[] texturePoints = new Vector2f[3];
 				texturePoints[0] = mesh.getTextureVertices()
@@ -100,9 +106,9 @@ public class RenderEngine {
 	}
 
 	private static boolean drawSolidColor(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
-			Vector3f[] normals, Vector3f cameraPos, Vector3f polyNormal, boolean isLight) {
+			Vector3f[] normals, Vector3f cameraPos, Vector3f polyNormal, Vector3f[] vs, boolean isLight) {
 		return TriangleRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, RasterizationParams.colors,
-				normals, polyNormal, RasterizationParams.zBuffer, cameraPos, isLight);
+				normals, polyNormal, RasterizationParams.zBuffer, cameraPos, vs, isLight);
 	}
 
 	private static void drawLines(GraphicsContext graphicsContext, int nVerticesInPolygon, List<Vector3f> resultPoints,

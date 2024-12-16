@@ -5,7 +5,7 @@ import com.cgvsu.math.Vector3f;
 import javafx.scene.paint.Color;
 
 public class Light {
-	public static Vector3f position = new Vector3f(0, 50, -100);
+	public static Vector3f position = new Vector3f(0, -50, -100);
 	public static Vector3f target = new Vector3f(0, 0, 0);
 	private static Vector3f ray = target.sub(position).normalize();
 
@@ -50,18 +50,18 @@ public class Light {
 		return highLightShine;
 	}
 
-	public static Color newRgb(Color start, Vector3f n, Vector3f cameraPos, Vector3f polyNormal) {
+	public static Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f polyNormal) {
 		double l = ray.dotProduct(n.multiplyScalar(-1));
 
 		if (l < 0) {
 			l = 0;
 		}
 
-		cameraPos = cameraPos.normalize();
+		vectorToCamera = vectorToCamera.normalize();
 		Vector3f reflectedRay = ray.sub(n.multiplyScalar(2 * ray.dotProduct(n)));
 		reflectedRay = reflectedRay.normalize();
 
-		double r = reflectedRay.dotProduct(cameraPos);
+		double r = reflectedRay.dotProduct(vectorToCamera.multiplyScalar(-1));
 		double highlight = ks * Math.pow(r, highLightShine);
 		if (r < 0 || l == 0) {
 			highlight = 0;
@@ -69,6 +69,7 @@ public class Light {
 
 		if (ray.dotProduct(polyNormal.multiplyScalar(-1)) == 0) {
 			l = 0.3;
+			highlight = 0;
 		}
 
 		double red = Math.max(0, Math.min(1, start.getRed() * (1 - k) + start.getRed() * k * l + highlight));
