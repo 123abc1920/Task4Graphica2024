@@ -852,7 +852,6 @@ public class GuiController {
         try {
             newNearDouble = Double.parseDouble(newNear);
         } catch (Exception e) {
-            nearTextField.setText(camera.getNearPlane() + "");
             String errorMessage = e.getMessage();
             Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
