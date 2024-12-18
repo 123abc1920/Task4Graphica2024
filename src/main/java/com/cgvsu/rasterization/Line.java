@@ -3,15 +3,10 @@ package com.cgvsu.rasterization;
 import com.cgvsu.math.Global;
 import com.cgvsu.zbuffer.ZBuffer;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.PixelWriter;
-
 public class Line {
 
-	public static void drawLine(GraphicsContext gc, double x00, double y00, double x11, double y11, double z00,
+	public static void drawLine(double x00, double y00, double x11, double y11, double z00,
 			double z11, ZBuffer zBuffer) {
-		PixelWriter pw = gc.getPixelWriter();
-
 		int x0 = (int) Math.round(x00);
 		int x1 = (int) Math.round(x11);
 		int y0 = (int) Math.round(y00);
@@ -31,7 +26,7 @@ public class Line {
 			deltaerr = (deltay + 1);
 
 			for (int x = x0; x != x1; x += dirx) {
-				putPxl(x, y, x00, x11, z00, z11, zBuffer, pw);
+				putPxl(x, y, x00, x11, z00, z11, zBuffer);
 				error += deltaerr;
 
 				if (error >= (deltax + 1)) {
@@ -44,7 +39,7 @@ public class Line {
 			deltaerr = (deltax + 1);
 
 			for (int y = y0; y != y1; y += diry) {
-				putPxl(x, y, x00, x11, z00, z11, zBuffer, pw);
+				putPxl(x, y, x00, x11, z00, z11, zBuffer);
 				error += deltaerr;
 
 				if (error >= (deltay + 1)) {
@@ -55,8 +50,7 @@ public class Line {
 		}
 	}
 
-	private static void putPxl(int x, int y, double x00, double x11, double z00, double z11, ZBuffer zBuffer,
-			PixelWriter pw) {
+	private static void putPxl(int x, int y, double x00, double x11, double z00, double z11, ZBuffer zBuffer) {
 		double z = findZ(x, x00, x11, z00, z11) - 200 * Global.eps;
 		if (RasterizationParams.zBuffer.inZBuffer(x, y)) {
 			if (z - zBuffer.get(x, y) <= Global.eps) {

@@ -9,50 +9,55 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
 public class TriangleRasterization {
-	public static boolean fillTriangle(final GraphicsContext graphicsContext, final double[] arrX, final double[] arrY,
-			final double[] arrZ, final Color[] colors, Vector3f[] normals, Vector3f polyNormal, ZBuffer zBuffer,
-			Vector3f cameraPos, Vector3f[] vecsToCamera, boolean isLight) {
+	public static boolean fillTriangle(Vector3f[] vertices, final Color[] colors, Vector3f[] normals,
+			Vector3f polyNormal, ZBuffer zBuffer, Vector3f cameraPos, Vector3f[] vecsToCamera, boolean isLight) {
 
-		final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
+		sort(vertices, normals);
 
-		sort(arrX, arrY, arrZ, normals);
-
-		if ((arrX[0] * (arrY[1] - arrY[2]) + arrX[1] * (arrY[2] - arrY[0]) + arrX[2] * (arrY[0] - arrY[1])) == 0) {
+		if ((vertices[0].getX() * (vertices[1].getY() - vertices[2].getY())
+				+ vertices[1].getX() * (vertices[2].getY() - vertices[0].getY())
+				+ vertices[2].getX() * (vertices[0].getY() - vertices[1].getY())) == 0) {
 			return false;
 		}
 
-		if (arrX.length < 3 || arrY.length < 3 || arrZ.length < 3 || colors.length < 3) {
+		if (vertices.length < 3) {
 			throw new IllegalArgumentException("Массивы должны содержать как минимум 3 элемента.");
 		}
 
-		for (int y = (int) Math.ceil(arrY[1]); y <= (int) Math.floor(arrY[2]); y++) {
-			final double x1 = (arrY[2] - arrY[1] == 0) ? arrX[1]
-					: (y - arrY[1]) * (arrX[2] - arrX[1]) / (arrY[2] - arrY[1]) + arrX[1];
-			final double x2 = (arrY[0] - arrY[2] == 0) ? arrX[2]
-					: (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
+		for (int y = (int) Math.ceil(vertices[1].getY()); y <= (int) Math.floor(vertices[2].getY()); y++) {
+			final double x1 = (vertices[2].getY() - vertices[1].getY() == 0) ? vertices[1].getX()
+					: (y - vertices[1].getY()) * (vertices[2].getX() - vertices[1].getX())
+							/ (vertices[2].getY() - vertices[1].getY()) + vertices[1].getX();
+			final double x2 = (vertices[0].getY() - vertices[2].getY() == 0) ? vertices[2].getX()
+					: (y - vertices[2].getY()) * (vertices[0].getX() - vertices[2].getX())
+							/ (vertices[0].getY() - vertices[2].getY()) + vertices[2].getX();
 			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
-				putPxl(x, y, arrX, arrY, arrZ, colors[0], normals, cameraPos, polyNormal, vecsToCamera, pixelWriter);
+				putPxl(x, y, vertices, colors[0], normals, cameraPos, polyNormal, vecsToCamera);
 			}
 		}
 
-		for (int y = (int) Math.floor(arrY[1]); y >= Math.ceil(arrY[0]); y--) {
-			final double x1 = (arrY[1] - arrY[0] == 0) ? arrX[0]
-					: (y - arrY[0]) * (arrX[1] - arrX[0]) / (arrY[1] - arrY[0]) + arrX[0];
-			final double x2 = (arrY[0] - arrY[2] == 0) ? arrX[2]
-					: (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
+		for (int y = (int) Math.floor(vertices[1].getY()); y >= Math.ceil(vertices[0].getY()); y--) {
+			final double x1 = (vertices[1].getY() - vertices[0].getY() == 0) ? vertices[0].getX()
+					: (y - vertices[0].getY()) * (vertices[1].getX() - vertices[0].getX())
+							/ (vertices[1].getY() - vertices[0].getY()) + vertices[0].getX();
+			final double x2 = (vertices[0].getY() - vertices[2].getY() == 0) ? vertices[2].getX()
+					: (y - vertices[2].getY()) * (vertices[0].getX() - vertices[2].getX())
+							/ (vertices[0].getY() - vertices[2].getY()) + vertices[2].getX();
 			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
-				putPxl(x, y, arrX, arrY, arrZ, colors[0], normals, cameraPos, polyNormal, vecsToCamera, pixelWriter);
+				putPxl(x, y, vertices, colors[0], normals, cameraPos, polyNormal, vecsToCamera);
 			}
 		}
 
 		return true;
 	}
 
-	private static void putPxl(int x, int y, double[] arrX, double[] arrY, double[] arrZ, Color c, Vector3f[] normals,
-			Vector3f cameraPos, Vector3f polyNormal, Vector3f[] vecsToCamera, PixelWriter pixelWriter) {
+	private static void putPxl(int x, int y, Vector3f[] vertices, Color c, Vector3f[] normals, Vector3f cameraPos,
+			Vector3f polyNormal, Vector3f[] vecsToCamera) {
+		double[] arrX = { vertices[0].getX(), vertices[1].getX(), vertices[2].getX() };
+		double[] arrY = { vertices[0].getY(), vertices[1].getY(), vertices[2].getY() };
 		double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y, arrX, arrY);
-		double z = (double) (barizenticCoordinate[0] * arrZ[0] + barizenticCoordinate[1] * arrZ[1]
-				+ barizenticCoordinate[2] * arrZ[2]);
+		double z = (double) (barizenticCoordinate[0] * vertices[0].getZ() + barizenticCoordinate[1] * vertices[1].getZ()
+				+ barizenticCoordinate[2] * vertices[2].getZ());
 
 		double toCameraX = vecsToCamera[0].getX() * barizenticCoordinate[0]
 				+ vecsToCamera[1].getX() * barizenticCoordinate[1] + vecsToCamera[2].getX() * barizenticCoordinate[2];
@@ -90,30 +95,24 @@ public class TriangleRasterization {
 		return Light.newRgb(c, dotNormal, toCamera, polyNormal);
 	}
 
-	private static void sort(double[] x, double[] y, double[] z, Vector3f[] n) {
-		if (y[0] > y[1]) {
-			swap(x, y, z, n, 0, 1);
+	private static void sort(Vector3f[] v, Vector3f[] n) {
+		if (v[0].getY() > v[1].getY()) {
+			swap(v, n, 0, 1);
 		}
-		if (y[1] > y[2]) {
-			swap(x, y, z, n, 1, 2);
+		if (v[1].getY() > v[2].getY()) {
+			swap(v, n, 1, 2);
 		}
-		if (y[0] > y[1]) {
-			swap(x, y, z, n, 0, 1);
+		if (v[0].getY() > v[1].getY()) {
+			swap(v, n, 0, 1);
 		}
 	}
 
-	private static void swap(double[] x, double[] y, double[] z, Vector3f[] n, int i, int j) {
-		double tempY = y[i];
-		double tempX = x[i];
-		double tempZ = z[i];
+	private static void swap(Vector3f[] v, Vector3f[] n, int i, int j) {
+		Vector3f tempV = v[i];
 		Vector3f tempN = n[i];
-		x[i] = x[j];
-		y[i] = y[j];
-		z[i] = z[j];
+		v[i] = v[j];
 		n[i] = n[j];
-		x[j] = tempX;
-		y[j] = tempY;
-		z[j] = tempZ;
+		v[j] = tempV;
 		n[j] = tempN;
 	}
 }

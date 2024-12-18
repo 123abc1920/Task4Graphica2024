@@ -13,11 +13,9 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
 public class TextureRasterization {
-	public static boolean fillTriangle(final GraphicsContext graphicsContext, final double[] arrX, final double[] arrY,
-			final double[] arrZ, final Vector2f[] texturePoints, ZBuffer zBuffer, Image image, Vector3f polyNrmal,
-			Vector3f[] normals, Vector3f cameraPos, Vector3f[] vecsToCamera) {
-
-		final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
+	public static boolean fillTriangle(final double[] arrX, final double[] arrY,
+			final double[] arrZ, final Vector2f[] texturePoints, ZBuffer zBuffer, Image image, Vector3f polyNormal,
+			Vector3f[] normals, Vector3f[] vecsToCamera) {
 
 		sort(arrX, arrY, arrZ, texturePoints, normals);
 
@@ -35,7 +33,7 @@ public class TextureRasterization {
 			final double x2 = (arrY[0] - arrY[2] == 0) ? arrX[2]
 					: (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
 			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
-				putPxl(x, y, arrX, arrY, arrZ, texturePoints, image, pixelWriter, vecsToCamera, normals, polyNrmal);
+				putPxl(x, y, arrX, arrY, arrZ, texturePoints, image, vecsToCamera, normals, polyNormal);
 			}
 		}
 
@@ -45,7 +43,7 @@ public class TextureRasterization {
 			final double x2 = (arrY[0] - arrY[2] == 0) ? arrX[2]
 					: (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
 			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
-				putPxl(x, y, arrX, arrY, arrZ, texturePoints, image, pixelWriter, vecsToCamera, normals, polyNrmal);
+				putPxl(x, y, arrX, arrY, arrZ, texturePoints, image, vecsToCamera, normals, polyNormal);
 			}
 		}
 
@@ -53,7 +51,7 @@ public class TextureRasterization {
 	}
 
 	private static void putPxl(int x, int y, double[] arrX, double[] arrY, double[] arrZ, Vector2f[] texturePoints,
-			Image img, PixelWriter pixelWriter, Vector3f[] vecsToCamera, Vector3f[] normals, Vector3f polyNormal) {
+			Image img, Vector3f[] vecsToCamera, Vector3f[] normals, Vector3f polyNormal) {
 		double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y, arrX, arrY);
 		double z = (double) (barizenticCoordinate[0] * arrZ[0] + barizenticCoordinate[1] * arrZ[1]
 				+ barizenticCoordinate[2] * arrZ[2]);
