@@ -86,7 +86,8 @@ public class RenderEngine {
 						.get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(1));
 				texturePoints[2] = mesh.getTextureVertices()
 						.get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(2));
-				drawnPolygon = drawTexture(graphicsContext, arrX, arrY, arrZ, texturePoints, mesh.getImage());
+				drawnPolygon = drawTexture(graphicsContext, arrX, arrY, arrZ, texturePoints, mesh.getImage(),
+						polyNormal, normals, camera.getPosition(), vectorsToCamera);
 			}
 
 			if (RasterizationParams.getDrawLine()) {
@@ -99,9 +100,10 @@ public class RenderEngine {
 	}
 
 	private static boolean drawTexture(GraphicsContext graphicsContext, double[] arrX, double[] arrY, double[] arrZ,
-			Vector2f[] texturePoints, Image image) {
+			Vector2f[] texturePoints, Image image, Vector3f polyNormal, Vector3f[] normals, Vector3f cameraPos,
+			Vector3f[] vecsToCamera) {
 		return TextureRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, texturePoints,
-				RasterizationParams.zBuffer, image);
+				RasterizationParams.zBuffer, image, polyNormal, normals, cameraPos, vecsToCamera);
 
 	}
 
