@@ -1,20 +1,22 @@
 package com.cgvsu.rasterization;
 
-public class BarycentricCoordinate {
-	public static double determinator(double[][] arr) {
-		return arr[0][0] * arr[1][1] * arr[2][2] + arr[1][0] * arr[0][2] * arr[2][1] + arr[0][1] * arr[1][2] * arr[2][0]
-				- arr[0][2] * arr[1][1] * arr[2][0] - arr[0][0] * arr[1][2] * arr[2][1]
-				- arr[0][1] * arr[1][0] * arr[2][2];
-	}
+import com.cgvsu.math.Matrix3f;
+import com.cgvsu.math.Vector3f;
 
-	public static double[] barizentricCalculator(double x, double y, double[] arrX, double[] arrY) {
-		final double generalDeterminant = determinator(new double[][] { arrX, arrY, new double[] { 1, 1, 1 } });
-		double coordinate0 = Math.abs(determinator(new double[][] { new double[] { x, arrX[1], arrX[2] },
-				new double[] { y, arrY[1], arrY[2] }, new double[] { 1, 1, 1 } }) / generalDeterminant);
-		double coordinate1 = Math.abs(determinator(new double[][] { new double[] { arrX[0], x, arrX[2] },
-				new double[] { arrY[0], y, arrY[2] }, new double[] { 1, 1, 1 } }) / generalDeterminant);
-		double coordinate2 = Math.abs(determinator(new double[][] { new double[] { arrX[0], arrX[1], x },
-				new double[] { arrY[0], arrY[1], y }, new double[] { 1, 1, 1 } }) / generalDeterminant);
+public class BarycentricCoordinate {
+
+	public static double[] barizentricCalculator(double x, double y, Vector3f[] vertices) {
+		Matrix3f generalMatrix = new Matrix3f(
+				new double[][] { { vertices[0].getX(), vertices[1].getX(), vertices[2].getX() },
+						{ vertices[0].getY(), vertices[1].getY(), vertices[2].getY() }, { 1, 1, 1 } });
+		final double generalDeterminant = generalMatrix.determinate();
+
+		double coordinate0 = Math.abs(new Matrix3f(new double[][] { { x, vertices[1].getX(), vertices[2].getX() },
+				{ y, vertices[1].getY(), vertices[2].getY() }, { 1, 1, 1 } }).determinate() / generalDeterminant);
+		double coordinate1 = Math.abs(new Matrix3f(new double[][] { { vertices[0].getX(), x, vertices[2].getX() },
+				{ vertices[0].getY(), y, vertices[2].getY() }, { 1, 1, 1 } }).determinate() / generalDeterminant);
+		double coordinate2 = Math.abs(new Matrix3f(new double[][] { { vertices[0].getX(), vertices[1].getX(), x },
+				{ vertices[0].getY(), vertices[1].getY(), y }, { 1, 1, 1 } }).determinate() / generalDeterminant);
 
 		return new double[] { coordinate0, coordinate1, coordinate2 };
 	}

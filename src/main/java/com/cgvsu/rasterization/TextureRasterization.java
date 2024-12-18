@@ -10,8 +10,18 @@ import com.cgvsu.math.Vector3f;
 import javafx.scene.paint.Color;
 
 public class TextureRasterization {
-	public static boolean fillTriangle(Vector3f[] vertices, final Vector2f[] texturePoints,
-			Image image, Vector3f polyNormal, Vector3f[] normals, Vector3f[] vecsToCamera) {
+
+	public class VertexObject {
+		double[] ys;
+		Vector3f[] vertices;
+		Vector3f[] normals;
+		Vector3f[] vecsToCamera;
+		public VertexObject() {
+		}
+	}
+
+	public static boolean fillTriangle(Vector3f[] vertices, final Vector2f[] texturePoints, Image image,
+			Vector3f polyNormal, Vector3f[] normals, Vector3f[] vecsToCamera) {
 
 		sort(vertices, texturePoints, normals);
 
@@ -52,11 +62,9 @@ public class TextureRasterization {
 		return true;
 	}
 
-	private static void putPxl(int x, int y, Vector3f[] vertices, Vector2f[] texturePoints,
-			Image img, Vector3f[] vecsToCamera, Vector3f[] normals, Vector3f polyNormal) {
-		double[] arrX = { vertices[0].getX(), vertices[1].getX(), vertices[2].getX() };
-		double[] arrY = { vertices[0].getY(), vertices[1].getY(), vertices[2].getY() };
-		double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y, arrX, arrY);
+	private static void putPxl(int x, int y, Vector3f[] vertices, Vector2f[] texturePoints, Image img,
+			Vector3f[] vecsToCamera, Vector3f[] normals, Vector3f polyNormal) {
+		double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y, vertices);
 		double z = (double) (barizenticCoordinate[0] * vertices[0].getZ() + barizenticCoordinate[1] * vertices[1].getZ()
 				+ barizenticCoordinate[2] * vertices[2].getZ());
 
@@ -91,13 +99,12 @@ public class TextureRasterization {
 		x = (int) Math.max(0, Math.min(x, image.getWidth() - 1));
 		y = (int) Math.max(0, Math.min(y, image.getHeight() - 1));
 
-		return getDotColor(reader.getColor(x, y), normals, barycentricCoords, toCamera, polyNormal,
-				RasterizationParams.getIsLight());
+		return getDotColor(reader.getColor(x, y), normals, barycentricCoords, toCamera, polyNormal);
 	}
 
 	private static Color getDotColor(Color c, Vector3f[] normals, double[] barizenticCoordinate, Vector3f toCamera,
-			Vector3f polyNormal, boolean isLight) {
-		if (!isLight) {
+			Vector3f polyNormal) {
+		if (!RasterizationParams.getIsLight()) {
 			return c;
 		}
 

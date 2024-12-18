@@ -49,7 +49,6 @@ public class GuiController {
     private boolean isRotateModeEnabled = false;
     private boolean isScalingModeEnabled = false;
 
-
     @FXML
     AnchorPane anchorPane;
 
