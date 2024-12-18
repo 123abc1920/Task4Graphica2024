@@ -1,5 +1,6 @@
 package com.cgvsu.light;
 
+import com.cgvsu.math.Global;
 import com.cgvsu.math.Vector3f;
 
 import javafx.scene.paint.Color;
@@ -67,7 +68,7 @@ public class Light {
 			highlight = 0;
 		}
 
-		if (ray.dotProduct(polyNormal.multiplyScalar(-1)) == 0) {
+		if (Math.abs(ray.dotProduct(polyNormal.multiplyScalar(-1))) <= Global.eps) {
 			l = 0.3;
 			highlight = 0;
 		}

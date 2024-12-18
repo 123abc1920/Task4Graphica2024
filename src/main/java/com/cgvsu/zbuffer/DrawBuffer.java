@@ -32,13 +32,16 @@ public class DrawBuffer {
 	}
 
 	public void set(int row, int col, Color z) {
-		if (!inDrawBuffer(row, col)){
+		if (!inDrawBuffer(row, col)) {
 			return;
 		}
 		matrix[row][col] = z;
 	}
 
 	public Color get(int row, int col) {
+		if (!inDrawBuffer(row, col)) {
+			return null;
+		}
 		return matrix[row][col];
 	}
 
