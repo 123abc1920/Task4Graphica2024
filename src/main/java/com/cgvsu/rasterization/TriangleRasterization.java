@@ -11,7 +11,7 @@ import com.cgvsu.math.Vector3f;
 import javafx.scene.paint.Color;
 
 public class TriangleRasterization {
-
+	
 	static class VertexObject {
 		Vector3f vertice;
 		Vector3f normal;
