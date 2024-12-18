@@ -277,7 +277,7 @@ public class GuiController {
 
     private void showModelInfo() {
         colorPickerLines.setValue(RasterizationParams.getLineColor());
-        colorPickerModel.setValue(RasterizationParams.getColor());
+        colorPickerModel.setValue(mesh.getColor());
         colorPickerLines.setDisable(false);
         colorPickerModel.setDisable(false);
 
@@ -447,7 +447,7 @@ public class GuiController {
     @FXML
     private void handleColorPickerModelAction(ActionEvent actionEvent) {
         Color newModelColor = colorPickerModel.getValue();
-        RasterizationParams.setColor(newModelColor);
+        mesh.setColor(newModelColor);
         remakeModel();
     }
 

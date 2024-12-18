@@ -6,6 +6,7 @@ import java.util.List;
 import com.cgvsu.math.Vector3f;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 import com.cgvsu.camera.Camera;
 import com.cgvsu.math.Matrix4f;
@@ -50,19 +51,13 @@ public class RenderEngine {
 			}
 
 			Vector3f[] normals = new Vector3f[3];
+			Vector3f[] vertices = new Vector3f[3];
 
-			double[] arrX = new double[3];
-			double[] arrY = new double[3];
-			double[] arrZ = new double[3];
 			for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-				arrX[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getX();
-				arrY[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getY();
-				arrZ[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd).getZ();
 				normals[vertexInPolygonInd] = mesh.getNormals()
 						.get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+				vertices[vertexInPolygonInd] = resultPoints.get(vertexInPolygonInd);
 			}
-
-			Vector3f[] vertices = { resultPoints.get(0), resultPoints.get(1), resultPoints.get(2) };
 
 			boolean drawnPolygon = false;
 
@@ -78,8 +73,7 @@ public class RenderEngine {
 					mesh.getVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(2)));
 
 			if (!RasterizationParams.getDrawTexture(mesh)) {
-				drawnPolygon = drawSolidColor(vertices, normals, camera.getPosition(), polyNormal,
-						vectorsToCamera, RasterizationParams.getIsLight());
+				drawnPolygon = drawSolidColor(vertices, normals, polyNormal, vectorsToCamera, mesh.getColor());
 			} else {
 				Vector2f[] texturePoints = new Vector2f[3];
 				texturePoints[0] = mesh.getTextureVertices()
@@ -88,43 +82,39 @@ public class RenderEngine {
 						.get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(1));
 				texturePoints[2] = mesh.getTextureVertices()
 						.get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(2));
-				drawnPolygon = drawTexture(arrX, arrY, arrZ, texturePoints, mesh.getImage(), polyNormal, normals,
+				drawnPolygon = drawTexture(vertices, texturePoints, mesh.getImage(), polyNormal, normals,
 						vectorsToCamera);
 			}
 
 			if (RasterizationParams.getDrawLine()) {
 				if (drawnPolygon) {
-					drawLines(nVerticesInPolygon, resultPoints, RasterizationParams.zBuffer);
+					drawLines(nVerticesInPolygon, resultPoints);
 				}
 			}
 
 		}
 	}
 
-	private static boolean drawTexture(double[] arrX, double[] arrY, double[] arrZ, Vector2f[] texturePoints,
-			Image image, Vector3f polyNormal, Vector3f[] normals, Vector3f[] vecsToCamera) {
-		return TextureRasterization.fillTriangle(arrX, arrY, arrZ, texturePoints, RasterizationParams.zBuffer, image,
-				polyNormal, normals, vecsToCamera);
+	private static boolean drawTexture(Vector3f[] vertices, Vector2f[] texturePoints, Image image, Vector3f polyNormal,
+			Vector3f[] normals, Vector3f[] vecsToCamera) {
+		return TextureRasterization.fillTriangle(vertices, texturePoints, image, polyNormal, normals, vecsToCamera);
 
 	}
 
-	private static boolean drawSolidColor(Vector3f[] vertices,
-			Vector3f[] normals, Vector3f cameraPos, Vector3f polyNormal, Vector3f[] vs, boolean isLight) {
-		return TriangleRasterization.fillTriangle(vertices, RasterizationParams.colors,
-				normals, polyNormal, RasterizationParams.zBuffer, cameraPos, vs, isLight);
+	private static boolean drawSolidColor(Vector3f[] vertices, Vector3f[] normals, Vector3f polyNormal, Vector3f[] vs,
+			Color color) {
+		return TriangleRasterization.fillTriangle(vertices, color, normals, polyNormal, vs);
 	}
 
-	private static void drawLines(int nVerticesInPolygon, List<Vector3f> resultPoints, ZBuffer zbuffer) {
-
+	private static void drawLines(int nVerticesInPolygon, List<Vector3f> resultPoints) {
 		for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
 			Line.drawLine(resultPoints.get(vertexInPolygonInd - 1).getX(),
 					resultPoints.get(vertexInPolygonInd - 1).getY(), resultPoints.get(vertexInPolygonInd).getX(),
 					resultPoints.get(vertexInPolygonInd).getY(), resultPoints.get(vertexInPolygonInd - 1).getZ(),
-					resultPoints.get(vertexInPolygonInd).getZ(), zbuffer);
+					resultPoints.get(vertexInPolygonInd).getZ());
 		}
-
 		Line.drawLine(resultPoints.get(nVerticesInPolygon - 1).getX(), resultPoints.get(nVerticesInPolygon - 1).getY(),
 				resultPoints.get(0).getX(), resultPoints.get(0).getY(), resultPoints.get(nVerticesInPolygon - 1).getZ(),
-				resultPoints.get(0).getZ(), zbuffer);
+				resultPoints.get(0).getZ());
 	}
 }

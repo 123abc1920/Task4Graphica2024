@@ -2,15 +2,12 @@ package com.cgvsu.rasterization;
 
 import com.cgvsu.light.Light;
 import com.cgvsu.math.Vector3f;
-import com.cgvsu.zbuffer.ZBuffer;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
 public class TriangleRasterization {
-	public static boolean fillTriangle(Vector3f[] vertices, final Color[] colors, Vector3f[] normals,
-			Vector3f polyNormal, ZBuffer zBuffer, Vector3f cameraPos, Vector3f[] vecsToCamera, boolean isLight) {
+	public static boolean fillTriangle(Vector3f[] vertices, Color color, Vector3f[] normals,
+			Vector3f polyNormal, Vector3f[] vecsToCamera) {
 
 		sort(vertices, normals);
 
@@ -32,7 +29,7 @@ public class TriangleRasterization {
 					: (y - vertices[2].getY()) * (vertices[0].getX() - vertices[2].getX())
 							/ (vertices[0].getY() - vertices[2].getY()) + vertices[2].getX();
 			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
-				putPxl(x, y, vertices, colors[0], normals, cameraPos, polyNormal, vecsToCamera);
+				putPxl(x, y, vertices, color, normals, polyNormal, vecsToCamera);
 			}
 		}
 
@@ -44,15 +41,15 @@ public class TriangleRasterization {
 					: (y - vertices[2].getY()) * (vertices[0].getX() - vertices[2].getX())
 							/ (vertices[0].getY() - vertices[2].getY()) + vertices[2].getX();
 			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
-				putPxl(x, y, vertices, colors[0], normals, cameraPos, polyNormal, vecsToCamera);
+				putPxl(x, y, vertices, color, normals, polyNormal, vecsToCamera);
 			}
 		}
 
 		return true;
 	}
 
-	private static void putPxl(int x, int y, Vector3f[] vertices, Color c, Vector3f[] normals, Vector3f cameraPos,
-			Vector3f polyNormal, Vector3f[] vecsToCamera) {
+	private static void putPxl(int x, int y, Vector3f[] vertices, Color c, Vector3f[] normals, Vector3f polyNormal,
+			Vector3f[] vecsToCamera) {
 		double[] arrX = { vertices[0].getX(), vertices[1].getX(), vertices[2].getX() };
 		double[] arrY = { vertices[0].getY(), vertices[1].getY(), vertices[2].getY() };
 		double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y, arrX, arrY);

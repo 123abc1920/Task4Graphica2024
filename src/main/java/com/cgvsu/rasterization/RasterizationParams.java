@@ -8,7 +8,6 @@ import javafx.scene.paint.Color;
 
 public class RasterizationParams {
 
-	public static Color[] colors = { Color.CRIMSON, Color.CRIMSON, Color.CRIMSON };
 	public static ZBuffer zBuffer = new ZBuffer(800, 450);
 	public static DrawBuffer drawBuffer = new DrawBuffer(800, 450, null);
 
@@ -26,16 +25,7 @@ public class RasterizationParams {
 		RasterizationParams.lineColor = lineColor;
 	}
 
-	public static void setColor(Color color) {
-		colors[0] = colors[1] = colors[2] = color;
-	}
-
-	public static Color getColor() {
-		return colors[0];
-	}
-
 	public static boolean getDrawTexture(Model m) {
-		// if (m.image == null) {
 		if (m.getImage() == null) {
 			return false;
 		}

@@ -5,7 +5,6 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
 public class DrawBuffer {
-
 	private Color[][] matrix;
 	private GraphicsContext context;
 

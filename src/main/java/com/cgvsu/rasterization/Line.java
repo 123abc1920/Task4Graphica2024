@@ -5,8 +5,7 @@ import com.cgvsu.zbuffer.ZBuffer;
 
 public class Line {
 
-	public static void drawLine(double x00, double y00, double x11, double y11, double z00,
-			double z11, ZBuffer zBuffer) {
+	public static void drawLine(double x00, double y00, double x11, double y11, double z00, double z11) {
 		int x0 = (int) Math.round(x00);
 		int x1 = (int) Math.round(x11);
 		int y0 = (int) Math.round(y00);
@@ -26,7 +25,7 @@ public class Line {
 			deltaerr = (deltay + 1);
 
 			for (int x = x0; x != x1; x += dirx) {
-				putPxl(x, y, x00, x11, z00, z11, zBuffer);
+				putPxl(x, y, x00, x11, z00, z11, RasterizationParams.zBuffer);
 				error += deltaerr;
 
 				if (error >= (deltax + 1)) {
@@ -39,7 +38,7 @@ public class Line {
 			deltaerr = (deltax + 1);
 
 			for (int y = y0; y != y1; y += diry) {
-				putPxl(x, y, x00, x11, z00, z11, zBuffer);
+				putPxl(x, y, x00, x11, z00, z11, RasterizationParams.zBuffer);
 				error += deltaerr;
 
 				if (error >= (deltay + 1)) {
@@ -54,8 +53,8 @@ public class Line {
 		double z = findZ(x, x00, x11, z00, z11) - 200 * Global.eps;
 		if (RasterizationParams.zBuffer.inZBuffer(x, y)) {
 			if (z - zBuffer.get(x, y) <= Global.eps) {
-				RasterizationParams.drawBuffer.set(x, y, RasterizationParams.getLineColor());
 				zBuffer.set(x, y, z);
+				RasterizationParams.drawBuffer.set(x, y, RasterizationParams.getLineColor());
 			}
 		}
 	}
