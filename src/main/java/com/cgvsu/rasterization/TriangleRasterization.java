@@ -39,9 +39,11 @@ public class TriangleRasterization {
 			throw new IllegalArgumentException("Массивы должны содержать как минимум 3 элемента.");
 		}
 
-		if ((vertices[0].getX() * (vertices[1].getY() - vertices[2].getY())
-				+ vertices[1].getX() * (vertices[2].getY() - vertices[0].getY())
-				+ vertices[2].getX() * (vertices[0].getY() - vertices[1].getY())) == 0) {
+		if (vertices[0].getZ() > RasterizationParams.zBuffer.get((int) vertices[0].getX(), (int) vertices[0].getY())
+				&& vertices[1].getZ() > RasterizationParams.zBuffer.get((int) vertices[1].getX(),
+						(int) vertices[1].getY())
+				&& vertices[2].getZ() > RasterizationParams.zBuffer.get((int) vertices[2].getX(),
+						(int) vertices[2].getY())) {
 			return false;
 		}
 
@@ -59,26 +61,34 @@ public class TriangleRasterization {
 
 		});
 
-		for (int y = (int) Math.ceil(vertexList.get(1).getY()); y <= (int) Math.floor(vertexList.get(2).getY()); y++) {
+		int startY = (int) Math.max(0, Math.ceil(vertexList.get(1).getY()));
+		int finY = (int) Math.min(RasterizationParams.drawBuffer.getHeight(), Math.floor(vertexList.get(2).getY()));
+		for (int y = startY; y <= finY; y++) {
 			final double x1 = (vertexList.get(2).getY() - vertexList.get(1).getY() == 0) ? vertexList.get(1).getX()
 					: (y - vertexList.get(1).getY()) * (vertexList.get(2).getX() - vertexList.get(1).getX())
 							/ (vertexList.get(2).getY() - vertexList.get(1).getY()) + vertexList.get(1).getX();
 			final double x2 = (vertexList.get(0).getY() - vertexList.get(2).getY() == 0) ? vertexList.get(2).getX()
 					: (y - vertexList.get(2).getY()) * (vertexList.get(0).getX() - vertexList.get(2).getX())
 							/ (vertexList.get(0).getY() - vertexList.get(2).getY()) + vertexList.get(2).getX();
-			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
+			int startX = (int) Math.max(0, Math.floor(Math.min(x1, x2)));
+			int finX = (int) Math.min(RasterizationParams.drawBuffer.getWidth(), Math.ceil(Math.max(x1, x2)));
+			for (int x = startX; x < finX; x++) {
 				putPxl(x, y, color, polyNormal, vertexList);
 			}
 		}
 
-		for (int y = (int) Math.floor(vertexList.get(1).getY()); y >= Math.ceil(vertexList.get(0).getY()); y--) {
+		startY = (int) Math.min(RasterizationParams.drawBuffer.getHeight(), Math.floor(vertexList.get(1).getY()));
+		finY = (int) Math.max(0, Math.ceil(vertexList.get(0).getY()));
+		for (int y = startY; y >= finY; y--) {
 			final double x1 = (vertexList.get(1).getY() - vertexList.get(0).getY() == 0) ? vertexList.get(0).getX()
 					: (y - vertexList.get(0).getY()) * (vertexList.get(1).getX() - vertexList.get(0).getX())
 							/ (vertexList.get(1).getY() - vertexList.get(0).getY()) + vertexList.get(0).getX();
 			final double x2 = (vertexList.get(0).getY() - vertexList.get(2).getY() == 0) ? vertexList.get(2).getX()
 					: (y - vertexList.get(2).getY()) * (vertexList.get(0).getX() - vertexList.get(2).getX())
 							/ (vertexList.get(0).getY() - vertexList.get(2).getY()) + vertexList.get(2).getX();
-			for (int x = (int) Math.floor(Math.min(x1, x2)); x < Math.ceil(Math.max(x1, x2)); x++) {
+			int startX = (int) Math.max(0, Math.floor(Math.min(x1, x2)));
+			int finX = (int) Math.min(RasterizationParams.drawBuffer.getWidth(), Math.ceil(Math.max(x1, x2)));
+			for (int x = startX; x < finX; x++) {
 				putPxl(x, y, color, polyNormal, vertexList);
 			}
 		}
@@ -93,19 +103,19 @@ public class TriangleRasterization {
 				+ barizenticCoordinate[1] * list.get(1).vertice.getZ()
 				+ barizenticCoordinate[2] * list.get(2).vertice.getZ());
 
-		double toCameraX = list.get(0).vecToCamera.getX() * barizenticCoordinate[0]
-				+ list.get(1).vecToCamera.getX() * barizenticCoordinate[1]
-				+ list.get(2).vecToCamera.getX() * barizenticCoordinate[2];
-		double toCameraY = list.get(0).vecToCamera.getY() * barizenticCoordinate[0]
-				+ list.get(1).vecToCamera.getY() * barizenticCoordinate[1]
-				+ list.get(2).vecToCamera.getY() * barizenticCoordinate[2];
-		double toCameraZ = list.get(0).vecToCamera.getZ() * barizenticCoordinate[0]
-				+ list.get(1).vecToCamera.getZ() * barizenticCoordinate[1]
-				+ list.get(2).vecToCamera.getZ() * barizenticCoordinate[2];
-		Vector3f vecToCamera = new Vector3f(toCameraX, toCameraY, toCameraZ);
-
 		if (RasterizationParams.zBuffer.inZBuffer(x, y)) {
 			if (z < RasterizationParams.zBuffer.get((int) x, (int) y)) {
+				double toCameraX = list.get(0).vecToCamera.getX() * barizenticCoordinate[0]
+						+ list.get(1).vecToCamera.getX() * barizenticCoordinate[1]
+						+ list.get(2).vecToCamera.getX() * barizenticCoordinate[2];
+				double toCameraY = list.get(0).vecToCamera.getY() * barizenticCoordinate[0]
+						+ list.get(1).vecToCamera.getY() * barizenticCoordinate[1]
+						+ list.get(2).vecToCamera.getY() * barizenticCoordinate[2];
+				double toCameraZ = list.get(0).vecToCamera.getZ() * barizenticCoordinate[0]
+						+ list.get(1).vecToCamera.getZ() * barizenticCoordinate[1]
+						+ list.get(2).vecToCamera.getZ() * barizenticCoordinate[2];
+				Vector3f vecToCamera = new Vector3f(toCameraX, toCameraY, toCameraZ);
+
 				Color dotColor = getDotColor(c,
 						new Vector3f[] { list.get(0).normal, list.get(1).normal, list.get(2).normal },
 						barizenticCoordinate, vecToCamera, polyNormal, RasterizationParams.getIsLight());

@@ -33,8 +33,13 @@ public class RenderEngine {
 		Matrix4f projectionViewMatrix = projectionMatrix.multiplyMatrix(viewMatrix);
 		Matrix4f projectionViewModelMatrix = projectionViewMatrix.multiplyMatrix(modelMatrix);
 
-		RasterizationParams.zBuffer = new ZBuffer(width, height);
-		RasterizationParams.drawBuffer = new DrawBuffer(width, height, graphicsContext);
+		if (RasterizationParams.zBuffer.getHeight() != height || RasterizationParams.zBuffer.getWidth() != width) {
+			RasterizationParams.zBuffer = new ZBuffer(width, height);
+			RasterizationParams.drawBuffer = new DrawBuffer(width, height, graphicsContext);
+		}else {
+			RasterizationParams.zBuffer.refill();
+			RasterizationParams.drawBuffer.refill();
+		}
 
 		final int nPolygons = mesh.getPolygons().size();
 		for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {

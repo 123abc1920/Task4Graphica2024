@@ -30,6 +30,9 @@ public class ZBuffer {
 	}
 
 	public double get(int row, int col) {
+		if (!inZBuffer(row, col)) {
+			return 0;
+		}
 		return matrix[row][col];
 	}
 
