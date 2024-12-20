@@ -39,11 +39,9 @@ public class TriangleRasterization {
 			throw new IllegalArgumentException("Массивы должны содержать как минимум 3 элемента.");
 		}
 
-		if (vertices[0].getZ() > RasterizationParams.zBuffer.get((int) vertices[0].getX(), (int) vertices[0].getY())
-				&& vertices[1].getZ() > RasterizationParams.zBuffer.get((int) vertices[1].getX(),
-						(int) vertices[1].getY())
-				&& vertices[2].getZ() > RasterizationParams.zBuffer.get((int) vertices[2].getX(),
-						(int) vertices[2].getY())) {
+		if ((vertices[0].getX() * (vertices[1].getY() - vertices[2].getY())
+				+ vertices[1].getX() * (vertices[2].getY() - vertices[0].getY())
+				+ vertices[2].getX() * (vertices[0].getY() - vertices[1].getY())) == 0) {
 			return false;
 		}
 
@@ -72,8 +70,9 @@ public class TriangleRasterization {
 							/ (vertexList.get(0).getY() - vertexList.get(2).getY()) + vertexList.get(2).getX();
 			int startX = (int) Math.max(0, Math.floor(Math.min(x1, x2)));
 			int finX = (int) Math.min(RasterizationParams.drawBuffer.getWidth(), Math.ceil(Math.max(x1, x2)));
-			for (int x = startX; x < finX; x++) {
+			for (int x = startX; x < (finX + startX) / 2 + 1; x++) {
 				putPxl(x, y, color, polyNormal, vertexList);
+				putPxl(startX + finX - x, y, color, polyNormal, vertexList);
 			}
 		}
 
@@ -88,8 +87,9 @@ public class TriangleRasterization {
 							/ (vertexList.get(0).getY() - vertexList.get(2).getY()) + vertexList.get(2).getX();
 			int startX = (int) Math.max(0, Math.floor(Math.min(x1, x2)));
 			int finX = (int) Math.min(RasterizationParams.drawBuffer.getWidth(), Math.ceil(Math.max(x1, x2)));
-			for (int x = startX; x < finX; x++) {
+			for (int x = startX; x < (finX + startX) / 2 + 1; x++) {
 				putPxl(x, y, color, polyNormal, vertexList);
+				putPxl(startX + finX - x, y, color, polyNormal, vertexList);
 			}
 		}
 
@@ -99,6 +99,11 @@ public class TriangleRasterization {
 	private static void putPxl(int x, int y, Color c, Vector3f polyNormal, List<VertexObject> list) {
 		double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y,
 				new Vector3f[] { list.get(0).vertice, list.get(1).vertice, list.get(2).vertice });
+
+		if (barizenticCoordinate[0] < 0 || barizenticCoordinate[1] < 0 || barizenticCoordinate[2] < 0) {
+			return;
+		}
+
 		double z = (double) (barizenticCoordinate[0] * list.get(0).vertice.getZ()
 				+ barizenticCoordinate[1] * list.get(1).vertice.getZ()
 				+ barizenticCoordinate[2] * list.get(2).vertice.getZ());
