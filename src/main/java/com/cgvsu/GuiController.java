@@ -739,6 +739,30 @@ public class GuiController {
         anchorPane.requestFocus();
         remakeModel();
     }
+    @FXML
+    private void translatingModelX() {
+        String newNear = translateModelX.getText();
+        Double newNearDouble = 0d;
+
+        try {
+            newNearDouble = Double.parseDouble(newNear);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            alert.showAndWait();
+            return;
+        }
+
+        if (newNearDouble > 0) {
+            Model.moveModelRight(newNearDouble, mesh);
+        } else {
+            Model.moveModelLeft(Math.abs(newNearDouble), mesh);
+        }
+
+        translateModelX.setText("");
+        anchorPane.requestFocus();
+        remakeModel();
+    }
 
     @FXML
     private void scalingModelY() {
@@ -757,10 +781,9 @@ public class GuiController {
         anchorPane.requestFocus();
         remakeModel();
     }
-
     @FXML
-    private void scalingModelZ() {
-        String newNear = scaleModelZ.getText();
+    private void translatingModelY() {
+        String newNear = translateModelY.getText();
         Double newNearDouble = 0d;
 
         try {
@@ -769,9 +792,61 @@ public class GuiController {
             String errorMessage = e.getMessage();
             Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
+            return;
         }
-        Model.scaleModelOnZRight(newNearDouble,mesh);
-        scaleModelZ.setText("");
+
+        if (newNearDouble > 0) {
+            Model.moveModelUp(newNearDouble, mesh);
+        } else {
+            Model.moveModelDown(Math.abs(newNearDouble), mesh);
+        }
+
+        translateModelY.setText("");
+        anchorPane.requestFocus();
+        remakeModel();
+    }
+
+
+    @FXML
+    private void scalingModelZ() {
+        String newNear = translateModelZ.getText();
+        Double newNearDouble = 0d;
+
+        try {
+            newNearDouble = Double.parseDouble(newNear);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            alert.showAndWait();
+            return;
+        }
+
+        if (newNearDouble > 0) {
+            Model.moveModelBackward(newNearDouble, mesh);
+        } else {
+            Model.moveModelForward(Math.abs(newNearDouble), mesh);
+        }
+
+        translateModelZ.setText("");
+        anchorPane.requestFocus();
+        remakeModel();
+    }
+    @FXML
+    private void translatingModelZ() {
+        String newNear = translateModelZ.getText();
+        Double newNearDouble = 0d;
+
+        try {
+            newNearDouble = Double.parseDouble(newNear);
+        } catch (Exception e) {
+            nearTextField.setText(camera.getNearPlane() + "");
+            String errorMessage = e.getMessage();
+            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            alert.showAndWait();
+        }
+
+        camera.setNearPlane(newNearDouble);
+        nearTextField.setText(camera.getNearPlane() + "");
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -842,67 +917,4 @@ public class GuiController {
         remakeModel();
     }
 
-    @FXML
-    private void translatingModelX() {
-        String newNear = nearTextField.getText();
-        Double newNearDouble = 0d;
-
-        try {
-            newNearDouble = Double.parseDouble(newNear);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-        }
-
-        if(newNearDouble>0){
-            Model.moveModelLeft(newNearDouble,mesh);
-        }else{
-            Model.moveModelRight(newNearDouble,mesh);
-        }
-
-        translateModelX.setText("");
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-    @FXML
-    private void translatingModelY() {
-        String newNear = nearTextField.getText();
-        Double newNearDouble = 0d;
-
-        try {
-            newNearDouble = Double.parseDouble(newNear);
-        } catch (Exception e) {
-            nearTextField.setText(camera.getNearPlane() + "");
-            String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-        }
-
-        camera.setNearPlane(newNearDouble);
-        nearTextField.setText(camera.getNearPlane() + "");
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-    @FXML
-    private void translatingModelZ() {
-        String newNear = nearTextField.getText();
-        Double newNearDouble = 0d;
-
-        try {
-            newNearDouble = Double.parseDouble(newNear);
-        } catch (Exception e) {
-            nearTextField.setText(camera.getNearPlane() + "");
-            String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-        }
-
-        camera.setNearPlane(newNearDouble);
-        nearTextField.setText(camera.getNearPlane() + "");
-        anchorPane.requestFocus();
-        remakeModel();
-    }
 }
