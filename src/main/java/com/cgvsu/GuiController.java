@@ -829,7 +829,7 @@ public class GuiController {
 
     @FXML
     private void scalingModelZ() {
-        String newNear = translateModelZ.getText();
+        String newNear = scaleModelZ.getText();
         Double newNearDouble = 0d;
 
         try {
@@ -918,7 +918,7 @@ public class GuiController {
 
     @FXML
     private void rotatingModelZ() {
-        String newNear = nearTextField.getText();
+        String newNear = rotateModelZ.getText();
         Integer newNearInt = 0;
 
         try {

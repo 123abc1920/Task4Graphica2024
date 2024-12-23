@@ -6,11 +6,13 @@ import javafx.scene.paint.Color;
 
 public class DrawBuffer {
 	private Color[][] matrix;
-	private GraphicsContext context;
+	private PixelWriter px;
 
 	public DrawBuffer(int width, int height, GraphicsContext context) {
 		matrix = new Color[width][height];
-		this.context = context;
+		if (context != null) {
+			this.px = context.getPixelWriter();
+		}
 
 		refill();
 	}
@@ -50,13 +52,11 @@ public class DrawBuffer {
 	}
 
 	public void draw() {
-		PixelWriter px = context.getPixelWriter();
-
 		for (int i = 0; i < this.getWidth(); i++) {
 			for (int j = 0; j < this.getHeight(); j++) {
 				Color c = get(i, j);
 				if (c != null) {
-					px.setColor(i, j, c);
+					this.px.setColor(i, j, c);
 				}
 			}
 		}
