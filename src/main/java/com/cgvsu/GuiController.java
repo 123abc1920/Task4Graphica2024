@@ -754,7 +754,7 @@ public class GuiController {
         }
 
         Model.scaleModelOnXForward(newNearDouble, mesh);
-        scaleModelX.setText("");
+        scaleModelX.setText(newNear);
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -779,7 +779,7 @@ public class GuiController {
             Model.moveModelLeft(Math.abs(newNearDouble), mesh);
         }
 
-        translateModelX.setText("");
+        translateModelX.setText(newNear);
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -797,7 +797,7 @@ public class GuiController {
             alert.showAndWait();
         }
         Model.scaleModelOnYUp(newNearDouble, mesh);
-        scaleModelX.setText("");
+        scaleModelX.setText(newNear);
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -822,7 +822,7 @@ public class GuiController {
             Model.moveModelDown(Math.abs(newNearDouble), mesh);
         }
 
-        translateModelY.setText("");
+        translateModelY.setText(newNear);
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -848,7 +848,7 @@ public class GuiController {
             Model.moveModelForward(Math.abs(newNearDouble), mesh);
         }
 
-        translateModelZ.setText("");
+        translateModelZ.setText(newNear);
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -867,8 +867,7 @@ public class GuiController {
             alert.showAndWait();
         }
 
-        camera.setNearPlane(newNearDouble);
-        nearTextField.setText(camera.getNearPlane() + "");
+        translateModelZ.setText(newNear);
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -890,7 +889,7 @@ public class GuiController {
         } else {
             Model.rotateModelOnXClockwise(newNearInt, mesh);
         }
-        rotateModelX.setText("");
+        rotateModelX.setText(newNear);
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -912,7 +911,7 @@ public class GuiController {
         } else {
             Model.rotateModelOnYDown(newNearInt, mesh);
         }
-        rotateModelY.setText("");
+        rotateModelY.setText(newNear);
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -934,7 +933,7 @@ public class GuiController {
         } else {
             Model.rotateModelOnZNotClockwise(newNearInt, mesh);
         }
-        rotateModelZ.setText("");
+        rotateModelZ.setText(newNear);
         anchorPane.requestFocus();
         remakeModel();
     }
