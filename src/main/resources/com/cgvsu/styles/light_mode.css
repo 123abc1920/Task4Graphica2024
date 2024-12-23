@@ -35,13 +35,13 @@ ScrollBar {
 VBox {
     -fx-background-color: rgb(215, 215, 215);
 }
-.vBoxFirst {
+.vBoxSecondaryFirst {
     -fx-padding: 5px 5px 5px 5px;
 }
-.vBoxSecond, .vBoxThird {
+.vBoxSecondary {
     -fx-padding: 20px 5px 5px 5px;
 }
-.stakePaneFirst, .stakePaneSecond, .stakePaneThird {
+.stakePaneHeader {
     -fx-background-radius: 10px;
     -fx-background-color: rgb(190, 190, 190);
     -fx-font-size: 20px;

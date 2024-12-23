@@ -1,6 +1,6 @@
 package com.cgvsu.rasterization;
 
-import org.junit.*;
+//import org.junit.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;

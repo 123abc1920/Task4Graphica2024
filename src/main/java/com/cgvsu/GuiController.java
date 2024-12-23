@@ -14,7 +14,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -198,8 +197,6 @@ public class GuiController {
     @FXML
     private void initialize() {
 
-        Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/DaysOne.ttf"), 16);
-        System.out.println(font);
         anchorPane.prefWidthProperty().addListener(
                 (ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - scrollPaneMain.getWidth()));
         anchorPane.prefHeightProperty()
@@ -223,6 +220,7 @@ public class GuiController {
                 RasterizationParams.drawBuffer.draw();
             }
         });
+
 
         timeline.getKeyFrames().add(frame);
         timeline.play();
@@ -322,64 +320,87 @@ public class GuiController {
     }
 
     @FXML
-    private void handleTextFieldLightSourceStrengthAction(ActionEvent actionEvent) {
-        String sourceStrengthString = textFieldLightSourceStrength.getText();
-        Double sourceStrength = 0d;
-
+    private void handleTextFieldLightAction(ActionEvent actionEvent) {
+        TextField source = (TextField) actionEvent.getSource();
+        String textFieldText = source.getText();
+        double newValue = 0d;
         try {
-            sourceStrength = Double.parseDouble(sourceStrengthString);
+            newValue = Double.parseDouble(textFieldText);
         } catch (Exception e) {
-            textFieldLightSourceStrength.setText(Light.getK() + "");
-            Light.setK(sourceStrength);
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение силы источника света.", errorMessage);
+            if (source.equals(textFieldGlareArea)) {
+                newValue += 1;
+            }
+            source.setText(Double.toString(newValue));
+            Alert alert = createAlertWithError("Не удалось запарсить значение double.", errorMessage);
             alert.showAndWait();
         }
-
-        Light.setK(sourceStrength);
-        textFieldLightSourceStrength.setText(Light.getK() + "");
+        if (source.equals(textFieldLightSourceStrength)) {
+            if (newValue >= 1) {
+                newValue = 1d;
+            } else if (newValue <= 0) {
+                newValue = 0d;
+            }
+            Light.setK(newValue);
+        } else if (source.equals(textFieldGlareBrightness)) {
+            if (newValue >= 1) {
+                newValue = 1d;
+            } else if (newValue <= 0) {
+                newValue = 0d;
+            }
+            Light.setKs(newValue);
+        } else if (source.equals(textFieldGlareArea)) {
+            if (newValue >= 50) {
+                newValue = 50d;
+            } else if (newValue <= 1) {
+                newValue = 1d;
+            }
+            Light.setHighLightShine(newValue);
+        }
+        source.setText(Double.toString(newValue).trim());
         anchorPane.requestFocus();
         remakeModel();
     }
 
     @FXML
-    private void handleTextFieldGlareBrightnessAction(ActionEvent actionEvent) {
-        String glareBrightnessString = textFieldGlareBrightness.getText();
-        Double glareBrightness = 0d;
-
+    private void handleTextFieldCoordinatesAction(ActionEvent actionEvent) {
+        TextField source = (TextField) actionEvent.getSource();
+        String textFieldText = source.getText();
+        double coordinate = 0d;
         try {
-            glareBrightness = Double.parseDouble(glareBrightnessString);
+            coordinate = Double.parseDouble(textFieldText);
         } catch (Exception e) {
-            textFieldGlareBrightness.setText(Light.getKs() + "");
-            Light.setKs(glareBrightness);
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение яркости блика.", errorMessage);
+            source.setText(Double.toString(coordinate));
+            Alert alert = createAlertWithError("Не удалось запарсить значение double.", errorMessage);
             alert.showAndWait();
         }
-
-        Light.setKs(glareBrightness);
-        textFieldGlareBrightness.setText(Light.getKs() + "");
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-    @FXML
-    private void handleTextFieldGlareAreaAction(ActionEvent actionEvent) {
-        String glareAreaString = textFieldGlareArea.getText();
-        Double glareArea = 0d;
-
-        try {
-            glareArea = Double.parseDouble(glareAreaString);
-        } catch (Exception e) {
-            textFieldGlareArea.setText(Light.getHighLightShine() + "");
-            Light.setHighLightShine(glareArea);
-            String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение площади блика.", errorMessage);
-            alert.showAndWait();
+        if (source.equals(textFieldPosX)) {
+            camera.setPosition(new Vector3f(coordinate, camera.getPosition().getY(), camera.getPosition().getZ()));
+        } else if (source.equals(textFieldPosY)) {
+            camera.setPosition(new Vector3f(camera.getPosition().getX(), coordinate, camera.getPosition().getZ()));
+        } else if (source.equals(textFieldPosZ)) {
+            camera.setPosition(new Vector3f(camera.getPosition().getX(), camera.getPosition().getY(), coordinate));
+        } else if (source.equals(textFieldTarX)) {
+            camera.setTarget(new Vector3f(coordinate, camera.getTarget().getY(), camera.getTarget().getZ()));
+        } else if (source.equals(textFieldTarY)) {
+            camera.setTarget(new Vector3f(camera.getTarget().getX(), coordinate, camera.getTarget().getZ()));
+        } else if (source.equals(textFieldTarZ)) {
+            camera.setTarget(new Vector3f(camera.getTarget().getX(), camera.getTarget().getY(), coordinate));
+        } else if (source.equals(textFieldPosLightX)) {
+            Light.setPosition(new Vector3f(coordinate, Light.position.getY(), Light.position.getZ()));
+        } else if (source.equals(textFieldPosLightY)) {
+            Light.setPosition(new Vector3f(Light.position.getX(), coordinate, Light.position.getZ()));
+        } else if (source.equals(textFieldPosLightZ)) {
+            Light.setPosition(new Vector3f(Light.position.getX(), Light.position.getY(), coordinate));
+        } else if (source.equals(textFieldTarLightX)) {
+            Light.setTarget(new Vector3f(coordinate, Light.target.getY(), Light.target.getZ()));
+        } else if (source.equals(textFieldTarLightY)) {
+            Light.setTarget(new Vector3f(Light.target.getX(), coordinate, Light.target.getZ()));
+        } else if (source.equals(textFieldTarLightZ)) {
+            Light.setTarget(new Vector3f(Light.target.getX(), Light.target.getY(), coordinate));
         }
-
-        Light.setHighLightShine(glareArea);
-        textFieldGlareArea.setText(Light.getHighLightShine() + "");
+        source.setText(Double.toString(coordinate).trim());
         anchorPane.requestFocus();
         remakeModel();
     }
@@ -473,7 +494,7 @@ public class GuiController {
     @FXML
     private void setFovAction() {
         String newFov = fovTextField.getText();
-        Double newFovDouble = 0d;
+        Double newFovDouble = 1.0d;
 
         try {
             newFovDouble = Double.parseDouble(newFov);
@@ -493,7 +514,7 @@ public class GuiController {
     @FXML
     private void setNearAction() {
         String newNear = nearTextField.getText();
-        Double newNearDouble = 0d;
+        Double newNearDouble = 0.01d;
 
         try {
             newNearDouble = Double.parseDouble(newNear);
@@ -513,7 +534,7 @@ public class GuiController {
     @FXML
     private void setFarAction() {
         String newFar = farTextField.getText();
-        Double newFarDouble = 0d;
+        Double newFarDouble = 100d;
 
         try {
             newFarDouble = Double.parseDouble(newFar);
@@ -591,7 +612,7 @@ public class GuiController {
         remakeModel();
     }
 
-    // доделать
+    //todo: доделать
     @FXML
     private void handleSidePanelRemove() {
         isPanelRemoved = !isPanelRemoved;
@@ -607,10 +628,6 @@ public class GuiController {
         String filePath = isInLightMode ? "styles/light_mode.css" : "styles/dark_mode.css";
         anchorPane.getStylesheets().add(getClass().getResource(filePath).toExternalForm());
     }
-
-    /**
-     * Добавить обработчик событий дял всех textField по нажатии кнопки Enter
-     */
 
     @FXML
     private void onOpenModelMenuItemClick() {
@@ -628,16 +645,17 @@ public class GuiController {
         try {
             String fileContent = Files.readString(fileName);
             mesh = ObjReader.read(fileContent);
-            // todo: обработка ошибок
         } catch (IOException exception) {
-
+            Alert alert = createAlertWithError("Ошибка при открытии файла " + fileName, "");
+            alert.showAndWait();
         }
 
-        Triangulation.triangulateModel(mesh);
-        mesh.setNormals(FindNormals.findNormals(mesh));
-        mesh.setTexture(null);
-
-        remakeModel();
+        if (mesh != null) {
+            Triangulation.triangulateModel(mesh);
+            mesh.setNormals(FindNormals.findNormals(mesh));
+            mesh.setTexture(null);
+            remakeModel();
+        }
     }
 
     @FXML
@@ -734,11 +752,12 @@ public class GuiController {
             alert.showAndWait();
         }
 
-        Model.scaleModelOnXForward(newNearDouble,mesh);
+        Model.scaleModelOnXForward(newNearDouble, mesh);
         scaleModelX.setText("");
         anchorPane.requestFocus();
         remakeModel();
     }
+
     @FXML
     private void translatingModelX() {
         String newNear = translateModelX.getText();
@@ -776,11 +795,12 @@ public class GuiController {
             Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
-        Model.scaleModelOnYUp(newNearDouble,mesh);
+        Model.scaleModelOnYUp(newNearDouble, mesh);
         scaleModelX.setText("");
         anchorPane.requestFocus();
         remakeModel();
     }
+
     @FXML
     private void translatingModelY() {
         String newNear = translateModelY.getText();
@@ -831,6 +851,7 @@ public class GuiController {
         anchorPane.requestFocus();
         remakeModel();
     }
+
     @FXML
     private void translatingModelZ() {
         String newNear = translateModelZ.getText();
@@ -863,10 +884,10 @@ public class GuiController {
             Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
-        if(newNearInt>0){
-            Model.rotateModelOnXNotClockwise(newNearInt,mesh);
-        }else{
-            Model.rotateModelOnXClockwise(newNearInt,mesh);
+        if (newNearInt > 0) {
+            Model.rotateModelOnXNotClockwise(newNearInt, mesh);
+        } else {
+            Model.rotateModelOnXClockwise(newNearInt, mesh);
         }
         rotateModelX.setText("");
         anchorPane.requestFocus();
@@ -885,10 +906,10 @@ public class GuiController {
             Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
-        if(newNearInt>0){
-            Model.rotateModelOnYUp(newNearInt,mesh);
-        }else{
-            Model.rotateModelOnYDown(newNearInt,mesh);
+        if (newNearInt > 0) {
+            Model.rotateModelOnYUp(newNearInt, mesh);
+        } else {
+            Model.rotateModelOnYDown(newNearInt, mesh);
         }
         rotateModelY.setText("");
         anchorPane.requestFocus();
@@ -907,10 +928,10 @@ public class GuiController {
             Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
-        if(newNearInt>0){
-            Model.rotateModelOnZClockwise(newNearInt,mesh);
-        }else{
-            Model.rotateModelOnZNotClockwise(newNearInt,mesh);
+        if (newNearInt > 0) {
+            Model.rotateModelOnZClockwise(newNearInt, mesh);
+        } else {
+            Model.rotateModelOnZNotClockwise(newNearInt, mesh);
         }
         rotateModelZ.setText("");
         anchorPane.requestFocus();

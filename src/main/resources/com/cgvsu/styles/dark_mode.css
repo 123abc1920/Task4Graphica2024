@@ -9,16 +9,18 @@
 * {
     -fx-text-fill: white;
 }
-/* Черная тема */
+/* Темная тема */
 AnchorPane {
     -fx-background-color: rgb(170,170,170);
 }
 TextField, ColorPicker Label, Button, ChoiceBox Label {
     -fx-text-fill: black;
 }
-TextField {
-    -fx-background-color: rgb(228,228,228);
-}
+/* TextField {
+    -fx-background-color: lightgray;
+    -fx-background-radius: 10px;
+    -fx-padding: 5px;
+} */
 /* Боковая панель */
 Label, TextField {
     -fx-padding: 5px;
@@ -45,13 +47,13 @@ ScrollBar {
 VBox {
     -fx-background-color: rgb(140,140,140);
 }
-.vBoxFirst {
+.vBoxSecondaryFirst {
     -fx-padding: 5px 5px 5px 5px;
 }
-.vBoxSecond, .vBoxThird {
+.vBoxSecondary {
     -fx-padding: 20px 5px 5px 5px;
 }
-.stakePaneFirst, .stakePaneSecond, .stakePaneThird {
+.stakePaneHeader {
     -fx-background-radius: 10px;
     -fx-background-color: rgb(100, 100, 100);
     -fx-font-size: 20px;
@@ -64,6 +66,7 @@ Button, ColorPicker, ChoiceBox {
     -fx-padding: 5px 0 0 0;
 }
 .textFieldTexture:disabled {
+    -fx-padding: 3px;
     -fx-opacity: 1.0;
     -fx-background-color: white;
     -fx-prompt-text-fill: black;
