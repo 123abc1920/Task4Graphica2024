@@ -84,7 +84,7 @@ public class ObjReader {
 
     protected static Vector2f parseTextureVertex(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
         try {
-            if (!wordsInLineWithoutToken.get(2).equals("")) {
+            if (!wordsInLineWithoutToken.get(3).equals("")) {
                 throw new ObjReaderException("More than two coordinates are specified for the texture vertex.", lineInd);
             }
         } catch (IndexOutOfBoundsException ignored) {

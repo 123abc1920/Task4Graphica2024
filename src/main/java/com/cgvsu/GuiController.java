@@ -312,10 +312,11 @@ public class GuiController {
 //        textFieldGlareArea.setText(Double.toString((double) Math.round((Light.getHighLightShine * 100)) / 100));
     }
 
-    private Alert createAlertWithError(String valueName, String errorMessage) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Ошибка!");
-        alert.setContentText(valueName + "\n" + errorMessage);
+    private Alert createAlertWithError(Alert.AlertType alertType, String valueName, String errorMessage) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle("Ошибка");
+        alert.setHeaderText(valueName);
+        alert.setContentText(errorMessage);
         return alert;
     }
 
@@ -332,7 +333,7 @@ public class GuiController {
                 newValue += 1;
             }
             source.setText(Double.toString(newValue));
-            Alert alert = createAlertWithError("Не удалось запарсить значение double.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Не удалось запарсить значение double.", errorMessage);
             alert.showAndWait();
         }
         if (source.equals(textFieldLightSourceStrength)) {
@@ -372,7 +373,7 @@ public class GuiController {
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             source.setText(Double.toString(coordinate));
-            Alert alert = createAlertWithError("Не удалось запарсить значение double.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Не удалось запарсить значение double.", errorMessage);
             alert.showAndWait();
         }
         if (source.equals(textFieldPosX)) {
@@ -501,7 +502,7 @@ public class GuiController {
         } catch (Exception e) {
             fovTextField.setText(camera.getFov() + "");
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение угла.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение угла.", errorMessage);
             alert.showAndWait();
         }
 
@@ -521,7 +522,7 @@ public class GuiController {
         } catch (Exception e) {
             nearTextField.setText(camera.getNearPlane() + "");
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
 
@@ -541,7 +542,7 @@ public class GuiController {
         } catch (Exception e) {
             farTextField.setText(camera.getFarPlane() + "");
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение дальнего плана.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение дальнего плана.", errorMessage);
             alert.showAndWait();
         }
 
@@ -645,8 +646,8 @@ public class GuiController {
         try {
             String fileContent = Files.readString(fileName);
             mesh = ObjReader.read(fileContent);
-        } catch (IOException exception) {
-            Alert alert = createAlertWithError("Ошибка при открытии файла " + fileName, "");
+        } catch (Exception exception) {
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Ошибка при открытии файла " + fileName, exception.getMessage());
             alert.showAndWait();
         }
 
@@ -748,7 +749,7 @@ public class GuiController {
             newNearDouble = Double.parseDouble(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
 
@@ -767,7 +768,7 @@ public class GuiController {
             newNearDouble = Double.parseDouble(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
             return;
         }
@@ -792,7 +793,7 @@ public class GuiController {
             newNearDouble = Double.parseDouble(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
         Model.scaleModelOnYUp(newNearDouble, mesh);
@@ -810,7 +811,7 @@ public class GuiController {
             newNearDouble = Double.parseDouble(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
             return;
         }
@@ -836,7 +837,7 @@ public class GuiController {
             newNearDouble = Double.parseDouble(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
             return;
         }
@@ -862,7 +863,7 @@ public class GuiController {
         } catch (Exception e) {
             nearTextField.setText(camera.getNearPlane() + "");
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
 
@@ -881,7 +882,7 @@ public class GuiController {
             newNearInt = Integer.parseInt(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
         if (newNearInt > 0) {
@@ -903,7 +904,7 @@ public class GuiController {
             newNearInt = Integer.parseInt(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
         if (newNearInt > 0) {
@@ -925,7 +926,7 @@ public class GuiController {
             newNearInt = Integer.parseInt(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError("Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
         if (newNearInt > 0) {
