@@ -79,7 +79,6 @@ public class TextureRasterization {
 			finX = startX + 2 * delta;
 			for (int x = startX; x < finX; x++) {
 				putPxl(x, y, image, polyNormal, vertexList);
-				putPxl(x + delta, y, image, polyNormal, vertexList);
 			}
 		}
 
@@ -94,7 +93,6 @@ public class TextureRasterization {
 			finX = startX + 2 * delta;
 			for (int x = startX; x < finX; x++) {
 				putPxl(x, y, image, polyNormal, vertexList);
-				putPxl(x + delta, y, image, polyNormal, vertexList);
 			}
 		}
 
@@ -146,11 +144,8 @@ public class TextureRasterization {
 
 		PixelReader reader = image.getPixelReader();
 		int x = (int) Math.ceil(u * (image.getWidth()));
-		int y = (int) Math.ceil(v * (image.getHeight()));
-
-		x = (int) Math.max(0, Math.min(x, image.getWidth() - 1));
-		y = (int) Math.max(0, Math.min(y, image.getHeight() - 1));
-
+		int y = (int) Math.ceil((1 - v) * (image.getHeight()));
+		
 		return getDotColor(reader.getColor(x, y),
 				new Vector3f[] { list.get(0).normal, list.get(1).normal, list.get(2).normal }, barycentricCoords,
 				toCamera, polyNormal);
