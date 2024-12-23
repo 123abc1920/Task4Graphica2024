@@ -82,11 +82,11 @@ public class RenderEngine {
 			} else {
 				Vector2f[] texturePoints = new Vector2f[3];
 				texturePoints[0] = mesh.getTextureVertices()
-						.get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(0));
+						.get(mesh.getPolygons().get(polygonInd).getTextureVertexIndices().get(0));
 				texturePoints[1] = mesh.getTextureVertices()
-						.get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(1));
+						.get(mesh.getPolygons().get(polygonInd).getTextureVertexIndices().get(1));
 				texturePoints[2] = mesh.getTextureVertices()
-						.get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(2));
+						.get(mesh.getPolygons().get(polygonInd).getTextureVertexIndices().get(2));
 				drawnPolygon = drawTexture(vertices, texturePoints, mesh.getImage(), polyNormal, normals,
 						vectorsToCamera);
 			}
