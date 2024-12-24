@@ -109,7 +109,7 @@
                                        <Insets />
                                     </HBox.margin>
                                  </TextField>
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="✔">
+                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
                                     <HBox.margin>
                                        <Insets left="10.0" />
                                     </HBox.margin>
@@ -153,7 +153,7 @@
                                        <Insets />
                                     </HBox.margin>
                                  </TextField>
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="✔">
+                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
                                     <HBox.margin>
                                        <Insets left="10.0" />
                                     </HBox.margin>
@@ -169,7 +169,7 @@
                                  <TextField fx:id="nearTextField" focusTraversable="false" maxHeight="-Infinity" onAction="#setNearAction" prefWidth="50.0" />
                                  <Label text="far" />
                                  <TextField fx:id="farTextField" focusTraversable="false" maxHeight="-Infinity" onAction="#setFarAction" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="✔">
+                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
                                     <HBox.margin>
                                        <Insets left="10.0" />
                                     </HBox.margin>
@@ -276,7 +276,7 @@
                                  <TextField fx:id="textFieldPosLightY" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
                                  <Label text="z" />
                                  <TextField fx:id="textFieldPosLightZ" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="✔">
+                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
                                     <HBox.margin>
                                        <Insets left="10.0" />
                                     </HBox.margin>
@@ -292,7 +292,7 @@
                                  <TextField fx:id="textFieldTarLightY" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
                                  <Label text="z" />
                                  <TextField fx:id="textFieldTarLightZ" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="✔">
+                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
                                     <HBox.margin>
                                        <Insets left="10.0" />
                                     </HBox.margin>
@@ -335,7 +335,7 @@
                                  <TextField fx:id="scaleModelY" focusTraversable="false" onAction="#scalingModelY" prefWidth="50.0" />
                                  <Label text="z" />
                                  <TextField fx:id="scaleModelZ" focusTraversable="false" onAction="#scalingModelZ" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="✔">
+                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
                                     <HBox.margin>
                                        <Insets left="10.0" />
                                     </HBox.margin>
@@ -351,7 +351,7 @@
                                  <TextField fx:id="rotateModelY" focusTraversable="false" onAction="#rotatingModelY" prefWidth="50.0" />
                                  <Label text="z" />
                                  <TextField fx:id="rotateModelZ" focusTraversable="false" onAction="#rotatingModelZ" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="✔">
+                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
                                     <HBox.margin>
                                        <Insets left="10.0" />
                                     </HBox.margin>
@@ -367,7 +367,7 @@
                                  <TextField fx:id="translateModelY" focusTraversable="false" onAction="#translatingModelY" prefWidth="50.0" />
                                  <Label text="z" />
                                  <TextField fx:id="translateModelZ" focusTraversable="false" onAction="#translatingModelZ" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="✔">
+                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
                                     <HBox.margin>
                                        <Insets left="10.0" />
                                     </HBox.margin>

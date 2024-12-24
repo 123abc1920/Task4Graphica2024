@@ -12,6 +12,7 @@ import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import com.cgvsu.camera.Camera;
 import com.cgvsu.camera.CameraManager;
@@ -194,6 +196,7 @@ public class GuiController {
 
     private double width, height;
 
+
     @FXML
     private void initialize() {
 
@@ -214,13 +217,18 @@ public class GuiController {
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
             camera.setAspectRatio((float) (width / height));
 
-            canvas.setWidth(anchorPane.getWidth() - scrollPaneMain.getWidth());
+//            if (isPanelRemoved) {
+//                canvas.setWidth(anchorPane.getWidth());
+//            } else {
+//                canvas.setWidth(anchorPane.getWidth()-scrollPaneMain.getWidth());
+//            }
+
+            canvas.setWidth(anchorPane.getWidth()-scrollPaneMain.getWidth());
 
             if (mesh != null) {
                 RasterizationParams.drawBuffer.draw();
             }
         });
-
 
         timeline.getKeyFrames().add(frame);
         timeline.play();
@@ -250,24 +258,18 @@ public class GuiController {
         uploadInfoInTextFields();
         checkBoxLight.setSelected(true);
 
-        colorPickerLines.setDisable(true);
-        colorPickerModel.setDisable(true);
+//        colorPickerLines.setDisable(true);
+//        colorPickerModel.setDisable(true);
+//
+//        checkBoxLines.setDisable(true);
+//        checkBoxLight.setDisable(true);
+//        checkBoxTexture.setDisable(true);
+//
+//        textureText.setDisable(true);
+//        chooseFileBtn.setDisable(true);
+//        deleteTextureBtn.setDisable(true);
 
-        checkBoxLines.setDisable(true);
-        checkBoxLight.setDisable(true);
-        checkBoxTexture.setDisable(true);
-
-        textureText.setDisable(true);
-        chooseFileBtn.setDisable(true);
-        deleteTextureBtn.setDisable(true);
-
-        textFieldLightSourceStrength.setText(Light.getK() + "");
-        textFieldGlareArea.setText(Light.getHighLightShine() + "");
-        textFieldGlareBrightness.setText(Light.getKs() + "");
-
-        fovTextField.setText(camera.getFov() + "");
-        nearTextField.setText(camera.getNearPlane() + "");
-        farTextField.setText(camera.getFarPlane() + "");
+        scrollPaneMain.setDisable(true);
 
         scrollPaneMain.setVisible(true); // изменить
     }
@@ -303,10 +305,17 @@ public class GuiController {
         textFieldTarLightY.setText(Double.toString((double) Math.round((Light.target.getY() * 100)) / 100));
         textFieldTarLightZ.setText(Double.toString((double) Math.round((Light.target.getZ() * 100)) / 100));
 
+        textFieldLightSourceStrength.setText(Light.getK() + "");
+        textFieldGlareArea.setText(Light.getHighLightShine() + "");
+        textFieldGlareBrightness.setText(Light.getKs() + "");
+
         fovTextField.setText(camera.getFov() + "");
         nearTextField.setText(camera.getNearPlane() + "");
         farTextField.setText(camera.getFarPlane() + "");
 
+        fovTextField.setText(camera.getFov() + "");
+        nearTextField.setText(camera.getNearPlane() + "");
+        farTextField.setText(camera.getFarPlane() + "");
 //        textFieldLightSourceStrength.setText(Double.toString((double) Math.round((Light.getK * 100)) / 100));
 //        textFieldGlareBrightness.setText(Double.toString((double) Math.round((Light.getKs * 100)) / 100));
 //        textFieldGlareArea.setText(Double.toString((double) Math.round((Light.getHighLightShine * 100)) / 100));
@@ -613,13 +622,16 @@ public class GuiController {
         remakeModel();
     }
 
-    //todo: доделать
     @FXML
     private void handleSidePanelRemove() {
-        isPanelRemoved = !isPanelRemoved;
-        if (isPanelRemoved) {
-        } else {
-        }
+//        isPanelRemoved = !isPanelRemoved;
+//        if (isPanelRemoved) {
+//            scrollPaneMain.setManaged(false);
+//            scrollPaneMain.setVisible(false);
+//        } else {
+//            scrollPaneMain.setManaged(true);
+//            scrollPaneMain.setVisible(true);
+//        }
     }
 
     @FXML
@@ -655,6 +667,7 @@ public class GuiController {
             Triangulation.triangulateModel(mesh);
             mesh.setNormals(FindNormals.findNormals(mesh));
             mesh.setTexture(null);
+            scrollPaneMain.setDisable(false);
             remakeModel();
         }
     }
