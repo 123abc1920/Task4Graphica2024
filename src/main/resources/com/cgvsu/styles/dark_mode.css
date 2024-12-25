@@ -65,12 +65,12 @@ Button, ColorPicker, ChoiceBox {
 .hBoxTopPadding {
     -fx-padding: 5px 0 0 0;
 }
-.textFieldTexture:disabled {
+/* .textFieldTexture:disabled {
     -fx-padding: 3px;
     -fx-opacity: 1.0;
     -fx-background-color: white;
     -fx-prompt-text-fill: black;
-}
+} */
 /* Меню */
 MenuBar {
     -fx-background-color: rgb(140,140,140);

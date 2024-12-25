@@ -1,6 +1,7 @@
 package com.cgvsu;
 
 import com.cgvsu.light.Light;
+import com.cgvsu.objwriter.ObjWriter;
 import com.cgvsu.rasterization.RasterizationParams;
 import com.cgvsu.render_engine.RenderEngine;
 import com.cgvsu.triangulation.Triangulation;
@@ -19,6 +20,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -26,6 +28,7 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
@@ -58,6 +61,9 @@ public class GuiController {
 
     @FXML
     private VBox vBoxMain;
+
+    @FXML
+    private VBox vBoxLight;
 
     @FXML
     private TextField textFieldPosX;
@@ -172,6 +178,9 @@ public class GuiController {
 
     private boolean isPanelRemoved = true;
 
+    @FXML
+    private HBox hBoxTextures;
+
     private Model mesh = null;
 
     private Camera camera = CameraManager.getActive();
@@ -254,40 +263,6 @@ public class GuiController {
         });
     }
 
-    private void prepareGUI() {
-        uploadInfoInTextFields();
-        checkBoxLight.setSelected(true);
-
-//        colorPickerLines.setDisable(true);
-//        colorPickerModel.setDisable(true);
-//
-//        checkBoxLines.setDisable(true);
-//        checkBoxLight.setDisable(true);
-//        checkBoxTexture.setDisable(true);
-//
-//        textureText.setDisable(true);
-//        chooseFileBtn.setDisable(true);
-//        deleteTextureBtn.setDisable(true);
-
-        scrollPaneMain.setDisable(true);
-
-        scrollPaneMain.setVisible(true); // изменить
-    }
-
-    private void showModelInfo() {
-        colorPickerLines.setValue(RasterizationParams.getLineColor());
-        colorPickerModel.setValue(mesh.getColor());
-        colorPickerLines.setDisable(false);
-        colorPickerModel.setDisable(false);
-
-        checkBoxLines.setDisable(false);
-        checkBoxLight.setDisable(false);
-        checkBoxTexture.setDisable(false);
-
-        chooseFileBtn.setDisable(false);
-        deleteTextureBtn.setDisable(false);
-    }
-
     private void uploadInfoInTextFields() {
         textFieldPosX.setText(Double.toString((double) Math.round((camera.getPosition().getX() * 100)) / 100));
         textFieldPosY.setText(Double.toString((double) (Math.round(camera.getPosition().getY() * 100)) / 100));
@@ -316,12 +291,31 @@ public class GuiController {
         fovTextField.setText(camera.getFov() + "");
         nearTextField.setText(camera.getNearPlane() + "");
         farTextField.setText(camera.getFarPlane() + "");
-//        textFieldLightSourceStrength.setText(Double.toString((double) Math.round((Light.getK * 100)) / 100));
-//        textFieldGlareBrightness.setText(Double.toString((double) Math.round((Light.getKs * 100)) / 100));
-//        textFieldGlareArea.setText(Double.toString((double) Math.round((Light.getHighLightShine * 100)) / 100));
     }
 
-    private Alert createAlertWithError(Alert.AlertType alertType, String valueName, String errorMessage) {
+    private void prepareGUI() {
+        uploadInfoInTextFields();
+
+        checkBoxLines.setSelected(false);
+        checkBoxLight.setSelected(true);
+        checkBoxTexture.setSelected(false);
+
+        scrollPaneMain.setDisable(true);
+        colorPickerLines.setDisable(true);
+        hBoxTextures.setDisable(true);
+
+        //todo: изменить
+        scrollPaneMain.setVisible(true);
+
+
+    }
+
+    private void showModelInfo() {
+        colorPickerLines.setValue(RasterizationParams.getLineColor());
+        colorPickerModel.setValue(mesh.getColor());
+    }
+    
+    private Alert createAlert(Alert.AlertType alertType, String valueName, String errorMessage) {
         Alert alert = new Alert(alertType);
         alert.setTitle("Ошибка");
         alert.setHeaderText(valueName);
@@ -342,7 +336,7 @@ public class GuiController {
                 newValue += 1;
             }
             source.setText(Double.toString(newValue));
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Не удалось запарсить значение double.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Не удалось запарсить значение double.", errorMessage);
             alert.showAndWait();
         }
         if (source.equals(textFieldLightSourceStrength)) {
@@ -382,7 +376,7 @@ public class GuiController {
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             source.setText(Double.toString(coordinate));
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Не удалось запарсить значение double.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Не удалось запарсить значение double.", errorMessage);
             alert.showAndWait();
         }
         if (source.equals(textFieldPosX)) {
@@ -485,8 +479,10 @@ public class GuiController {
     private void handleCheckBoxLinesAction(ActionEvent actionEvent) {
         if (checkBoxLines.isSelected()) {
             RasterizationParams.setLine(true);
+            colorPickerLines.setDisable(false);
         } else {
             RasterizationParams.setLine(false);
+            colorPickerLines.setDisable(true);
         }
         remakeModel();
     }
@@ -495,10 +491,23 @@ public class GuiController {
     private void handleCheckBoxLightAction(ActionEvent actionEvent) {
         if (checkBoxLight.isSelected()) {
             RasterizationParams.setLight(true);
+            vBoxLight.setDisable(false);
         } else {
             RasterizationParams.setLight(false);
+            vBoxLight.setDisable(true);
         }
         remakeModel();
+    }
+
+    @FXML
+    private void handleCheckBoxTextureAction(ActionEvent actionEvent) {
+        if (checkBoxTexture.isSelected()) {
+            RasterizationParams.setTexture(true);
+            hBoxTextures.setDisable(false);
+        } else {
+            RasterizationParams.setTexture(false);
+            hBoxTextures.setDisable(true);
+        }
     }
 
     @FXML
@@ -511,7 +520,7 @@ public class GuiController {
         } catch (Exception e) {
             fovTextField.setText(camera.getFov() + "");
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение угла.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение угла.", errorMessage);
             alert.showAndWait();
         }
 
@@ -531,7 +540,7 @@ public class GuiController {
         } catch (Exception e) {
             nearTextField.setText(camera.getNearPlane() + "");
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
 
@@ -551,7 +560,7 @@ public class GuiController {
         } catch (Exception e) {
             farTextField.setText(camera.getFarPlane() + "");
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение дальнего плана.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение дальнего плана.", errorMessage);
             alert.showAndWait();
         }
 
@@ -559,15 +568,6 @@ public class GuiController {
         farTextField.setText(camera.getFarPlane() + "");
         anchorPane.requestFocus();
         remakeModel();
-    }
-
-    @FXML
-    private void handleCheckBoxTextureAction(ActionEvent actionEvent) {
-        if (checkBoxTexture.isSelected()) {
-            RasterizationParams.setTexture(true);
-        } else {
-            RasterizationParams.setTexture(false);
-        }
     }
 
     @FXML
@@ -659,16 +659,45 @@ public class GuiController {
             String fileContent = Files.readString(fileName);
             mesh = ObjReader.read(fileContent);
         } catch (Exception exception) {
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Ошибка при открытии файла " + fileName, exception.getMessage());
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Ошибка при открытии файла " + fileName, exception.getMessage());
             alert.showAndWait();
         }
 
         if (mesh != null) {
-            Triangulation.triangulateModel(mesh);
+            try {
+                Triangulation.triangulateModel(mesh);
+            } catch (Exception exception) {
+                Alert alert = createAlert(Alert.AlertType.ERROR, exception.getMessage(), "");
+                alert.showAndWait();
+            }
             mesh.setNormals(FindNormals.findNormals(mesh));
             mesh.setTexture(null);
             scrollPaneMain.setDisable(false);
             remakeModel();
+        }
+    }
+
+    @FXML
+    private void onSaveModelAsMenuItemClick() {
+        if (mesh == null) {
+            Alert alert1 = createAlert(Alert.AlertType.WARNING, "Ошибка при сохранении файла", "Model is null. Download any model before saving it");
+            alert1.showAndWait();
+        } else {
+            FileChooser saveChooser = new FileChooser();
+            saveChooser.setTitle("Save file as");
+            saveChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("OBJ file", "*.obj"));
+            File file = saveChooser.showSaveDialog(canvas.getScene().getWindow());
+            String modelInfo = ObjWriter.write(mesh);
+            if (file != null) {
+                try {
+                    FileWriter fileWriter = new FileWriter(file);
+                    fileWriter.write(modelInfo);
+                    fileWriter.close();
+                } catch (Exception e) {
+                    Alert alert2 = createAlert(Alert.AlertType.ERROR, e.getMessage(), "");
+                    alert2.showAndWait();
+                }
+            }
         }
     }
 
@@ -762,7 +791,7 @@ public class GuiController {
             newNearDouble = Double.parseDouble(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
 
@@ -781,7 +810,7 @@ public class GuiController {
             newNearDouble = Double.parseDouble(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
             return;
         }
@@ -806,7 +835,7 @@ public class GuiController {
             newNearDouble = Double.parseDouble(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
         Model.scaleModelOnYUp(newNearDouble, mesh);
@@ -824,7 +853,7 @@ public class GuiController {
             newNearDouble = Double.parseDouble(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
             return;
         }
@@ -850,7 +879,7 @@ public class GuiController {
             newNearDouble = Double.parseDouble(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
             return;
         }
@@ -876,7 +905,7 @@ public class GuiController {
         } catch (Exception e) {
             nearTextField.setText(camera.getNearPlane() + "");
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
 
@@ -894,7 +923,7 @@ public class GuiController {
             newNearInt = Integer.parseInt(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
         if (newNearInt > 0) {
@@ -916,7 +945,7 @@ public class GuiController {
             newNearInt = Integer.parseInt(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
         if (newNearInt > 0) {
@@ -938,7 +967,7 @@ public class GuiController {
             newNearInt = Integer.parseInt(newNear);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            Alert alert = createAlertWithError(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
             alert.showAndWait();
         }
         if (newNearInt > 0) {

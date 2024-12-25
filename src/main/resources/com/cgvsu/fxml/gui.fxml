@@ -14,6 +14,16 @@
                 <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
             </accelerator>
             </MenuItem>
+<!--         <MenuItem mnemonicParsing="false" text="Save">-->
+<!--            <accelerator>-->
+<!--               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />-->
+<!--            </accelerator>-->
+<!--         </MenuItem>-->
+         <MenuItem mnemonicParsing="false" onAction="#onSaveModelAsMenuItemClick" text="Save as">
+            <accelerator>
+               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+            </accelerator>
+         </MenuItem>
         </Menu>
         <Menu mnemonicParsing="false" text="Camera Options">
             <MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
@@ -239,7 +249,7 @@
                                  </HBox>
                               </children>
                            </HBox>
-                           <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
+                           <HBox fx:id="hBoxTextures" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
                               <children>
                                  <TextField fx:id="textureText" editable="false" focusTraversable="false" promptText="Модель не открыта" styleClass="textFieldTexture" HBox.hgrow="ALWAYS">
                                     <HBox.margin>
@@ -260,7 +270,7 @@
                            </HBox>
                         </children>
                      </VBox>
-                     <VBox styleClass="vBoxSecondary">
+                     <VBox fx:id="vBoxLight" styleClass="vBoxSecondary">
                         <children>
                            <StackPane styleClass="stakePaneHeader">
                               <children>
