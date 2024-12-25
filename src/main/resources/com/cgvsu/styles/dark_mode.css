@@ -51,7 +51,7 @@ VBox {
     -fx-padding: 5px 5px 5px 5px;
 }
 .vBoxSecondary {
-    -fx-padding: 20px 5px 5px 5px;
+    -fx-padding: 10px 5px 5px 5px;
 }
 .stakePaneHeader {
     -fx-background-radius: 10px;
@@ -64,6 +64,17 @@ Button, ColorPicker, ChoiceBox {
 }
 .hBoxTopPadding {
     -fx-padding: 5px 0 0 0;
+}
+.list-view {
+    -fx-background-color: rgb(140,140,140);
+}
+.list-cell {
+    -fx-background: transparent; /* Прозрачный фон ячеек */
+}
+.list-cell:selected {
+    -fx-background: rgb(81, 175, 238);
+    -fx-alignment: center;
+    -fx-text-alignment: center;
 }
 /* .textFieldTexture:disabled {
     -fx-padding: 3px;

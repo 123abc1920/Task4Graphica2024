@@ -386,6 +386,16 @@
                            </HBox>
                         </children>
                      </VBox>
+                     <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="150.0" styleClass="vBoxSecondary">
+                        <children>
+                           <StackPane styleClass="stakePaneHeader">
+                              <children>
+                                 <Label text="Модели" />
+                              </children>
+                           </StackPane>
+                           <ListView fx:id="listViewModels" focusTraversable="false" />
+                        </children>
+                     </VBox>
                   </children>
                </VBox>
             </children>

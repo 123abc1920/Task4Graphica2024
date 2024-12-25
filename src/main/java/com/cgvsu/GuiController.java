@@ -111,6 +111,9 @@ public class GuiController {
     private Button deleteCameraBtn;
 
     @FXML
+    private ListView<String> listViewModels;
+
+    @FXML
     private TextField textureText;
 
     @FXML
@@ -151,10 +154,8 @@ public class GuiController {
 
     @FXML
     private TextField nearTextField;
-
     @FXML
     private TextField farTextField;
-
     @FXML
     private TextField scaleModelX;
     @FXML
@@ -173,11 +174,8 @@ public class GuiController {
     private TextField translateModelY;
     @FXML
     private TextField translateModelZ;
-
     private boolean isInLightMode = true;
-
     private boolean isPanelRemoved = true;
-
     @FXML
     private HBox hBoxTextures;
 
@@ -202,9 +200,7 @@ public class GuiController {
     private double endXRMB;
 
     private double endYRMB;
-
     private double width, height;
-
 
     @FXML
     private void initialize() {
@@ -643,7 +639,7 @@ public class GuiController {
     }
 
     @FXML
-    private void onOpenModelMenuItemClick() {
+    private void onOpenModelMenuItemClick() throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
         fileChooser.setTitle("Load Model");
@@ -664,6 +660,7 @@ public class GuiController {
         }
 
         if (mesh != null) {
+            listViewModels.getItems().add(file.getName());
             try {
                 Triangulation.triangulateModel(mesh);
             } catch (Exception exception) {
