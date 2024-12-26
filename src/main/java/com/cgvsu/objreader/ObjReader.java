@@ -72,9 +72,9 @@ public class ObjReader {
         }
         try {
             return new Vector3f(
-                    Float.parseFloat(wordsInLineWithoutToken.get(0)),
-                    Float.parseFloat(wordsInLineWithoutToken.get(1)),
-                    Float.parseFloat(wordsInLineWithoutToken.get(2)));
+                    Double.parseDouble(wordsInLineWithoutToken.get(0)),
+                    Double.parseDouble(wordsInLineWithoutToken.get(1)),
+                    Double.parseDouble(wordsInLineWithoutToken.get(2)));
         } catch (NumberFormatException e) {
             throw new ObjReaderException("Failed to parse float value.", lineInd);
         } catch (IndexOutOfBoundsException e) {
@@ -91,8 +91,8 @@ public class ObjReader {
         }
         try {
             return new Vector2f(
-                    Float.parseFloat(wordsInLineWithoutToken.get(0)),
-                    Float.parseFloat(wordsInLineWithoutToken.get(1)));
+                    Double.parseDouble(wordsInLineWithoutToken.get(0)),
+                    Double.parseDouble(wordsInLineWithoutToken.get(1)));
         } catch (NumberFormatException e) {
             throw new ObjReaderException("Failed to parse float value.", lineInd);
         } catch (IndexOutOfBoundsException e) {
@@ -109,9 +109,9 @@ public class ObjReader {
         }
         try {
             return new Vector3f(
-                    Float.parseFloat(wordsInLineWithoutToken.get(0)),
-                    Float.parseFloat(wordsInLineWithoutToken.get(1)),
-                    Float.parseFloat(wordsInLineWithoutToken.get(2)));
+                    Double.parseDouble(wordsInLineWithoutToken.get(0)),
+                    Double.parseDouble(wordsInLineWithoutToken.get(1)),
+                    Double.parseDouble(wordsInLineWithoutToken.get(2)));
         } catch (NumberFormatException e) {
             throw new ObjReaderException("Failed to parse float value.", lineInd);
         } catch (IndexOutOfBoundsException e) {
