@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -201,6 +202,8 @@ public class GuiController {
 
     private double endYRMB;
     private double width, height;
+
+    List<Model> modelList = new ArrayList<>();
 
     @FXML
     private void initialize() {
@@ -639,6 +642,15 @@ public class GuiController {
     }
 
     @FXML
+    private void onListViewModelsClick(MouseEvent mouseEvent) {
+        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+            int itemIndex = listViewModels.getSelectionModel().getSelectedIndex();
+            listViewModels.getSelectionModel().select(itemIndex);
+            mesh = modelList.get(itemIndex);
+            remakeModel();
+        }
+    }
+    @FXML
     private void onOpenModelMenuItemClick() throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
@@ -660,7 +672,10 @@ public class GuiController {
         }
 
         if (mesh != null) {
+            modelList.add(mesh);
             listViewModels.getItems().add(file.getName());
+            listViewModels.getSelectionModel().clearSelection();
+            listViewModels.getSelectionModel().selectLast();
             try {
                 Triangulation.triangulateModel(mesh);
             } catch (Exception exception) {

@@ -393,7 +393,7 @@
                                  <Label text="Модели" />
                               </children>
                            </StackPane>
-                           <ListView fx:id="listViewModels" focusTraversable="false" />
+                           <ListView fx:id="listViewModels" focusTraversable="false" onMousePressed="#onListViewModelsClick" />
                         </children>
                      </VBox>
                   </children>
