@@ -1,5 +1,6 @@
 package com.cgvsu.rasterization;
 
+import com.cgvsu.light.Light;
 import com.cgvsu.model.Model;
 import com.cgvsu.zbuffer.DrawBuffer;
 import com.cgvsu.zbuffer.ZBuffer;
@@ -10,6 +11,7 @@ public class RasterizationParams {
 
 	public static ZBuffer zBuffer = new ZBuffer(800, 450);
 	public static DrawBuffer drawBuffer = new DrawBuffer(800, 450, null);
+	public static Light light = new Light();
 
 	private static boolean drawLine = false;
 	private static boolean drawTexture = false;

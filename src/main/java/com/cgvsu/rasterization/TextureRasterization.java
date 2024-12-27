@@ -166,7 +166,7 @@ public class TextureRasterization {
 				+ normals[2].getZ() * barizenticCoordinate[2]);
 		dotNormal = dotNormal.normalize();
 
-		return Light.newRgb(c, dotNormal, toCamera, dot);
+		return RasterizationParams.light.newRgb(c, dotNormal, toCamera, dot);
 	}
 
 }

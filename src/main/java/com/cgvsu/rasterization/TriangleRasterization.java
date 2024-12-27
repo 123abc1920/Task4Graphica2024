@@ -142,7 +142,7 @@ public class TriangleRasterization {
 		dotNormal.setZ(normals[0].getZ() * barizenticCoordinate[0] + normals[1].getZ() * barizenticCoordinate[1]
 				+ normals[2].getZ() * barizenticCoordinate[2]);
 		dotNormal = dotNormal.normalize();
-		return Light.newRgb(c, dotNormal, toCamera, dot);
+		return RasterizationParams.light.newRgb(c, dotNormal, toCamera, dot);
 	}
 
 }

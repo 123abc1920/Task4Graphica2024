@@ -5,48 +5,52 @@ import com.cgvsu.math.Vector3f;
 import javafx.scene.paint.Color;
 
 public class Light {
-	public static Vector3f position = new Vector3f(0, -50, -100);
+	public Vector3f position = new Vector3f(0, 100, 0);
 
-	private static double k = 0.3;
-	private static double ks = 0.4;
-	private static double highLightShine = 31;
-
-	public static void setPosition(Vector3f v) {
-		Light.position = v;
+	private double k = 0.3;
+	private double ks = 0.4;
+	private double highLightShine = 31;
+	
+	public Light() {
+		
 	}
 
-	public static void setTarget(Vector3f v) {
+	public void setPosition(Vector3f v) {
+		this.position = v;
 	}
 
-	public static void setK(double k) {
+	public void setTarget(Vector3f v) {
+	}
+
+	public void setK(double k) {
 		k = Math.max(0, Math.min(1, k));
-		Light.k = Math.round(k * 100.0) / 100.0;
+		this.k = Math.round(k * 100.0) / 100.0;
 	}
 
-	public static void setKs(double ks) {
+	public void setKs(double ks) {
 		ks = Math.max(0, Math.min(1, ks));
-		Light.ks = Math.round(ks * 100.0) / 100.0;
+		this.ks = Math.round(ks * 100.0) / 100.0;
 	}
 
-	public static void setHighLightShine(double highLightShine) {
+	public void setHighLightShine(double highLightShine) {
 		highLightShine = Math.max(1, Math.min(64, highLightShine));
-		Light.highLightShine = Math.round(highLightShine);
+		this.highLightShine = Math.round(highLightShine);
 	}
 
-	public static double getK() {
+	public double getK() {
 		return k;
 	}
 
-	public static double getKs() {
+	public double getKs() {
 		return ks;
 	}
 
-	public static double getHighLightShine() {
+	public double getHighLightShine() {
 		return highLightShine;
 	}
 
-	public static Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f dot) {
-		Vector3f ray = dot.sub(position).normalize();
+	public Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f dot) {
+		Vector3f ray = dot.sub(this.position).normalize();
 
 		double l = ray.dotProduct(n.multiplyScalar(-1));
 
