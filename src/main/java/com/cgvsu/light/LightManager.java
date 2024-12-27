@@ -15,8 +15,6 @@ public class LightManager {
 		Light light = new Light();
 		lights.add(light);
 		current = light;
-		light = new Light();
-		light.setPosition(new Vector3f(0, -100, 0));
 		lights.add(light);
 	}
 
