@@ -214,6 +214,9 @@ public class GuiController {
 	@FXML
 	private CheckBox switchBtn;
 
+	@FXML
+	private ColorPicker colorLight;
+
 	private Model mesh = null;
 
 	private Camera camera = CameraManager.getActive();
@@ -1422,6 +1425,13 @@ public class GuiController {
 			lightList.getItems().add(LightManager.printLight(i));
 		}
 		lightList.setValue(lightList.getItems().get(0));
+		remakeModel();
+	}
+
+	@FXML
+	private void handleColorizeLightBtnAction() {
+		Color newLightColor = colorLight.getValue();
+		LightManager.getCurrent().setColor(newLightColor);
 		remakeModel();
 	}
 

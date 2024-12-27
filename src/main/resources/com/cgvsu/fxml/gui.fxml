@@ -19,472 +19,675 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
-    <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <Menu mnemonicParsing="false" text="File">
-            <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
-            <accelerator>
-                <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-            </accelerator>
-            </MenuItem>
-<!--         <MenuItem mnemonicParsing="false" text="Save">-->
-<!--            <accelerator>-->
-<!--               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />-->
-<!--            </accelerator>-->
-<!--         </MenuItem>-->
-         <MenuItem mnemonicParsing="false" onAction="#onSaveModelAsMenuItemClick" text="Save as">
-            <accelerator>
-               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
-            </accelerator>
-         </MenuItem>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Camera Options">
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="UP" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraBackward" text="Backward">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="DOWN" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraLeft" text="Left">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="LEFT" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraRight" text="Right">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="RIGHT" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraUp" text="Up">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraDown" text="Down">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-        </Menu>
-      <Menu mnemonicParsing="false" text="View">
-        <items>
-          <MenuItem mnemonicParsing="false" onAction="#handleThemeChange" text="Change Theme">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator></MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleSidePanelRemove" text="Side panel">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-            </MenuItem>
-        </items>
-      </Menu>
-    </MenuBar>
+<AnchorPane fx:id="anchorPane"
+	nodeOrientation="LEFT_TO_RIGHT"
+	xmlns="http://javafx.com/javafx/17.0.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="com.cgvsu.GuiController">
+	<MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0"
+		AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<Menu mnemonicParsing="false" text="File">
+			<MenuItem mnemonicParsing="false"
+				onAction="#onOpenModelMenuItemClick" text="Load Model">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="F"
+						control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<!-- <MenuItem mnemonicParsing="false" text="Save"> -->
+			<!-- <accelerator> -->
+			<!-- <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" 
+				shortcut="UP" /> -->
+			<!-- </accelerator> -->
+			<!-- </MenuItem> -->
+			<MenuItem mnemonicParsing="false"
+				onAction="#onSaveModelAsMenuItemClick" text="Save as">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="S"
+						control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+		</Menu>
+		<Menu mnemonicParsing="false" text="Camera Options">
+			<MenuItem mnemonicParsing="false"
+				onAction="#handleCameraForward" text="Forward">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="UP"
+						control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<MenuItem mnemonicParsing="false"
+				onAction="#handleCameraBackward" text="Backward">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="DOWN"
+						control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<MenuItem mnemonicParsing="false"
+				onAction="#handleCameraLeft" text="Left">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="LEFT"
+						control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<MenuItem mnemonicParsing="false"
+				onAction="#handleCameraRight" text="Right">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="RIGHT"
+						control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<MenuItem mnemonicParsing="false" onAction="#handleCameraUp"
+				text="Up">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="W"
+						control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<MenuItem mnemonicParsing="false"
+				onAction="#handleCameraDown" text="Down">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="S"
+						control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+		</Menu>
+		<Menu mnemonicParsing="false" text="View">
+			<items>
+				<MenuItem mnemonicParsing="false"
+					onAction="#handleThemeChange" text="Change Theme">
+					<accelerator>
+						<KeyCodeCombination alt="UP" code="C"
+							control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+					</accelerator>
+				</MenuItem>
+				<MenuItem mnemonicParsing="false"
+					onAction="#handleSidePanelRemove" text="Side panel">
+					<accelerator>
+						<KeyCodeCombination alt="UP" code="R"
+							control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+					</accelerator>
+				</MenuItem>
+			</items>
+		</Menu>
+	</MenuBar>
 
-    <Canvas fx:id="canvas" height="870" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" onScroll="#handleMouseScroll" width="1400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
-   <ScrollPane fx:id="scrollPaneMain" fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-     <content>
-       <AnchorPane>
-            <children>
-               <VBox fx:id="vBoxMain" alignment="TOP_CENTER" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#handleMouseClickedVBoxMain" styleClass="vBoxMain" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                  <children>
-                     <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" styleClass="vBoxSecondaryFirst">
-                        <children>
-                           <StackPane styleClass="stakePaneHeader">
-                              <children>
-                                 <Label alignment="CENTER" contentDisplay="CENTER" text="Камера" textAlignment="CENTER" />
-                              </children>
-                           </StackPane>
-                           <Label maxWidth="1.7976931348623157E308" styleClass="firstLabelHeader" text="Position" textAlignment="JUSTIFY" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label styleClass="firstLabel" text="x">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </Label>
-                                 <TextField fx:id="textFieldPosX" focusTraversable="false" maxHeight="-Infinity" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </TextField>
-                                 <Label text="y">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </Label>
-                                 <TextField fx:id="textFieldPosY" focusTraversable="false" maxHeight="-Infinity" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </TextField>
-                                 <Label text="z">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </Label>
-                                 <TextField fx:id="textFieldPosZ" focusTraversable="false" maxHeight="-Infinity" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </TextField>
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                              </children>
-                           </HBox>
-                           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="firstLabelHeader" text="Target">
-                              <VBox.margin>
-                                 <Insets />
-                              </VBox.margin>
-                           </Label>
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label styleClass="firstLabel" text="x">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </Label>
-                                 <TextField fx:id="textFieldTarX" focusTraversable="false" maxHeight="-Infinity" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </TextField>
-                                 <Label text="y">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </Label>
-                                 <TextField fx:id="textFieldTarY" focusTraversable="false" maxHeight="-Infinity" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </TextField>
-                                 <Label text="z">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </Label>
-                                 <TextField fx:id="textFieldTarZ" focusTraversable="false" maxHeight="-Infinity" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </TextField>
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                              </children>
-                           </HBox>
-                           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="firstLabelHeader" text="Характеристики камеры" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label styleClass="firstLabel" text="fov" />
-                                 <TextField fx:id="fovTextField" focusTraversable="false" maxHeight="-Infinity" onAction="#setFovAction" prefWidth="50.0" />
-                                 <Label text="near" />
-                                 <TextField fx:id="nearTextField" focusTraversable="false" maxHeight="-Infinity" onAction="#setNearAction" prefWidth="50.0" />
-                                 <Label text="far" />
-                                 <TextField fx:id="farTextField" focusTraversable="false" maxHeight="-Infinity" onAction="#setFarAction" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                              </children>
-                           </HBox>
-                           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="firstLabelHeader" text="Список камер" />
-                           <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
-                              <children>
-                                 <ChoiceBox fx:id="cameraList" focusTraversable="false" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
-                                    <HBox.margin>
-                                       <Insets right="5.0" />
-                                    </HBox.margin></ChoiceBox>
-                                 <Button fx:id="addCameraBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleAddCameraBtnAction" prefWidth="25.0" text="+" textAlignment="CENTER">
-                                    <HBox.margin>
-                                       <Insets right="5.0" />
-                                    </HBox.margin></Button>
-                                 <Button fx:id="deleteCameraBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleDeleteCameraBtnAction" prefWidth="25.0" text="-" textAlignment="CENTER">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin></Button>
-                              </children>
-                           </HBox>
-                        </children>
-                        <opaqueInsets>
-                           <Insets />
-                        </opaqueInsets>
-                     </VBox>
-                     <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" styleClass="vBoxSecondary">
-                        <children>
-                           <StackPane alignment="TOP_CENTER" styleClass="stakePaneHeader">
-                              <children>
-                                 <Label text="Растеризация" />
-                              </children>
-                           </StackPane>
-                           <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" styleClass="hBoxTopPadding">
-                              <children>
-                                 <Label styleClass="firstLabel" text="Цвет линий" />
-                                 <ColorPicker fx:id="colorPickerLines" focusTraversable="false" onAction="#handleColorPickerLinesAction">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </ColorPicker>
-                              </children>
-                           </HBox>
-                           <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" styleClass="hBoxTopPadding">
-                              <children>
-                                 <Label styleClass="firstLabel" text="Цвет модели" />
-                                 <ColorPicker fx:id="colorPickerModel" focusTraversable="false" onAction="#handleColorPickerModelAction" />
-                              </children>
-                           </HBox>
-                           <HBox maxWidth="1.7976931348623157E308">
-                              <children>
-                                 <Label styleClass="firstLabel" text="Линии" />
-                                 <CheckBox fx:id="checkBoxLines" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxLinesAction" />
-                                 <HBox>
-                                    <children>
-                                       <Label text="Освещение" />
-                                       <CheckBox fx:id="checkBoxLight" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxLightAction" />
-                                    </children>
-                                 </HBox>
-                                 <HBox>
-                                    <children>
-                                       <Label text="Текстура" />
-                                       <CheckBox fx:id="checkBoxTexture" focusTraversable="false" mnemonicParsing="false" onAction="#handleCheckBoxTextureAction" />
-                                    </children>
-                                 </HBox>
-                              </children>
-                           </HBox>
-                           <HBox fx:id="hBoxTextures" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
-                              <children>
-                                 <TextField fx:id="textureText" editable="false" focusTraversable="false" promptText="Модель не открыта" styleClass="textFieldTexture" HBox.hgrow="ALWAYS">
-                                    <HBox.margin>
-                                       <Insets right="5.0" />
-                                    </HBox.margin></TextField>
-                                 <Button fx:id="chooseFileBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleChooseFileBtnAction" text="Files...">
-                                    <HBox.margin>
-                                       <Insets right="5.0" />
-                                    </HBox.margin>
-                                    <opaqueInsets>
-                                       <Insets />
-                                    </opaqueInsets></Button>
-                                 <Button fx:id="deleteTextureBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleDeleteTextureBtnAction" prefWidth="25.0" text="-">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin></Button>
-                              </children>
-                           </HBox>
-                        </children>
-                     </VBox>
-                     <VBox fx:id="vBoxLight" styleClass="vBoxSecondary">
-                        <children>
-                           <StackPane styleClass="stakePaneHeader">
-                              <children>
-                                 <Label text="Освещение" />
-                              </children>
-                           </StackPane>
-                           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="firstLabelHeader" text="Список источников" />
-                           <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
-                              <children>
-                                 <ChoiceBox fx:id="lightList" focusTraversable="false" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
-                                    <HBox.margin>
-                                       <Insets right="5.0" />
-                                    </HBox.margin>
-                                 </ChoiceBox>
-                              </children>
-                           </HBox>
-                           <HBox prefHeight="0.0" prefWidth="298.0" styleClass="hBoxTopPadding">
-                              <children>
-                                 <Button fx:id="addLightBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleAddLightBtnAction" prefWidth="25.0" text="+" textAlignment="CENTER">
-                                    <HBox.margin>
-                                       <Insets right="5.0" />
-                                    </HBox.margin>
-                                 </Button>
-                                 <Button fx:id="deleteLightBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleDeleteLightBtnAction" prefWidth="25.0" text="-" textAlignment="CENTER">
-                                    <HBox.margin>
-                                       <Insets />
-                                    </HBox.margin>
-                                 </Button>
-                                 <CheckBox fx:id="switchBtn" mnemonicParsing="false">
-                                    <HBox.margin>
-                                       <Insets left="5.0" />
-                                    </HBox.margin>
-                                 </CheckBox>
-                              </children>
-                              <VBox.margin>
-                                 <Insets />
-                              </VBox.margin>
-                           </HBox>
-                           <Label styleClass="firstLabelHeader" text="Положение источника света" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label alignment="CENTER" styleClass="firstLabel" text="x" />
-                                 <TextField fx:id="textFieldPosLightX" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Label text="y" />
-                                 <TextField fx:id="textFieldPosLightY" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Label text="z" />
-                                 <TextField fx:id="textFieldPosLightZ" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                              </children>
-                           </HBox>
-                           <HBox alignment="CENTER_LEFT" styleClass="hBoxTopPadding">
-                              <children>
-                                 <Label styleClass="firstLabel" text="Сила источника света" />
-                                 <TextField fx:id="textFieldLightSourceStrength" focusTraversable="false" onAction="#handleTextFieldLightAction" prefWidth="50.0" />
-                              </children>
-                           </HBox>
-                           <HBox alignment="CENTER_LEFT" styleClass="hBoxTopPadding">
-                              <children>
-                                 <Label styleClass="firstLabel" text="Яркость блика" />
-                                 <TextField fx:id="textFieldGlareBrightness" focusTraversable="false" onAction="#handleTextFieldLightAction" prefWidth="50.0" />
-                              </children>
-                           </HBox>
-                           <HBox alignment="CENTER_LEFT" fillHeight="false" styleClass="hBoxTopPadding">
-                              <children>
-                                 <Label styleClass="firstLabel" text="Площадь блика" />
-                                 <TextField fx:id="textFieldGlareArea" focusTraversable="false" onAction="#handleTextFieldLightAction" prefWidth="50.0" />
-                              </children>
-                           </HBox>
-                        </children>
-                     </VBox>
-                     <VBox styleClass="vBoxSecondary">
-                        <children>
-                           <StackPane styleClass="stakePaneHeader">
-                              <children>
-                                 <Label text="Трансформации" />
-                              </children>
-                           </StackPane>
-                           <Label styleClass="firstLabelHeader" text="Увеличивание" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label alignment="CENTER" styleClass="firstLabel" text="x" />
-                                 <TextField fx:id="scaleModelX" focusTraversable="false" onAction="#scalingModelX" prefWidth="50.0" />
-                                 <Label text="y" />
-                                 <TextField fx:id="scaleModelY" focusTraversable="false" onAction="#scalingModelY" prefWidth="50.0" />
-                                 <Label text="z" />
-                                 <TextField fx:id="scaleModelZ" focusTraversable="false" onAction="#scalingModelZ" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                              </children>
-                           </HBox>
-                           <Label styleClass="firstLabelHeader" text="Поворот" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label styleClass="firstLabel" text="x" />
-                                 <TextField fx:id="rotateModelX" focusTraversable="false" onAction="#rotatingModelX" prefWidth="50.0" />
-                                 <Label text="y" />
-                                 <TextField fx:id="rotateModelY" focusTraversable="false" onAction="#rotatingModelY" prefWidth="50.0" />
-                                 <Label text="z" />
-                                 <TextField fx:id="rotateModelZ" focusTraversable="false" onAction="#rotatingModelZ" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                              </children>
-                           </HBox>
-                           <Label styleClass="firstLabelHeader" text="Перемещение" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label styleClass="firstLabel" text="x" />
-                                 <TextField fx:id="translateModelX" focusTraversable="false" onAction="#translatingModelX" prefWidth="50.0" />
-                                 <Label text="y" />
-                                 <TextField fx:id="translateModelY" focusTraversable="false" onAction="#translatingModelY" prefWidth="50.0" />
-                                 <Label text="z" />
-                                 <TextField fx:id="translateModelZ" focusTraversable="false" onAction="#translatingModelZ" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                              </children>
-                           </HBox>
-                        </children>
-                     </VBox>
-                     <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="150.0" styleClass="vBoxSecondary">
-                        <children>
-                           <StackPane styleClass="stakePaneHeader">
-                              <children>
-                                 <Label text="Модели" />
-                              </children>
-                           </StackPane>
-                           <ListView fx:id="listViewModels" focusTraversable="false" onMousePressed="#onListViewModelsClick" />
-                        </children>
-                     </VBox>
-                     <VBox styleClass="vBoxSecondary">
-                        <children>
-                           <StackPane styleClass="stakePaneHeader">
-                              <children>
-                                 <Label text="Disk" />
-                              </children>
-                           </StackPane>
-                           <Label styleClass="firstLabelHeader" text="Увеличивание" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label alignment="CENTER" styleClass="firstLabel" text="x" />
-                                 <TextField fx:id="diskScaleModelX" focusTraversable="false" onAction="#diskScalingModelX" prefWidth="50.0" />
-                                 <Label text="y" />
-                                 <TextField fx:id="diskScaleModelY" focusTraversable="false" onAction="#diskScalingModelY" prefWidth="50.0" />
-                                 <Label text="z" />
-                                 <TextField fx:id="diskScaleModelZ" focusTraversable="false" onAction="#diskScalingModelZ" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Start" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" onAction="#stopScalingDiskModel" text="Stop">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                              </children>
-                           </HBox>
-                           <Label styleClass="firstLabelHeader" text="Поворот" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label styleClass="firstLabel" text="x" />
-                                 <TextField fx:id="diskRotateModelX" focusTraversable="false" onAction="#diskRotatingModelX" prefWidth="50.0" />
-                                 <Label text="y" />
-                                 <TextField fx:id="diskRotateModelY" focusTraversable="false" onAction="#diskRotatingModelY" prefWidth="50.0" />
-                                 <Label text="z" />
-                                 <TextField fx:id="diskRotateModelZ" focusTraversable="false" onAction="#diskRotatingModelZ" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Start" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" onAction="#stopRotatingDiskModel" text="Stop" />
-                              </children>
-                           </HBox>
-                           <Label styleClass="firstLabelHeader" text="Перемещение" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label styleClass="firstLabel" text="x" />
-                                 <TextField fx:id="diskTranslateModelX" focusTraversable="false" onAction="#diskTranslatingModelX" prefWidth="50.0" />
-                                 <Label text="y" />
-                                 <TextField fx:id="diskTranslateModelY" focusTraversable="false" onAction="#diskTranslatingModelY" prefWidth="50.0" />
-                                 <Label text="z" />
-                                 <TextField fx:id="diskTranslateModelZ" focusTraversable="false" onAction="#diskTranslatingModelZ" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Start">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                                 <Button focusTraversable="false" mnemonicParsing="false" onAction="#stopTranslatingDiskModel" text="Stop" />
-                              </children>
-                           </HBox>
-                        </children>
-                     </VBox>
-                  </children>
-               </VBox>
-            </children>
-         </AnchorPane>
-     </content>
-   </ScrollPane>
+	<Canvas fx:id="canvas" height="870"
+		onMouseDragged="#handleMouseDragged"
+		onMousePressed="#handleMousePressed" onScroll="#handleMouseScroll"
+		width="1400.0" AnchorPane.bottomAnchor="0.0"
+		AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+		AnchorPane.topAnchor="30.0" />
+	<ScrollPane fx:id="scrollPaneMain" fitToHeight="true"
+		fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER"
+		prefWidth="300.0" AnchorPane.bottomAnchor="0.0"
+		AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<content>
+			<AnchorPane>
+				<children>
+					<VBox fx:id="vBoxMain" alignment="TOP_CENTER"
+						nodeOrientation="LEFT_TO_RIGHT"
+						onMouseClicked="#handleMouseClickedVBoxMain" styleClass="vBoxMain"
+						AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+						AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+						<children>
+							<VBox alignment="CENTER" maxHeight="1.7976931348623157E308"
+								styleClass="vBoxSecondaryFirst">
+								<children>
+									<StackPane styleClass="stakePaneHeader">
+										<children>
+											<Label alignment="CENTER" contentDisplay="CENTER"
+												text="Камера" textAlignment="CENTER" />
+										</children>
+									</StackPane>
+									<Label maxWidth="1.7976931348623157E308"
+										styleClass="firstLabelHeader" text="Position"
+										textAlignment="JUSTIFY" />
+									<HBox alignment="CENTER_LEFT">
+										<children>
+											<Label styleClass="firstLabel" text="x">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</Label>
+											<TextField fx:id="textFieldPosX"
+												focusTraversable="false" maxHeight="-Infinity"
+												onAction="#handleTextFieldCoordinatesAction"
+												prefWidth="50.0">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</TextField>
+											<Label text="y">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</Label>
+											<TextField fx:id="textFieldPosY"
+												focusTraversable="false" maxHeight="-Infinity"
+												onAction="#handleTextFieldCoordinatesAction"
+												prefWidth="50.0">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</TextField>
+											<Label text="z">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</Label>
+											<TextField fx:id="textFieldPosZ"
+												focusTraversable="false" maxHeight="-Infinity"
+												onAction="#handleTextFieldCoordinatesAction"
+												prefWidth="50.0">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</TextField>
+											<Button focusTraversable="false"
+												mnemonicParsing="false" text="Reset">
+												<HBox.margin>
+													<Insets left="10.0" />
+												</HBox.margin>
+											</Button>
+										</children>
+									</HBox>
+									<Label maxHeight="1.7976931348623157E308"
+										maxWidth="1.7976931348623157E308"
+										styleClass="firstLabelHeader" text="Target">
+										<VBox.margin>
+											<Insets />
+										</VBox.margin>
+									</Label>
+									<HBox alignment="CENTER_LEFT">
+										<children>
+											<Label styleClass="firstLabel" text="x">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</Label>
+											<TextField fx:id="textFieldTarX"
+												focusTraversable="false" maxHeight="-Infinity"
+												onAction="#handleTextFieldCoordinatesAction"
+												prefWidth="50.0">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</TextField>
+											<Label text="y">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</Label>
+											<TextField fx:id="textFieldTarY"
+												focusTraversable="false" maxHeight="-Infinity"
+												onAction="#handleTextFieldCoordinatesAction"
+												prefWidth="50.0">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</TextField>
+											<Label text="z">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</Label>
+											<TextField fx:id="textFieldTarZ"
+												focusTraversable="false" maxHeight="-Infinity"
+												onAction="#handleTextFieldCoordinatesAction"
+												prefWidth="50.0">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</TextField>
+											<Button focusTraversable="false"
+												mnemonicParsing="false" text="Reset">
+												<HBox.margin>
+													<Insets left="10.0" />
+												</HBox.margin>
+											</Button>
+										</children>
+									</HBox>
+									<Label maxHeight="1.7976931348623157E308"
+										maxWidth="1.7976931348623157E308"
+										styleClass="firstLabelHeader" text="Характеристики камеры" />
+									<HBox alignment="CENTER_LEFT">
+										<children>
+											<Label styleClass="firstLabel" text="fov" />
+											<TextField fx:id="fovTextField"
+												focusTraversable="false" maxHeight="-Infinity"
+												onAction="#setFovAction" prefWidth="50.0" />
+											<Label text="near" />
+											<TextField fx:id="nearTextField"
+												focusTraversable="false" maxHeight="-Infinity"
+												onAction="#setNearAction" prefWidth="50.0" />
+											<Label text="far" />
+											<TextField fx:id="farTextField"
+												focusTraversable="false" maxHeight="-Infinity"
+												onAction="#setFarAction" prefWidth="50.0" />
+											<Button focusTraversable="false"
+												mnemonicParsing="false" text="Reset">
+												<HBox.margin>
+													<Insets left="10.0" />
+												</HBox.margin>
+											</Button>
+										</children>
+									</HBox>
+									<Label maxHeight="1.7976931348623157E308"
+										maxWidth="1.7976931348623157E308"
+										styleClass="firstLabelHeader" text="Список камер" />
+									<HBox alignment="CENTER_LEFT"
+										maxWidth="1.7976931348623157E308">
+										<children>
+											<ChoiceBox fx:id="cameraList"
+												focusTraversable="false" maxWidth="1.7976931348623157E308"
+												HBox.hgrow="ALWAYS">
+												<HBox.margin>
+													<Insets right="5.0" />
+												</HBox.margin>
+											</ChoiceBox>
+											<Button fx:id="addCameraBtn" focusTraversable="false"
+												mnemonicParsing="false" onAction="#handleAddCameraBtnAction"
+												prefWidth="25.0" text="+" textAlignment="CENTER">
+												<HBox.margin>
+													<Insets right="5.0" />
+												</HBox.margin>
+											</Button>
+											<Button fx:id="deleteCameraBtn"
+												focusTraversable="false" mnemonicParsing="false"
+												onAction="#handleDeleteCameraBtnAction" prefWidth="25.0"
+												text="-" textAlignment="CENTER">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</Button>
+										</children>
+									</HBox>
+								</children>
+								<opaqueInsets>
+									<Insets />
+								</opaqueInsets>
+							</VBox>
+							<VBox alignment="TOP_CENTER"
+								maxHeight="1.7976931348623157E308" styleClass="vBoxSecondary">
+								<children>
+									<StackPane alignment="TOP_CENTER"
+										styleClass="stakePaneHeader">
+										<children>
+											<Label text="Растеризация" />
+										</children>
+									</StackPane>
+									<HBox alignment="CENTER_LEFT"
+										maxWidth="1.7976931348623157E308" styleClass="hBoxTopPadding">
+										<children>
+											<Label styleClass="firstLabel" text="Цвет линий" />
+											<ColorPicker fx:id="colorPickerLines"
+												focusTraversable="false"
+												onAction="#handleColorPickerLinesAction">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</ColorPicker>
+										</children>
+									</HBox>
+									<HBox alignment="CENTER_LEFT"
+										maxWidth="1.7976931348623157E308" styleClass="hBoxTopPadding">
+										<children>
+											<Label styleClass="firstLabel" text="Цвет модели" />
+											<ColorPicker fx:id="colorPickerModel"
+												focusTraversable="false"
+												onAction="#handleColorPickerModelAction" />
+										</children>
+									</HBox>
+									<HBox maxWidth="1.7976931348623157E308">
+										<children>
+											<Label styleClass="firstLabel" text="Линии" />
+											<CheckBox fx:id="checkBoxLines"
+												focusTraversable="false" mnemonicParsing="false"
+												onAction="#handleCheckBoxLinesAction" />
+											<HBox>
+												<children>
+													<Label text="Освещение" />
+													<CheckBox fx:id="checkBoxLight"
+														focusTraversable="false" mnemonicParsing="false"
+														onAction="#handleCheckBoxLightAction" />
+												</children>
+											</HBox>
+											<HBox>
+												<children>
+													<Label text="Текстура" />
+													<CheckBox fx:id="checkBoxTexture"
+														focusTraversable="false" mnemonicParsing="false"
+														onAction="#handleCheckBoxTextureAction" />
+												</children>
+											</HBox>
+										</children>
+									</HBox>
+									<HBox fx:id="hBoxTextures" alignment="CENTER_LEFT"
+										maxWidth="1.7976931348623157E308">
+										<children>
+											<TextField fx:id="textureText" editable="false"
+												focusTraversable="false" promptText="Модель не открыта"
+												styleClass="textFieldTexture" HBox.hgrow="ALWAYS">
+												<HBox.margin>
+													<Insets right="5.0" />
+												</HBox.margin>
+											</TextField>
+											<Button fx:id="chooseFileBtn" focusTraversable="false"
+												mnemonicParsing="false"
+												onAction="#handleChooseFileBtnAction" text="Files...">
+												<HBox.margin>
+													<Insets right="5.0" />
+												</HBox.margin>
+												<opaqueInsets>
+													<Insets />
+												</opaqueInsets>
+											</Button>
+											<Button fx:id="deleteTextureBtn"
+												focusTraversable="false" mnemonicParsing="false"
+												onAction="#handleDeleteTextureBtnAction" prefWidth="25.0"
+												text="-">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</Button>
+										</children>
+									</HBox>
+								</children>
+							</VBox>
+							<VBox fx:id="vBoxLight" styleClass="vBoxSecondary">
+								<children>
+									<StackPane styleClass="stakePaneHeader">
+										<children>
+											<Label text="Освещение" />
+										</children>
+									</StackPane>
+									<Label maxHeight="1.7976931348623157E308"
+										maxWidth="1.7976931348623157E308"
+										styleClass="firstLabelHeader" text="Список источников" />
+									<HBox alignment="CENTER_LEFT"
+										maxWidth="1.7976931348623157E308">
+										<children>
+											<ChoiceBox fx:id="lightList"
+												focusTraversable="false" maxWidth="1.7976931348623157E308"
+												HBox.hgrow="ALWAYS">
+												<HBox.margin>
+													<Insets right="5.0" />
+												</HBox.margin>
+											</ChoiceBox>
+										</children>
+									</HBox>
+									<HBox prefHeight="0.0" prefWidth="298.0"
+										styleClass="hBoxTopPadding">
+										<children>
+											<Button fx:id="addLightBtn" focusTraversable="false"
+												mnemonicParsing="false" onAction="#handleAddLightBtnAction"
+												prefWidth="25.0" text="+" textAlignment="CENTER">
+												<HBox.margin>
+													<Insets right="5.0" />
+												</HBox.margin>
+											</Button>
+											<Button fx:id="deleteLightBtn"
+												focusTraversable="false" mnemonicParsing="false"
+												onAction="#handleDeleteLightBtnAction" prefWidth="25.0"
+												text="-" textAlignment="CENTER">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</Button>
+											<CheckBox fx:id="switchBtn" mnemonicParsing="false">
+												<HBox.margin>
+													<Insets left="5.0" />
+												</HBox.margin>
+											</CheckBox>
+											<ColorPicker fx:id="colorLight"
+												onAction="#handleColorizeLightBtnAction">
+												<HBox.margin>
+													<Insets left="5.0" />
+												</HBox.margin>
+											</ColorPicker>
+										</children>
+										<VBox.margin>
+											<Insets />
+										</VBox.margin>
+									</HBox>
+									<Label styleClass="firstLabelHeader"
+										text="Положение источника света" />
+									<HBox alignment="CENTER_LEFT">
+										<children>
+											<Label alignment="CENTER" styleClass="firstLabel"
+												text="x" />
+											<TextField fx:id="textFieldPosLightX"
+												focusTraversable="false"
+												onAction="#handleTextFieldCoordinatesAction"
+												prefWidth="50.0" />
+											<Label text="y" />
+											<TextField fx:id="textFieldPosLightY"
+												focusTraversable="false"
+												onAction="#handleTextFieldCoordinatesAction"
+												prefWidth="50.0" />
+											<Label text="z" />
+											<TextField fx:id="textFieldPosLightZ"
+												focusTraversable="false"
+												onAction="#handleTextFieldCoordinatesAction"
+												prefWidth="50.0" />
+											<Button focusTraversable="false"
+												mnemonicParsing="false" text="Reset">
+												<HBox.margin>
+													<Insets left="10.0" />
+												</HBox.margin>
+											</Button>
+										</children>
+									</HBox>
+									<HBox alignment="CENTER_LEFT" styleClass="hBoxTopPadding">
+										<children>
+											<Label styleClass="firstLabel"
+												text="Сила источника света" />
+											<TextField fx:id="textFieldLightSourceStrength"
+												focusTraversable="false"
+												onAction="#handleTextFieldLightAction" prefWidth="50.0" />
+										</children>
+									</HBox>
+									<HBox alignment="CENTER_LEFT" styleClass="hBoxTopPadding">
+										<children>
+											<Label styleClass="firstLabel" text="Яркость блика" />
+											<TextField fx:id="textFieldGlareBrightness"
+												focusTraversable="false"
+												onAction="#handleTextFieldLightAction" prefWidth="50.0" />
+										</children>
+									</HBox>
+									<HBox alignment="CENTER_LEFT" fillHeight="false"
+										styleClass="hBoxTopPadding">
+										<children>
+											<Label styleClass="firstLabel" text="Площадь блика" />
+											<TextField fx:id="textFieldGlareArea"
+												focusTraversable="false"
+												onAction="#handleTextFieldLightAction" prefWidth="50.0" />
+										</children>
+									</HBox>
+								</children>
+							</VBox>
+							<VBox styleClass="vBoxSecondary">
+								<children>
+									<StackPane styleClass="stakePaneHeader">
+										<children>
+											<Label text="Трансформации" />
+										</children>
+									</StackPane>
+									<Label styleClass="firstLabelHeader" text="Увеличивание" />
+									<HBox alignment="CENTER_LEFT">
+										<children>
+											<Label alignment="CENTER" styleClass="firstLabel"
+												text="x" />
+											<TextField fx:id="scaleModelX"
+												focusTraversable="false" onAction="#scalingModelX"
+												prefWidth="50.0" />
+											<Label text="y" />
+											<TextField fx:id="scaleModelY"
+												focusTraversable="false" onAction="#scalingModelY"
+												prefWidth="50.0" />
+											<Label text="z" />
+											<TextField fx:id="scaleModelZ"
+												focusTraversable="false" onAction="#scalingModelZ"
+												prefWidth="50.0" />
+											<Button focusTraversable="false"
+												mnemonicParsing="false" text="Reset">
+												<HBox.margin>
+													<Insets left="10.0" />
+												</HBox.margin>
+											</Button>
+										</children>
+									</HBox>
+									<Label styleClass="firstLabelHeader" text="Поворот" />
+									<HBox alignment="CENTER_LEFT">
+										<children>
+											<Label styleClass="firstLabel" text="x" />
+											<TextField fx:id="rotateModelX"
+												focusTraversable="false" onAction="#rotatingModelX"
+												prefWidth="50.0" />
+											<Label text="y" />
+											<TextField fx:id="rotateModelY"
+												focusTraversable="false" onAction="#rotatingModelY"
+												prefWidth="50.0" />
+											<Label text="z" />
+											<TextField fx:id="rotateModelZ"
+												focusTraversable="false" onAction="#rotatingModelZ"
+												prefWidth="50.0" />
+											<Button focusTraversable="false"
+												mnemonicParsing="false" text="Reset">
+												<HBox.margin>
+													<Insets left="10.0" />
+												</HBox.margin>
+											</Button>
+										</children>
+									</HBox>
+									<Label styleClass="firstLabelHeader" text="Перемещение" />
+									<HBox alignment="CENTER_LEFT">
+										<children>
+											<Label styleClass="firstLabel" text="x" />
+											<TextField fx:id="translateModelX"
+												focusTraversable="false" onAction="#translatingModelX"
+												prefWidth="50.0" />
+											<Label text="y" />
+											<TextField fx:id="translateModelY"
+												focusTraversable="false" onAction="#translatingModelY"
+												prefWidth="50.0" />
+											<Label text="z" />
+											<TextField fx:id="translateModelZ"
+												focusTraversable="false" onAction="#translatingModelZ"
+												prefWidth="50.0" />
+											<Button focusTraversable="false"
+												mnemonicParsing="false" text="Reset">
+												<HBox.margin>
+													<Insets left="10.0" />
+												</HBox.margin>
+											</Button>
+										</children>
+									</HBox>
+								</children>
+							</VBox>
+							<VBox alignment="TOP_CENTER"
+								maxHeight="1.7976931348623157E308" minHeight="-Infinity"
+								prefHeight="150.0" styleClass="vBoxSecondary">
+								<children>
+									<StackPane styleClass="stakePaneHeader">
+										<children>
+											<Label text="Модели" />
+										</children>
+									</StackPane>
+									<ListView fx:id="listViewModels"
+										focusTraversable="false"
+										onMousePressed="#onListViewModelsClick" />
+								</children>
+							</VBox>
+							<VBox styleClass="vBoxSecondary">
+								<children>
+									<StackPane styleClass="stakePaneHeader">
+										<children>
+											<Label text="Disk" />
+										</children>
+									</StackPane>
+									<Label styleClass="firstLabelHeader" text="Увеличивание" />
+									<HBox alignment="CENTER_LEFT">
+										<children>
+											<Label alignment="CENTER" styleClass="firstLabel"
+												text="x" />
+											<TextField fx:id="diskScaleModelX"
+												focusTraversable="false" onAction="#diskScalingModelX"
+												prefWidth="50.0" />
+											<Label text="y" />
+											<TextField fx:id="diskScaleModelY"
+												focusTraversable="false" onAction="#diskScalingModelY"
+												prefWidth="50.0" />
+											<Label text="z" />
+											<TextField fx:id="diskScaleModelZ"
+												focusTraversable="false" onAction="#diskScalingModelZ"
+												prefWidth="50.0" />
+											<Button focusTraversable="false"
+												mnemonicParsing="false" text="Start" />
+											<Button focusTraversable="false"
+												mnemonicParsing="false" onAction="#stopScalingDiskModel"
+												text="Stop">
+												<HBox.margin>
+													<Insets left="10.0" />
+												</HBox.margin>
+											</Button>
+										</children>
+									</HBox>
+									<Label styleClass="firstLabelHeader" text="Поворот" />
+									<HBox alignment="CENTER_LEFT">
+										<children>
+											<Label styleClass="firstLabel" text="x" />
+											<TextField fx:id="diskRotateModelX"
+												focusTraversable="false" onAction="#diskRotatingModelX"
+												prefWidth="50.0" />
+											<Label text="y" />
+											<TextField fx:id="diskRotateModelY"
+												focusTraversable="false" onAction="#diskRotatingModelY"
+												prefWidth="50.0" />
+											<Label text="z" />
+											<TextField fx:id="diskRotateModelZ"
+												focusTraversable="false" onAction="#diskRotatingModelZ"
+												prefWidth="50.0" />
+											<Button focusTraversable="false"
+												mnemonicParsing="false" text="Start" />
+											<Button focusTraversable="false"
+												mnemonicParsing="false" onAction="#stopRotatingDiskModel"
+												text="Stop" />
+										</children>
+									</HBox>
+									<Label styleClass="firstLabelHeader" text="Перемещение" />
+									<HBox alignment="CENTER_LEFT">
+										<children>
+											<Label styleClass="firstLabel" text="x" />
+											<TextField fx:id="diskTranslateModelX"
+												focusTraversable="false" onAction="#diskTranslatingModelX"
+												prefWidth="50.0" />
+											<Label text="y" />
+											<TextField fx:id="diskTranslateModelY"
+												focusTraversable="false" onAction="#diskTranslatingModelY"
+												prefWidth="50.0" />
+											<Label text="z" />
+											<TextField fx:id="diskTranslateModelZ"
+												focusTraversable="false" onAction="#diskTranslatingModelZ"
+												prefWidth="50.0" />
+											<Button focusTraversable="false"
+												mnemonicParsing="false" text="Start">
+												<HBox.margin>
+													<Insets left="10.0" />
+												</HBox.margin>
+											</Button>
+											<Button focusTraversable="false"
+												mnemonicParsing="false" onAction="#stopTranslatingDiskModel"
+												text="Stop" />
+										</children>
+									</HBox>
+								</children>
+							</VBox>
+						</children>
+					</VBox>
+				</children>
+			</AnchorPane>
+		</content>
+	</ScrollPane>
 </AnchorPane>

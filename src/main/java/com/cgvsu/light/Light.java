@@ -8,6 +8,7 @@ public class Light {
 	public Vector3f position = new Vector3f(0, 100, 0);
 
 	private boolean isOn = true;
+	private Color color = Color.WHITE;
 
 	private double k = 0.3;
 	private double ks = 0.4;
@@ -15,6 +16,10 @@ public class Light {
 
 	public Light() {
 
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
 	public void setPosition(Vector3f v) {
@@ -77,15 +82,34 @@ public class Light {
 		reflectedRay = reflectedRay.normalize();
 
 		double r = reflectedRay.dotProduct(vectorToCamera.multiplyScalar(-1));
-		double highlight = ks * Math.pow(r, highLightShine);
-		if (r < 0) {
-			highlight = 0;
-		}
 
-		double red = Math.max(0, Math.min(1, start.getRed() * (1 - k) + start.getRed() * k * l + highlight));
-		double green = Math.max(0, Math.min(1, start.getGreen() * (1 - k) + start.getGreen() * k * l + highlight));
-		double blue = Math.max(0, Math.min(1, start.getBlue() * (1 - k) + start.getBlue() * k * l + highlight));
+		double sred = start.getRed() * color.getRed();
+		double sgreen = start.getGreen() * color.getGreen();
+		double sblue = start.getBlue() * color.getBlue();
+
+		double red = Math.max(0,
+				Math.min(1, (ambient(start.getRed()) + diffuse(sred, l) + specular(start.getRed(), r))));
+		double green = Math.max(0,
+				Math.min(1, (ambient(start.getGreen()) + diffuse(sgreen, l) + specular(start.getGreen(), r))));
+		double blue = Math.max(0,
+				Math.min(1, (ambient(start.getBlue()) + diffuse(sblue, l) + specular(start.getBlue(), r))));
 
 		return new Color(red, green, blue, 1);
 	}
+
+	private double ambient(double c) {
+		return c * (1 - k);
+	}
+
+	private double diffuse(double c, double l) {
+		return c * k * l;
+	}
+
+	private double specular(double c, double r) {
+		if (r < 0) {
+			return 0;
+		}
+		return ks * Math.pow(r, highLightShine);
+	}
+
 }
