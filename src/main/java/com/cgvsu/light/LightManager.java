@@ -15,13 +15,16 @@ public class LightManager {
 		Light light = new Light();
 		lights.add(light);
 		current = light;
+		light = new Light();
+		light.setPosition(new Vector3f(0, -100, 0));
+		lights.add(light);
 	}
 
 	public static Light getLight(int id) {
 		return lights.get(id);
 	}
 
-	public static void addLight(Light c) {
+	public static void addNewLight(Light c) {
 		lights.add(c);
 	}
 
@@ -37,7 +40,7 @@ public class LightManager {
 		return lights.indexOf(c);
 	}
 
-	public static int getlightsCount() {
+	public static int getLightsCount() {
 		return lights.size();
 	}
 
@@ -45,8 +48,12 @@ public class LightManager {
 		return current;
 	}
 
-	public static void setCurrent(Light current) {
-		LightManager.current = current;
+	public static void setCurrent(int current) {
+		LightManager.current = LightManager.lights.get(current);
+	}
+
+	public static String printLight(int id) {
+		return "Источник " + id;
 	}
 
 	public static Color addLight(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f dot) {

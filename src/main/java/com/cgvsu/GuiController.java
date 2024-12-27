@@ -202,6 +202,15 @@ public class GuiController {
 	@FXML
 	private HBox hBoxTextures;
 
+	@FXML
+	private ChoiceBox<String> lightList;
+
+	@FXML
+	private Button addLightBtn;
+
+	@FXML
+	private Button deleteLightBtn;
+
 	private Model mesh = null;
 
 	private Camera camera = CameraManager.getActive();
@@ -266,12 +275,24 @@ public class GuiController {
 		anchorPane.getStylesheets().add(getClass().getResource("styles/light_mode.css").toExternalForm());
 		prepareGUI();
 
+		for (int i = 0; i < LightManager.getLightsCount(); i++) {
+			lightList.getItems().add(LightManager.printLight(i));
+		}
+		lightList.setValue(lightList.getItems().get(0));
+		lightList.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+				if (!number2.equals(-1)) {
+					LightManager.setCurrent((Integer) number2);
+					uploadInfoInTextFields();
+				}
+			}
+		});
+
 		for (int i = 0; i < CameraManager.getCamerasCount(); i++) {
 			cameraList.getItems().add(CameraManager.printCamera(i));
 		}
-
 		cameraList.setValue(cameraList.getItems().get(0));
-
 		cameraList.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
@@ -1373,11 +1394,19 @@ public class GuiController {
 
 	@FXML
 	private void handleAddLightBtnAction() {
-
+		LightManager.addNewLight(new Light());
+		lightList.getItems().add(LightManager.printLight(LightManager.getLightsCount() - 1));
 	}
 
 	@FXML
 	private void handleDeleteLightBtnAction() {
-
+		LightManager.deleteLight(LightManager.getCurrent());
+		LightManager.setCurrent(0);
+		lightList.getItems().clear();
+		for (int i = 0; i < LightManager.getLightsCount(); i++) {
+			lightList.getItems().add(LightManager.printLight(i));
+		}
+		lightList.setValue(lightList.getItems().get(0));
+		remakeModel();
 	}
 }
