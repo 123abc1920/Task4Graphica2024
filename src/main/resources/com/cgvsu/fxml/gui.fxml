@@ -298,6 +298,10 @@
                                        <Insets right="5.0" />
                                     </HBox.margin>
                                  </ChoiceBox>
+                              </children>
+                           </HBox>
+                           <HBox prefHeight="0.0" prefWidth="298.0" styleClass="hBoxTopPadding">
+                              <children>
                                  <Button fx:id="addLightBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleAddLightBtnAction" prefWidth="25.0" text="+" textAlignment="CENTER">
                                     <HBox.margin>
                                        <Insets right="5.0" />
@@ -308,7 +312,15 @@
                                        <Insets />
                                     </HBox.margin>
                                  </Button>
+                                 <CheckBox fx:id="switchBtn" mnemonicParsing="false">
+                                    <HBox.margin>
+                                       <Insets left="5.0" />
+                                    </HBox.margin>
+                                 </CheckBox>
                               </children>
+                              <VBox.margin>
+                                 <Insets />
+                              </VBox.margin>
                            </HBox>
                            <Label styleClass="firstLabelHeader" text="Положение источника света" />
                            <HBox alignment="CENTER_LEFT">

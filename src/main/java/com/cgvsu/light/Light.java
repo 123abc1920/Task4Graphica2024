@@ -7,6 +7,8 @@ import javafx.scene.paint.Color;
 public class Light {
 	public Vector3f position = new Vector3f(0, 100, 0);
 
+	private boolean isOn = true;
+
 	private double k = 0.3;
 	private double ks = 0.4;
 	private double highLightShine = 31;
@@ -49,7 +51,19 @@ public class Light {
 		return highLightShine;
 	}
 
+	public void setOn(boolean isOn) {
+		this.isOn = isOn;
+	}
+
+	public boolean getOn() {
+		return isOn;
+	}
+
 	public Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f dot) {
+		if (!this.isOn) {
+			return start;
+		}
+
 		Vector3f ray = dot.sub(this.position).normalize();
 
 		double l = ray.dotProduct(n.multiplyScalar(-1));

@@ -211,6 +211,9 @@ public class GuiController {
 	@FXML
 	private Button deleteLightBtn;
 
+	@FXML
+	private CheckBox switchBtn;
+
 	private Model mesh = null;
 
 	private Camera camera = CameraManager.getActive();
@@ -285,6 +288,7 @@ public class GuiController {
 				if (!number2.equals(-1)) {
 					LightManager.setCurrent((Integer) number2);
 					uploadInfoInTextFields();
+					switchBtn.setSelected(LightManager.getCurrent().getOn());
 				}
 			}
 		});
@@ -301,6 +305,16 @@ public class GuiController {
 					camera = CameraManager.getActive();
 					uploadInfoInTextFields();
 				}
+			}
+		});
+
+		switchBtn.setSelected(true);
+		switchBtn.selectedProperty().addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				LightManager.getCurrent().setOn(newValue);
+				remakeModel();
 			}
 		});
 	}
@@ -1396,6 +1410,7 @@ public class GuiController {
 	private void handleAddLightBtnAction() {
 		LightManager.addNewLight(new Light());
 		lightList.getItems().add(LightManager.printLight(LightManager.getLightsCount() - 1));
+		remakeModel();
 	}
 
 	@FXML
@@ -1409,4 +1424,5 @@ public class GuiController {
 		lightList.setValue(lightList.getItems().get(0));
 		remakeModel();
 	}
+
 }
