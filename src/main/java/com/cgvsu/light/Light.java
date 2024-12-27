@@ -10,9 +10,9 @@ public class Light {
 	private double k = 0.3;
 	private double ks = 0.4;
 	private double highLightShine = 31;
-	
+
 	public Light() {
-		
+
 	}
 
 	public void setPosition(Vector3f v) {
@@ -64,7 +64,7 @@ public class Light {
 
 		double r = reflectedRay.dotProduct(vectorToCamera.multiplyScalar(-1));
 		double highlight = ks * Math.pow(r, highLightShine);
-		if (r < 0 || l == 0) {
+		if (r < 0) {
 			highlight = 0;
 		}
 

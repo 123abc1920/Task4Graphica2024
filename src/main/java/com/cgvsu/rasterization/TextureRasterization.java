@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.cgvsu.light.Light;
+import com.cgvsu.light.LightManager;
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.math.Vector3f;
 
@@ -166,7 +167,7 @@ public class TextureRasterization {
 				+ normals[2].getZ() * barizenticCoordinate[2]);
 		dotNormal = dotNormal.normalize();
 
-		return RasterizationParams.light.newRgb(c, dotNormal, toCamera, dot);
+		return LightManager.addLight(c, dotNormal, toCamera, dot);
 	}
 
 }

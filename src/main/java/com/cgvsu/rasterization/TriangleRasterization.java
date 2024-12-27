@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.cgvsu.light.Light;
+import com.cgvsu.light.LightManager;
 import com.cgvsu.math.Vector3f;
 
 import javafx.scene.paint.Color;
@@ -142,7 +143,8 @@ public class TriangleRasterization {
 		dotNormal.setZ(normals[0].getZ() * barizenticCoordinate[0] + normals[1].getZ() * barizenticCoordinate[1]
 				+ normals[2].getZ() * barizenticCoordinate[2]);
 		dotNormal = dotNormal.normalize();
-		return RasterizationParams.light.newRgb(c, dotNormal, toCamera, dot);
+		
+		return LightManager.addLight(c, dotNormal, toCamera, dot);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.cgvsu;
 
 import com.cgvsu.light.Light;
+import com.cgvsu.light.LightManager;
 import com.cgvsu.objwriter.ObjWriter;
 import com.cgvsu.rasterization.RasterizationParams;
 import com.cgvsu.render_engine.RenderEngine;
@@ -293,15 +294,15 @@ public class GuiController {
 		textFieldTarZ.setText(Double.toString((double) (Math.round(camera.getTarget().getZ() * 100)) / 100));
 
 		textFieldPosLightX
-				.setText(Double.toString((double) Math.round((RasterizationParams.light.position.getX() * 100)) / 100));
+				.setText(Double.toString((double) Math.round((LightManager.getCurrent().position.getX() * 100)) / 100));
 		textFieldPosLightY
-				.setText(Double.toString((double) Math.round((RasterizationParams.light.position.getY() * 100)) / 100));
+				.setText(Double.toString((double) Math.round((LightManager.getCurrent().position.getY() * 100)) / 100));
 		textFieldPosLightZ
-				.setText(Double.toString((double) Math.round((RasterizationParams.light.position.getZ() * 100)) / 100));
+				.setText(Double.toString((double) Math.round((LightManager.getCurrent().position.getZ() * 100)) / 100));
 
-		textFieldLightSourceStrength.setText(RasterizationParams.light.getK() + "");
-		textFieldGlareArea.setText(RasterizationParams.light.getHighLightShine() + "");
-		textFieldGlareBrightness.setText(RasterizationParams.light.getKs() + "");
+		textFieldLightSourceStrength.setText(LightManager.getCurrent().getK() + "");
+		textFieldGlareArea.setText(LightManager.getCurrent().getHighLightShine() + "");
+		textFieldGlareBrightness.setText(LightManager.getCurrent().getKs() + "");
 
 		fovTextField.setText(camera.getFov() + "");
 		nearTextField.setText(camera.getNearPlane() + "");
@@ -363,21 +364,21 @@ public class GuiController {
 			} else if (newValue <= 0) {
 				newValue = 0d;
 			}
-			RasterizationParams.light.setK(newValue);
+			LightManager.getCurrent().setK(newValue);
 		} else if (source.equals(textFieldGlareBrightness)) {
 			if (newValue >= 1) {
 				newValue = 1d;
 			} else if (newValue <= 0) {
 				newValue = 0d;
 			}
-			RasterizationParams.light.setKs(newValue);
+			LightManager.getCurrent().setKs(newValue);
 		} else if (source.equals(textFieldGlareArea)) {
 			if (newValue >= 50) {
 				newValue = 50d;
 			} else if (newValue <= 1) {
 				newValue = 1d;
 			}
-			RasterizationParams.light.setHighLightShine(newValue);
+			LightManager.getCurrent().setHighLightShine(newValue);
 		}
 		source.setText(Double.toString(newValue).trim());
 		anchorPane.requestFocus();
@@ -410,14 +411,14 @@ public class GuiController {
 		} else if (source.equals(textFieldTarZ)) {
 			camera.setTarget(new Vector3f(camera.getTarget().getX(), camera.getTarget().getY(), coordinate));
 		} else if (source.equals(textFieldPosLightX)) {
-			RasterizationParams.light.setPosition(new Vector3f(coordinate, RasterizationParams.light.position.getY(),
-					RasterizationParams.light.position.getZ()));
+			LightManager.getCurrent().setPosition(new Vector3f(coordinate, LightManager.getCurrent().position.getY(),
+					LightManager.getCurrent().position.getZ()));
 		} else if (source.equals(textFieldPosLightY)) {
-			RasterizationParams.light.setPosition(new Vector3f(RasterizationParams.light.position.getX(), coordinate,
-					RasterizationParams.light.position.getZ()));
+			LightManager.getCurrent().setPosition(new Vector3f(LightManager.getCurrent().position.getX(), coordinate,
+					LightManager.getCurrent().position.getZ()));
 		} else if (source.equals(textFieldPosLightZ)) {
-			RasterizationParams.light.setPosition(new Vector3f(RasterizationParams.light.position.getX(),
-					RasterizationParams.light.position.getY(), coordinate));
+			LightManager.getCurrent().setPosition(new Vector3f(LightManager.getCurrent().position.getX(),
+					LightManager.getCurrent().position.getY(), coordinate));
 		}
 		source.setText(Double.toString(coordinate).trim());
 		anchorPane.requestFocus();
