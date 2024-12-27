@@ -13,6 +13,10 @@ import java.io.InputStream;
 import java.util.*;
 
 public class Model {
+	private double x, y, z;
+	private double rotateX, rotateY, rotateZ;
+	private double scaleX = 1, scaleY = 1, scaleZ = 1;
+
 
 	private ArrayList<Vector3f> vertices = new ArrayList<Vector3f>();
 	private ArrayList<Vector2f> textureVertices = new ArrayList<Vector2f>();

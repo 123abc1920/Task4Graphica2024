@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.input.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
+<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
     <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
         <Menu mnemonicParsing="false" text="File">
             <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
@@ -394,6 +407,62 @@
                               </children>
                            </StackPane>
                            <ListView fx:id="listViewModels" focusTraversable="false" onMousePressed="#onListViewModelsClick" />
+                        </children>
+                     </VBox>
+                     <VBox styleClass="vBoxSecondary">
+                        <children>
+                           <StackPane styleClass="stakePaneHeader">
+                              <children>
+                                 <Label text="Disk" />
+                              </children>
+                           </StackPane>
+                           <Label styleClass="firstLabelHeader" text="Увеличивание" />
+                           <HBox alignment="CENTER_LEFT">
+                              <children>
+                                 <Label alignment="CENTER" styleClass="firstLabel" text="x" />
+                                 <TextField fx:id="diskScaleModelX" focusTraversable="false" onAction="#diskScalingModelX" prefWidth="50.0" />
+                                 <Label text="y" />
+                                 <TextField fx:id="diskScaleModelY" focusTraversable="false" onAction="#diskScalingModelY" prefWidth="50.0" />
+                                 <Label text="z" />
+                                 <TextField fx:id="diskScaleModelZ" focusTraversable="false" onAction="#diskScalingModelZ" prefWidth="50.0" />
+                                 <Button focusTraversable="false" mnemonicParsing="false" text="Start" />
+                                 <Button focusTraversable="false" mnemonicParsing="false" onAction="#stopScalingDiskModel" text="Stop">
+                                    <HBox.margin>
+                                       <Insets left="10.0" />
+                                    </HBox.margin>
+                                 </Button>
+                              </children>
+                           </HBox>
+                           <Label styleClass="firstLabelHeader" text="Поворот" />
+                           <HBox alignment="CENTER_LEFT">
+                              <children>
+                                 <Label styleClass="firstLabel" text="x" />
+                                 <TextField fx:id="diskRotateModelX" focusTraversable="false" onAction="#diskRotatingModelX" prefWidth="50.0" />
+                                 <Label text="y" />
+                                 <TextField fx:id="diskRotateModelY" focusTraversable="false" onAction="#diskRotatingModelY" prefWidth="50.0" />
+                                 <Label text="z" />
+                                 <TextField fx:id="diskRotateModelZ" focusTraversable="false" onAction="#diskRotatingModelZ" prefWidth="50.0" />
+                                 <Button focusTraversable="false" mnemonicParsing="false" text="Start" />
+                                 <Button focusTraversable="false" mnemonicParsing="false" onAction="#stopRotatingDiskModel" text="Stop" />
+                              </children>
+                           </HBox>
+                           <Label styleClass="firstLabelHeader" text="Перемещение" />
+                           <HBox alignment="CENTER_LEFT">
+                              <children>
+                                 <Label styleClass="firstLabel" text="x" />
+                                 <TextField fx:id="diskTranslateModelX" focusTraversable="false" onAction="#diskTranslatingModelX" prefWidth="50.0" />
+                                 <Label text="y" />
+                                 <TextField fx:id="diskTranslateModelY" focusTraversable="false" onAction="#diskTranslatingModelY" prefWidth="50.0" />
+                                 <Label text="z" />
+                                 <TextField fx:id="diskTranslateModelZ" focusTraversable="false" onAction="#diskTranslatingModelZ" prefWidth="50.0" />
+                                 <Button focusTraversable="false" mnemonicParsing="false" text="Start">
+                                    <HBox.margin>
+                                       <Insets left="10.0" />
+                                    </HBox.margin>
+                                 </Button>
+                                 <Button focusTraversable="false" mnemonicParsing="false" onAction="#stopTranslatingDiskModel" text="Stop" />
+                              </children>
+                           </HBox>
                         </children>
                      </VBox>
                   </children>
