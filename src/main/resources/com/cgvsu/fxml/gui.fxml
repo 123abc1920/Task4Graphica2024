@@ -306,22 +306,6 @@
                                  </Button>
                               </children>
                            </HBox>
-                           <Label styleClass="firstLabelHeader" text="Направление света" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label styleClass="firstLabel" text="x" />
-                                 <TextField fx:id="textFieldTarLightX" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Label text="y" />
-                                 <TextField fx:id="textFieldTarLightY" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Label text="z" />
-                                 <TextField fx:id="textFieldTarLightZ" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                              </children>
-                           </HBox>
                            <HBox alignment="CENTER_LEFT" styleClass="hBoxTopPadding">
                               <children>
                                  <Label styleClass="firstLabel" text="Сила источника света" />

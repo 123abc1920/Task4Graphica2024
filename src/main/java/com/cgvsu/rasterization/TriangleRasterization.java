@@ -122,13 +122,14 @@ public class TriangleRasterization {
 
 			Color dotColor = getDotColor(c,
 					new Vector3f[] { list.get(0).normal, list.get(1).normal, list.get(2).normal }, barizenticCoordinate,
-					vecToCamera);
+					vecToCamera, new Vector3f(x, y, z));
 			RasterizationParams.zBuffer.set((int) x, (int) y, z);
 			RasterizationParams.drawBuffer.set(x, y, dotColor);
 		}
 	}
 
-	private static Color getDotColor(Color c, Vector3f[] normals, double[] barizenticCoordinate, Vector3f toCamera) {
+	private static Color getDotColor(Color c, Vector3f[] normals, double[] barizenticCoordinate, Vector3f toCamera,
+			Vector3f dot) {
 		if (!RasterizationParams.getIsLight()) {
 			return c;
 		}
@@ -141,7 +142,7 @@ public class TriangleRasterization {
 		dotNormal.setZ(normals[0].getZ() * barizenticCoordinate[0] + normals[1].getZ() * barizenticCoordinate[1]
 				+ normals[2].getZ() * barizenticCoordinate[2]);
 		dotNormal = dotNormal.normalize();
-		return Light.newRgb(c, dotNormal, toCamera);
+		return Light.newRgb(c, dotNormal, toCamera, dot);
 	}
 
 }

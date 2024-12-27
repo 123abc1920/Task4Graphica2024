@@ -1,14 +1,11 @@
 package com.cgvsu.light;
 
-import com.cgvsu.math.Global;
 import com.cgvsu.math.Vector3f;
 
 import javafx.scene.paint.Color;
 
 public class Light {
 	public static Vector3f position = new Vector3f(0, -50, -100);
-	public static Vector3f target = new Vector3f(0, 0, 0);
-	private static Vector3f ray = target.sub(position).normalize();
 
 	private static double k = 0.3;
 	private static double ks = 0.4;
@@ -16,12 +13,9 @@ public class Light {
 
 	public static void setPosition(Vector3f v) {
 		Light.position = v;
-		ray = target.sub(position).normalize();
 	}
 
 	public static void setTarget(Vector3f v) {
-		Light.target = v;
-		ray = target.sub(position).normalize();
 	}
 
 	public static void setK(double k) {
@@ -51,7 +45,9 @@ public class Light {
 		return highLightShine;
 	}
 
-	public static Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera) {
+	public static Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f dot) {
+		Vector3f ray = dot.sub(position).normalize();
+
 		double l = ray.dotProduct(n.multiplyScalar(-1));
 
 		if (l < 0) {
