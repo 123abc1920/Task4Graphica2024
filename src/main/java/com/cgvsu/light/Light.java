@@ -1,57 +1,76 @@
 package com.cgvsu.light;
 
-import com.cgvsu.math.Global;
 import com.cgvsu.math.Vector3f;
 
 import javafx.scene.paint.Color;
 
 public class Light {
-	public static Vector3f position = new Vector3f(0, -50, -100);
-	public static Vector3f target = new Vector3f(0, 0, 0);
-	private static Vector3f ray = target.sub(position).normalize();
+	public Vector3f position = new Vector3f(0, 100, 0);
 
-	private static double k = 0.3;
-	private static double ks = 0.4;
-	private static double highLightShine = 31;
+	private boolean isOn = true;
+	private Color color = Color.WHITE;
 
-	public static void setPosition(Vector3f v) {
-		Light.position = v;
-		ray = target.sub(position).normalize();
+	private double k = 0.3;
+	private double ks = 0.4;
+	private double highLightShine = 31;
+
+	public Light() {
+
 	}
 
-	public static void setTarget(Vector3f v) {
-		Light.target = v;
-		ray = target.sub(position).normalize();
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
-	public static void setK(double k) {
+	public void setPosition(Vector3f v) {
+		this.position = v;
+	}
+
+	public void setTarget(Vector3f v) {
+	}
+
+	public void setK(double k) {
 		k = Math.max(0, Math.min(1, k));
-		Light.k = Math.round(k * 100.0) / 100.0;
+		this.k = Math.round(k * 100.0) / 100.0;
 	}
 
-	public static void setKs(double ks) {
+	public void setKs(double ks) {
 		ks = Math.max(0, Math.min(1, ks));
-		Light.ks = Math.round(ks * 100.0) / 100.0;
+		this.ks = Math.round(ks * 100.0) / 100.0;
 	}
 
-	public static void setHighLightShine(double highLightShine) {
+	public void setHighLightShine(double highLightShine) {
 		highLightShine = Math.max(1, Math.min(64, highLightShine));
-		Light.highLightShine = Math.round(highLightShine);
+		this.highLightShine = Math.round(highLightShine);
 	}
 
-	public static double getK() {
+	public double getK() {
 		return k;
 	}
 
-	public static double getKs() {
+	public double getKs() {
 		return ks;
 	}
 
-	public static double getHighLightShine() {
+	public double getHighLightShine() {
 		return highLightShine;
 	}
 
-	public static Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f polyNormal) {
+	public void setOn(boolean isOn) {
+		this.isOn = isOn;
+	}
+
+	public boolean getOn() {
+		return isOn;
+	}
+
+	public Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f dot) {
+		if (!this.isOn) {
+			return start;
+		}
+
+		Vector3f ray = dot.sub(this.position).normalize();
+
 		double l = ray.dotProduct(n.multiplyScalar(-1));
 
 		if (l < 0) {
@@ -63,20 +82,31 @@ public class Light {
 		reflectedRay = reflectedRay.normalize();
 
 		double r = reflectedRay.dotProduct(vectorToCamera.multiplyScalar(-1));
-		double highlight = ks * Math.pow(r, highLightShine);
-		if (r < 0 || l == 0) {
-			highlight = 0;
-		}
 
-		if (Math.abs(ray.dotProduct(polyNormal.multiplyScalar(-1))) <= Global.eps) {
-			l = 0.3;
-			highlight = 0;
-		}
+		double sred = start.getRed() * color.getRed();
+		double sgreen = start.getGreen() * color.getGreen();
+		double sblue = start.getBlue() * color.getBlue();
 
-		double red = Math.max(0, Math.min(1, start.getRed() * (1 - k) + start.getRed() * k * l + highlight));
-		double green = Math.max(0, Math.min(1, start.getGreen() * (1 - k) + start.getGreen() * k * l + highlight));
-		double blue = Math.max(0, Math.min(1, start.getBlue() * (1 - k) + start.getBlue() * k * l + highlight));
+		double red = Math.max(0, Math.min(1, (ambient(start.getRed()) + diffuse(sred, l) + specular(sred, r))));
+		double green = Math.max(0, Math.min(1, (ambient(start.getGreen()) + diffuse(sgreen, l) + specular(sgreen, r))));
+		double blue = Math.max(0, Math.min(1, (ambient(start.getBlue()) + diffuse(sblue, l) + specular(sblue, r))));
 
 		return new Color(red, green, blue, 1);
 	}
+
+	private double ambient(double c) {
+		return c * (1 - k);
+	}
+
+	private double diffuse(double c, double l) {
+		return c * k * l;
+	}
+
+	private double specular(double c, double r) {
+		if (r < 0) {
+			return 0;
+		}
+		return ks * Math.pow(r, highLightShine);
+	}
+
 }

@@ -19,71 +19,74 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
-    <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <Menu mnemonicParsing="false" text="File">
-            <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
-            <accelerator>
-                <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-            </accelerator>
-            </MenuItem>
-<!--         <MenuItem mnemonicParsing="false" text="Save">-->
-<!--            <accelerator>-->
-<!--               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />-->
-<!--            </accelerator>-->
-<!--         </MenuItem>-->
-         <MenuItem mnemonicParsing="false" onAction="#onSaveModelAsMenuItemClick" text="Save as">
-            <accelerator>
-               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
-            </accelerator>
-         </MenuItem>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Camera Options">
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="UP" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraBackward" text="Backward">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="DOWN" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraLeft" text="Left">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="LEFT" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraRight" text="Right">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="RIGHT" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraUp" text="Up">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraDown" text="Down">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                </accelerator>
-            </MenuItem>
-        </Menu>
-      <Menu mnemonicParsing="false" text="View">
-        <items>
-          <MenuItem mnemonicParsing="false" onAction="#handleThemeChange" text="Change Theme">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator></MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleSidePanelRemove" text="Side panel">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-            </MenuItem>
-        </items>
-      </Menu>
-    </MenuBar>
+<AnchorPane fx:id="anchorPane" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
+	<MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<Menu mnemonicParsing="false" text="File">
+			<MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<!-- <MenuItem mnemonicParsing="false" text="Save"> -->
+			<!-- <accelerator> -->
+			<!-- <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" 
+				shortcut="UP" /> -->
+			<!-- </accelerator> -->
+			<!-- </MenuItem> -->
+			<MenuItem mnemonicParsing="false" onAction="#onSaveModelAsMenuItemClick" text="Save as">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+		</Menu>
+		<Menu mnemonicParsing="false" text="Camera Options">
+			<MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="UP" control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<MenuItem mnemonicParsing="false" onAction="#handleCameraBackward" text="Backward">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="DOWN" control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<MenuItem mnemonicParsing="false" onAction="#handleCameraLeft" text="Left">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="LEFT" control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<MenuItem mnemonicParsing="false" onAction="#handleCameraRight" text="Right">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="RIGHT" control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<MenuItem mnemonicParsing="false" onAction="#handleCameraUp" text="Up">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+			<MenuItem mnemonicParsing="false" onAction="#handleCameraDown" text="Down">
+				<accelerator>
+					<KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
+				</accelerator>
+			</MenuItem>
+		</Menu>
+		<Menu mnemonicParsing="false" text="View">
+			<items>
+				<MenuItem mnemonicParsing="false" onAction="#handleThemeChange" text="Change Theme">
+					<accelerator>
+						<KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+					</accelerator>
+				</MenuItem>
+				<MenuItem mnemonicParsing="false" onAction="#handleSidePanelRemove" text="Side panel">
+					<accelerator>
+						<KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+					</accelerator>
+				</MenuItem>
+			</items>
+		</Menu>
+	</MenuBar>
+
 
     <Canvas fx:id="canvas" height="870" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" onScroll="#handleMouseScroll" width="1400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
    <ScrollPane fx:id="scrollPaneMain" fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -283,65 +286,86 @@
                            </HBox>
                         </children>
                      </VBox>
-                     <VBox fx:id="vBoxLight" styleClass="vBoxSecondary">
-                        <children>
-                           <StackPane styleClass="stakePaneHeader">
-                              <children>
-                                 <Label text="Освещение" />
-                              </children>
-                           </StackPane>
-                           <Label styleClass="firstLabelHeader" text="Положение источника света" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label alignment="CENTER" styleClass="firstLabel" text="x" />
-                                 <TextField fx:id="textFieldPosLightX" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Label text="y" />
-                                 <TextField fx:id="textFieldPosLightY" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Label text="z" />
-                                 <TextField fx:id="textFieldPosLightZ" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                              </children>
-                           </HBox>
-                           <Label styleClass="firstLabelHeader" text="Направление света" />
-                           <HBox alignment="CENTER_LEFT">
-                              <children>
-                                 <Label styleClass="firstLabel" text="x" />
-                                 <TextField fx:id="textFieldTarLightX" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Label text="y" />
-                                 <TextField fx:id="textFieldTarLightY" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Label text="z" />
-                                 <TextField fx:id="textFieldTarLightZ" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
-                                 <Button focusTraversable="false" mnemonicParsing="false" text="Reset">
-                                    <HBox.margin>
-                                       <Insets left="10.0" />
-                                    </HBox.margin>
-                                 </Button>
-                              </children>
-                           </HBox>
-                           <HBox alignment="CENTER_LEFT" styleClass="hBoxTopPadding">
-                              <children>
-                                 <Label styleClass="firstLabel" text="Сила источника света" />
-                                 <TextField fx:id="textFieldLightSourceStrength" focusTraversable="false" onAction="#handleTextFieldLightAction" prefWidth="50.0" />
-                              </children>
-                           </HBox>
-                           <HBox alignment="CENTER_LEFT" styleClass="hBoxTopPadding">
-                              <children>
-                                 <Label styleClass="firstLabel" text="Яркость блика" />
-                                 <TextField fx:id="textFieldGlareBrightness" focusTraversable="false" onAction="#handleTextFieldLightAction" prefWidth="50.0" />
-                              </children>
-                           </HBox>
-                           <HBox alignment="CENTER_LEFT" fillHeight="false" styleClass="hBoxTopPadding">
-                              <children>
-                                 <Label styleClass="firstLabel" text="Площадь блика" />
-                                 <TextField fx:id="textFieldGlareArea" focusTraversable="false" onAction="#handleTextFieldLightAction" prefWidth="50.0" />
-                              </children>
-                           </HBox>
-                        </children>
-                     </VBox>
+                     <<VBox fx:id="vBoxLight" styleClass="vBoxSecondary">
+								<children>
+									<StackPane styleClass="stakePaneHeader">
+										<children>
+											<Label text="Освещение" />
+										</children>
+									</StackPane>
+									<Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="firstLabelHeader" text="Список источников" />
+									<HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
+										<children>
+											<ChoiceBox fx:id="lightList" focusTraversable="false" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+												<HBox.margin>
+													<Insets right="5.0" />
+												</HBox.margin>
+											</ChoiceBox>
+										</children>
+									</HBox>
+									<HBox prefHeight="0.0" prefWidth="298.0" styleClass="hBoxTopPadding">
+										<children>
+											<Button fx:id="addLightBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleAddLightBtnAction" prefWidth="25.0" text="+" textAlignment="CENTER">
+												<HBox.margin>
+													<Insets right="5.0" />
+												</HBox.margin>
+											</Button>
+											<Button fx:id="deleteLightBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleDeleteLightBtnAction" prefWidth="25.0" text="-" textAlignment="CENTER">
+												<HBox.margin>
+													<Insets />
+												</HBox.margin>
+											</Button>
+											<CheckBox fx:id="switchBtn" mnemonicParsing="false">
+												<HBox.margin>
+													<Insets left="5.0" />
+												</HBox.margin>
+											</CheckBox>
+											<ColorPicker fx:id="colorLight" onAction="#handleColorizeLightBtnAction">
+												<HBox.margin>
+													<Insets left="5.0" />
+												</HBox.margin>
+											</ColorPicker>
+										</children>
+										<VBox.margin>
+											<Insets />
+										</VBox.margin>
+									</HBox>
+									<Label styleClass="firstLabelHeader" text="Положение источника света" />
+									<HBox alignment="CENTER_LEFT">
+										<children>
+											<Label alignment="CENTER" styleClass="firstLabel" text="x" />
+											<TextField fx:id="textFieldPosLightX" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
+											<Label text="y" />
+											<TextField fx:id="textFieldPosLightY" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
+											<Label text="z" />
+											<TextField fx:id="textFieldPosLightZ" focusTraversable="false" onAction="#handleTextFieldCoordinatesAction" prefWidth="50.0" />
+											<Button focusTraversable="false" mnemonicParsing="false" text="Reset">
+												<HBox.margin>
+													<Insets left="10.0" />
+												</HBox.margin>
+											</Button>
+										</children>
+									</HBox>
+									<HBox alignment="CENTER_LEFT" styleClass="hBoxTopPadding">
+										<children>
+											<Label styleClass="firstLabel" text="Сила источника света" />
+											<TextField fx:id="textFieldLightSourceStrength" focusTraversable="false" onAction="#handleTextFieldLightAction" prefWidth="50.0" />
+										</children>
+									</HBox>
+									<HBox alignment="CENTER_LEFT" styleClass="hBoxTopPadding">
+										<children>
+											<Label styleClass="firstLabel" text="Яркость блика" />
+											<TextField fx:id="textFieldGlareBrightness" focusTraversable="false" onAction="#handleTextFieldLightAction" prefWidth="50.0" />
+										</children>
+									</HBox>
+									<HBox alignment="CENTER_LEFT" fillHeight="false" styleClass="hBoxTopPadding">
+										<children>
+											<Label styleClass="firstLabel" text="Площадь блика" />
+											<TextField fx:id="textFieldGlareArea" focusTraversable="false" onAction="#handleTextFieldLightAction" prefWidth="50.0" />
+										</children>
+									</HBox>
+								</children>
+							</VBox>
                      <VBox styleClass="vBoxSecondary">
                         <children>
                            <StackPane styleClass="stakePaneHeader">
