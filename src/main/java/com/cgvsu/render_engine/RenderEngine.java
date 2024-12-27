@@ -36,7 +36,7 @@ public class RenderEngine {
 		if (RasterizationParams.zBuffer.getHeight() != height || RasterizationParams.zBuffer.getWidth() != width) {
 			RasterizationParams.zBuffer = new ZBuffer(width, height);
 			RasterizationParams.drawBuffer = new DrawBuffer(width, height, graphicsContext);
-		}else {
+		} else {
 			RasterizationParams.zBuffer.refill();
 			RasterizationParams.drawBuffer.refill();
 		}
@@ -72,13 +72,8 @@ public class RenderEngine {
 				vectorsToCamera[i] = camera.getPosition().sub(vertex);
 			}
 
-			Vector3f polyNormal = FindNormals.findPolygonsNormals(
-					mesh.getVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(0)),
-					mesh.getVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(1)),
-					mesh.getVertices().get(mesh.getPolygons().get(polygonInd).getVertexIndices().get(2)));
-
 			if (!RasterizationParams.getDrawTexture(mesh)) {
-				drawnPolygon = drawSolidColor(vertices, normals, polyNormal, vectorsToCamera, mesh.getColor());
+				drawnPolygon = drawSolidColor(vertices, normals, vectorsToCamera, mesh.getColor());
 			} else {
 				Vector2f[] texturePoints = new Vector2f[3];
 				texturePoints[0] = mesh.getTextureVertices()
@@ -87,8 +82,7 @@ public class RenderEngine {
 						.get(mesh.getPolygons().get(polygonInd).getTextureVertexIndices().get(1));
 				texturePoints[2] = mesh.getTextureVertices()
 						.get(mesh.getPolygons().get(polygonInd).getTextureVertexIndices().get(2));
-				drawnPolygon = drawTexture(vertices, texturePoints, mesh.getImage(), polyNormal, normals,
-						vectorsToCamera);
+				drawnPolygon = drawTexture(vertices, texturePoints, mesh.getImage(), normals, vectorsToCamera);
 			}
 
 			if (RasterizationParams.getDrawLine()) {
@@ -100,15 +94,14 @@ public class RenderEngine {
 		}
 	}
 
-	private static boolean drawTexture(Vector3f[] vertices, Vector2f[] texturePoints, Image image, Vector3f polyNormal,
-			Vector3f[] normals, Vector3f[] vecsToCamera) {
-		return TextureRasterization.fillTriangle(vertices, texturePoints, image, polyNormal, normals, vecsToCamera);
+	private static boolean drawTexture(Vector3f[] vertices, Vector2f[] texturePoints, Image image, Vector3f[] normals,
+			Vector3f[] vecsToCamera) {
+		return TextureRasterization.fillTriangle(vertices, texturePoints, image, normals, vecsToCamera);
 
 	}
 
-	private static boolean drawSolidColor(Vector3f[] vertices, Vector3f[] normals, Vector3f polyNormal, Vector3f[] vs,
-			Color color) {
-		return TriangleRasterization.fillTriangle(vertices, color, normals, polyNormal, vs);
+	private static boolean drawSolidColor(Vector3f[] vertices, Vector3f[] normals, Vector3f[] vs, Color color) {
+		return TriangleRasterization.fillTriangle(vertices, color, normals, vs);
 	}
 
 	private static void drawLines(int nVerticesInPolygon, List<Vector3f> resultPoints) {

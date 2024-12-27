@@ -51,7 +51,7 @@ public class Light {
 		return highLightShine;
 	}
 
-	public static Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f polyNormal) {
+	public static Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera) {
 		double l = ray.dotProduct(n.multiplyScalar(-1));
 
 		if (l < 0) {
@@ -65,11 +65,6 @@ public class Light {
 		double r = reflectedRay.dotProduct(vectorToCamera.multiplyScalar(-1));
 		double highlight = ks * Math.pow(r, highLightShine);
 		if (r < 0 || l == 0) {
-			highlight = 0;
-		}
-
-		if (Math.abs(ray.dotProduct(polyNormal.multiplyScalar(-1))) <= Global.eps) {
-			l = 0.3;
 			highlight = 0;
 		}
 

@@ -32,8 +32,7 @@ public class TriangleRasterization {
 		}
 	}
 
-	public static boolean fillTriangle(Vector3f[] vertices, Color color, Vector3f[] normals, Vector3f polyNormal,
-			Vector3f[] vecsToCamera) {
+	public static boolean fillTriangle(Vector3f[] vertices, Color color, Vector3f[] normals, Vector3f[] vecsToCamera) {
 
 		if (vertices.length < 3) {
 			throw new IllegalArgumentException("Массивы должны содержать как минимум 3 элемента.");
@@ -71,9 +70,8 @@ public class TriangleRasterization {
 			int finX = (int) Math.min(RasterizationParams.drawBuffer.getWidth(), Math.ceil(Math.max(x1, x2)));
 			int delta = (finX - startX) / 2;
 			finX = startX + 2 * delta;
-			for (int x = startX; x < finX; x++) {
-				putPxl(x, y, color, polyNormal, vertexList);
-				putPxl(x + delta, y, color, polyNormal, vertexList);
+			for (int x = startX; x <= finX; x++) {
+				putPxl(x, y, color, vertexList);
 			}
 		}
 
@@ -86,16 +84,15 @@ public class TriangleRasterization {
 			int finX = (int) Math.min(RasterizationParams.drawBuffer.getWidth(), Math.ceil(Math.max(x1, x2)));
 			int delta = (finX - startX) / 2;
 			finX = startX + 2 * delta;
-			for (int x = startX; x < finX; x++) {
-				putPxl(x, y, color, polyNormal, vertexList);
-				putPxl(x + delta, y, color, polyNormal, vertexList);
+			for (int x = startX; x <= finX; x++) {
+				putPxl(x, y, color, vertexList);
 			}
 		}
 
 		return true;
 	}
 
-	private static void putPxl(int x, int y, Color c, Vector3f polyNormal, List<VertexObject> list) {
+	private static void putPxl(int x, int y, Color c, List<VertexObject> list) {
 		double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y,
 				new Vector3f[] { list.get(0).vertice, list.get(1).vertice, list.get(2).vertice });
 
@@ -125,15 +122,14 @@ public class TriangleRasterization {
 
 			Color dotColor = getDotColor(c,
 					new Vector3f[] { list.get(0).normal, list.get(1).normal, list.get(2).normal }, barizenticCoordinate,
-					vecToCamera, polyNormal, RasterizationParams.getIsLight());
+					vecToCamera);
 			RasterizationParams.zBuffer.set((int) x, (int) y, z);
 			RasterizationParams.drawBuffer.set(x, y, dotColor);
 		}
 	}
 
-	private static Color getDotColor(Color c, Vector3f[] normals, double[] barizenticCoordinate, Vector3f toCamera,
-			Vector3f polyNormal, boolean isLight) {
-		if (!isLight) {
+	private static Color getDotColor(Color c, Vector3f[] normals, double[] barizenticCoordinate, Vector3f toCamera) {
+		if (!RasterizationParams.getIsLight()) {
 			return c;
 		}
 
@@ -145,7 +141,7 @@ public class TriangleRasterization {
 		dotNormal.setZ(normals[0].getZ() * barizenticCoordinate[0] + normals[1].getZ() * barizenticCoordinate[1]
 				+ normals[2].getZ() * barizenticCoordinate[2]);
 		dotNormal = dotNormal.normalize();
-		return Light.newRgb(c, dotNormal, toCamera, polyNormal);
+		return Light.newRgb(c, dotNormal, toCamera);
 	}
 
 }
