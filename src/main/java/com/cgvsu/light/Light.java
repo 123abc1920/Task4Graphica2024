@@ -87,12 +87,9 @@ public class Light {
 		double sgreen = start.getGreen() * color.getGreen();
 		double sblue = start.getBlue() * color.getBlue();
 
-		double red = Math.max(0,
-				Math.min(1, (ambient(start.getRed()) + diffuse(sred, l) + specular(start.getRed(), r))));
-		double green = Math.max(0,
-				Math.min(1, (ambient(start.getGreen()) + diffuse(sgreen, l) + specular(start.getGreen(), r))));
-		double blue = Math.max(0,
-				Math.min(1, (ambient(start.getBlue()) + diffuse(sblue, l) + specular(start.getBlue(), r))));
+		double red = Math.max(0, Math.min(1, (ambient(start.getRed()) + diffuse(sred, l) + specular(sred, r))));
+		double green = Math.max(0, Math.min(1, (ambient(start.getGreen()) + diffuse(sgreen, l) + specular(sgreen, r))));
+		double blue = Math.max(0, Math.min(1, (ambient(start.getBlue()) + diffuse(sblue, l) + specular(sblue, r))));
 
 		return new Color(red, green, blue, 1);
 	}
