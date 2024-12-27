@@ -290,6 +290,26 @@
                                  <Label text="Освещение" />
                               </children>
                            </StackPane>
+                           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="firstLabelHeader" text="Список источников" />
+                           <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
+                              <children>
+                                 <ChoiceBox fx:id="lightList" focusTraversable="false" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                    <HBox.margin>
+                                       <Insets right="5.0" />
+                                    </HBox.margin>
+                                 </ChoiceBox>
+                                 <Button fx:id="addLightBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleAddLightBtnAction" prefWidth="25.0" text="+" textAlignment="CENTER">
+                                    <HBox.margin>
+                                       <Insets right="5.0" />
+                                    </HBox.margin>
+                                 </Button>
+                                 <Button fx:id="deleteLightBtn" focusTraversable="false" mnemonicParsing="false" onAction="#handleDeleteLightBtnAction" prefWidth="25.0" text="-" textAlignment="CENTER">
+                                    <HBox.margin>
+                                       <Insets />
+                                    </HBox.margin>
+                                 </Button>
+                              </children>
+                           </HBox>
                            <Label styleClass="firstLabelHeader" text="Положение источника света" />
                            <HBox alignment="CENTER_LEFT">
                               <children>

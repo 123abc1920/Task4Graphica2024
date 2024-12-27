@@ -1369,4 +1369,14 @@ public class GuiController {
 			}
 		}
 	}
+
+	@FXML
+	private void handleAddLightBtnAction() {
+
+	}
+
+	@FXML
+	private void handleDeleteLightBtnAction() {
+
+	}
 }
