@@ -220,6 +220,9 @@ public class GuiController {
 	@FXML
 	private ColorPicker colorLight;
 
+	@FXML
+	private CheckBox lampsOnOff;
+
 	private Model mesh = null;
 
 	private Camera camera = CameraManager.getActive();
@@ -273,10 +276,12 @@ public class GuiController {
 
 			canvas.setWidth(anchorPane.getWidth() - scrollPaneMain.getWidth());
 
-			if (mesh != null) {
-				RasterizationParams.drawBuffer.draw();
-			}
+			RasterizationParams.drawBuffer.draw();
 		});
+
+		RasterizationParams.drawBuffer = new DrawBuffer((int) width, (int) height, canvas.getGraphicsContext2D());
+		RasterizationParams.zBuffer = new ZBuffer((int) width, (int) height);
+		remakeModel();
 
 		timeline.getKeyFrames().add(frame);
 		timeline.play();
@@ -321,6 +326,15 @@ public class GuiController {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				LightManager.getCurrent().setOn(newValue);
+				remakeModel();
+			}
+		});
+
+		lampsOnOff.setSelected(true);
+		lampsOnOff.selectedProperty().addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				remakeModel();
 			}
 		});
@@ -853,15 +867,17 @@ public class GuiController {
 
 		boolean light = RasterizationParams.getIsLight();
 		RasterizationParams.setLight(false);
-		if (LightManager.getLightsCount() != 0) {
-			for (int i = 0; i < LightManager.getLightsCount(); i++) {
-				if (LightManager.get(i).getOn()) {
-					RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(),
-							LightManager.get(i).lightModel, (int) width, (int) height);
+		if (lampsOnOff.isSelected()) {
+			if (LightManager.getLightsCount() != 0) {
+				for (int i = 0; i < LightManager.getLightsCount(); i++) {
+					if (LightManager.get(i).getOn()) {
+						RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(),
+								LightManager.get(i).lightModel, (int) width, (int) height);
+					}
 				}
 			}
 		}
-		
+
 		RasterizationParams.setLight(light);
 		if (mesh != null) {
 			textureText.setText(mesh.getTextureSource());

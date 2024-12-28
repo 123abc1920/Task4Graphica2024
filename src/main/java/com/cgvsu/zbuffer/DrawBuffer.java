@@ -30,6 +30,9 @@ public class DrawBuffer {
 	}
 
 	public int getHeight() {
+		if (matrix.length == 0) {
+			return 0;
+		}
 		return this.matrix[0].length;
 	}
 
