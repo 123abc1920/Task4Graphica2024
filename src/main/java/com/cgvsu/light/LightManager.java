@@ -58,7 +58,7 @@ public class LightManager {
 		Color result = start;
 		for (Light l : lights) {
 			Vector3f[] rays = new Vector3f[3];
-			
+
 			try {
 				rays[0] = vs[0].sub(l.position).normalize();
 				rays[1] = vs[1].sub(l.position).normalize();
@@ -81,6 +81,10 @@ public class LightManager {
 		}
 
 		return result;
+	}
+
+	public static Light get(int i) {
+		return lights.get(i);
 	}
 
 }

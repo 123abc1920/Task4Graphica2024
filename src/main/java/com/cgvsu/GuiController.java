@@ -846,6 +846,12 @@ public class GuiController {
 	}
 
 	private void remakeModel() {
+		if (LightManager.getLightsCount() != 0) {
+			for (int i = 0; i < LightManager.getLightsCount(); i++) {
+				RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(),
+						LightManager.get(i).lightModel, (int) width, (int) height);
+			}
+		}
 		if (mesh != null) {
 			textureText.setText(mesh.getTextureSource());
 			RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
