@@ -6,6 +6,8 @@ import com.cgvsu.objwriter.ObjWriter;
 import com.cgvsu.rasterization.RasterizationParams;
 import com.cgvsu.render_engine.RenderEngine;
 import com.cgvsu.triangulation.Triangulation;
+import com.cgvsu.zbuffer.DrawBuffer;
+import com.cgvsu.zbuffer.ZBuffer;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -846,12 +848,21 @@ public class GuiController {
 	}
 
 	private void remakeModel() {
+		RasterizationParams.drawBuffer = new DrawBuffer((int) width, (int) height, canvas.getGraphicsContext2D());
+		RasterizationParams.zBuffer = new ZBuffer((int) width, (int) height);
+
+		boolean light = RasterizationParams.getIsLight();
+		RasterizationParams.setLight(false);
 		if (LightManager.getLightsCount() != 0) {
 			for (int i = 0; i < LightManager.getLightsCount(); i++) {
-				RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(),
-						LightManager.get(i).lightModel, (int) width, (int) height);
+				if (LightManager.get(i).getOn()) {
+					RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(),
+							LightManager.get(i).lightModel, (int) width, (int) height);
+				}
 			}
 		}
+		
+		RasterizationParams.setLight(light);
 		if (mesh != null) {
 			textureText.setText(mesh.getTextureSource());
 			RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
@@ -1441,7 +1452,6 @@ public class GuiController {
 
 	@FXML
 	private void startDiskTranslation() {
-
 		String translateXValue = diskTranslateModelX.getText();
 		if (translateXValue != null && !translateXValue.isEmpty()) {
 			if (!isTranslatingX) {

@@ -1,6 +1,5 @@
 package com.cgvsu.light;
 
-import com.cgvsu.math.AffineTransformation;
 import com.cgvsu.math.Vector3f;
 import com.cgvsu.model.Model;
 import com.cgvsu.normals.FindNormals;
@@ -10,7 +9,7 @@ import com.cgvsu.triangulation.Triangulation;
 import javafx.scene.paint.Color;
 
 public class Light {
-	public Vector3f position = new Vector3f(0, 100, 0);
+	public Vector3f position = new Vector3f(0, 3, 0);
 
 	public Model lightModel = new Model();
 
@@ -22,12 +21,12 @@ public class Light {
 	private double highLightShine = 31;
 
 	private String modelText = "# Blender 4.0.1\r\n" + "# www.blender.org\r\n" + "o Cube\r\n"
-			+ "v -1.000000 -1.000000 1.000000\r\n" + "v -1.000000 1.000000 1.000000\r\n"
-			+ "v -1.000000 -1.000000 -1.000000\r\n" + "v -1.000000 1.000000 -1.000000\r\n"
-			+ "v 1.000000 -1.000000 1.000000\r\n" + "v 1.000000 1.000000 1.000000\r\n"
-			+ "v 1.000000 -1.000000 -1.000000\r\n" + "v 1.000000 1.000000 -1.000000\r\n"
-			+ "vn -1.0000 -0.0000 -0.0000\r\n" + "vn -0.0000 -0.0000 -1.0000\r\n" + "vn 1.0000 -0.0000 -0.0000\r\n"
-			+ "vn -0.0000 -0.0000 1.0000\r\n" + "vn -0.0000 -1.0000 -0.0000\r\n" + "vn -0.0000 1.0000 -0.0000\r\n"
+			+ "v -0.100000 -0.100000 0.100000\r\n" + "v -0.100000 0.100000 0.100000\r\n"
+			+ "v -0.100000 -0.100000 -0.100000\r\n" + "v -0.100000 0.100000 -0.100000\r\n"
+			+ "v 0.100000 -0.100000 0.100000\r\n" + "v 0.100000 0.100000 0.100000\r\n"
+			+ "v 0.100000 -0.100000 -0.100000\r\n" + "v 0.100000 0.100000 -0.100000\r\n"
+			+ "vn -0.1000 -0.0000 -0.0000\r\n" + "vn -0.0000 -0.0000 -0.1000\r\n" + "vn 0.1000 -0.0000 -0.0000\r\n"
+			+ "vn -0.0000 -0.0000 0.1000\r\n" + "vn -0.0000 -0.1000 -0.0000\r\n" + "vn -0.0000 0.1000 -0.0000\r\n"
 			+ "vt 0.657719 0.070615\r\n" + "vt 0.657719 0.288779\r\n" + "vt 0.343923 0.288779\r\n"
 			+ "vt 0.343923 0.070615\r\n" + "vt 0.982747 0.538081\r\n" + "vt 0.982747 0.758131\r\n"
 			+ "vt 0.677420 0.758131\r\n" + "vt 0.677420 0.538418\r\n" + "vt 0.654372 0.535544\r\n"
@@ -42,17 +41,43 @@ public class Light {
 
 	public Light() {
 		lightModel = ObjReader.read(modelText);
-		lightModel.setColor(Color.WHITE);
+		lightModel.setColor(this.color);
 		Triangulation.triangulateModel(lightModel);
 		lightModel.setNormals(FindNormals.findNormals(lightModel));
+		moveLight();
+	}
+
+	private void moveLight() {
+		double t = this.position.getX();
+		if (t > 0) {
+			Model.moveModelRight(t, this.lightModel);
+		} else {
+			Model.moveModelLeft(Math.abs(t), this.lightModel);
+		}
+
+		t = this.position.getY();
+		if (t > 0) {
+			Model.moveModelDown(t, this.lightModel);
+		} else {
+			Model.moveModelUp(Math.abs(t), this.lightModel);
+		}
+
+		t = this.position.getZ();
+		if (t > 0) {
+			Model.moveModelBackward(t, this.lightModel);
+		} else {
+			Model.moveModelForward(Math.abs(t), this.lightModel);
+		}
 	}
 
 	public void setColor(Color color) {
+		lightModel.setColor(color);
 		this.color = color;
 	}
 
 	public void setPosition(Vector3f v) {
 		this.position = v;
+		moveLight();
 	}
 
 	public void setTarget(Vector3f v) {
