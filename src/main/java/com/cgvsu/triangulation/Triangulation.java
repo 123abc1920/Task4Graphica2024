@@ -26,13 +26,18 @@ public final class Triangulation {
 		ArrayList<Polygon> ps = new ArrayList<>();
 		for (Polygon p : m.getPolygons()) {
 			List<int[]> l = Triangulation.convexPolygonTriangulate(p.getVertexIndices());
-			List<int[]> l1 = Triangulation.convexPolygonTriangulate(p.getTextureVertexIndices());
+			List<int[]> l1 = new ArrayList<>();
+			if (p.getTextureVertexIndices().size() > 0) {
+				l1 = Triangulation.convexPolygonTriangulate(p.getTextureVertexIndices());
+			}
 			for (int i = 0; i < l.size(); i++) {
 				ArrayList<Integer> newVertices = new ArrayList<>();
 				ArrayList<Integer> newTVertices = new ArrayList<>();
 				for (int j = 0; j < l.get(i).length; j++) {
 					newVertices.add(l.get(i)[j]);
-					newTVertices.add(l1.get(i)[j]);
+					if (p.getTextureVertexIndices().size() > 0) {
+						newTVertices.add(l1.get(i)[j]);
+					}
 				}
 				Polygon newP = new Polygon();
 				newP.setVertexIndices(newVertices);
