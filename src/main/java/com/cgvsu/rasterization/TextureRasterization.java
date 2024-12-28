@@ -40,7 +40,7 @@ public class TextureRasterization {
 	}
 
 	public static boolean fillTriangle(Vector3f[] vertices, final Vector2f[] texturePoints, Image image,
-			Vector3f[] normals, Vector3f[] vecsToCamera) {
+			Vector3f[] normals, Vector3f[] vecsToCamera, Vector3f[] vs) {
 
 		if ((vertices[0].getX() * (vertices[1].getY() - vertices[2].getY())
 				+ vertices[1].getX() * (vertices[2].getY() - vertices[0].getY())
@@ -79,7 +79,7 @@ public class TextureRasterization {
 			int delta = (finX - startX) / 2;
 			finX = startX + 2 * delta;
 			for (int x = startX; x <= finX; x++) {
-				putPxl(x, y, image, vertexList);
+				putPxl(x, y, image, vertexList, vs);
 			}
 		}
 
@@ -93,14 +93,14 @@ public class TextureRasterization {
 			int delta = (finX - startX) / 2;
 			finX = startX + 2 * delta;
 			for (int x = startX; x <= finX; x++) {
-				putPxl(x, y, image, vertexList);
+				putPxl(x, y, image, vertexList, vs);
 			}
 		}
 
 		return true;
 	}
 
-	private static void putPxl(int x, int y, Image img, List<VertexObject> list) {
+	private static void putPxl(int x, int y, Image img, List<VertexObject> list, Vector3f[] vs) {
 		double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y,
 				new Vector3f[] { list.get(0).vertice, list.get(1).vertice, list.get(2).vertice });
 
@@ -128,14 +128,14 @@ public class TextureRasterization {
 					+ list.get(2).vecToCamera.getZ() * barizenticCoordinate[2];
 			Vector3f vecToCamera = new Vector3f(toCameraX, toCameraY, toCameraZ);
 
-			Color dotColor = getColor(barizenticCoordinate, img, vecToCamera, list, new Vector3f(x, y, z));
+			Color dotColor = getColor(barizenticCoordinate, img, vecToCamera, list, vs);
 			RasterizationParams.zBuffer.set((int) x, (int) y, z);
 			RasterizationParams.drawBuffer.set(x, y, dotColor);
 		}
 	}
 
 	private static Color getColor(double[] barycentricCoords, Image image, Vector3f toCamera, List<VertexObject> list,
-			Vector3f dot) {
+			Vector3f[] vs) {
 		double u = list.get(0).texturePoint.getX() * barycentricCoords[0]
 				+ list.get(1).texturePoint.getX() * barycentricCoords[1]
 				+ list.get(2).texturePoint.getX() * barycentricCoords[2];
@@ -149,11 +149,11 @@ public class TextureRasterization {
 
 		return getDotColor(reader.getColor(x, y),
 				new Vector3f[] { list.get(0).normal, list.get(1).normal, list.get(2).normal }, barycentricCoords,
-				toCamera, dot);
+				toCamera, vs);
 	}
 
 	private static Color getDotColor(Color c, Vector3f[] normals, double[] barizenticCoordinate, Vector3f toCamera,
-			Vector3f dot) {
+			Vector3f[] vs) {
 		if (!RasterizationParams.getIsLight()) {
 			return c;
 		}
@@ -167,7 +167,7 @@ public class TextureRasterization {
 				+ normals[2].getZ() * barizenticCoordinate[2]);
 		dotNormal = dotNormal.normalize();
 
-		return LightManager.addLight(c, dotNormal, toCamera, dot);
+		return LightManager.addLight(c, dotNormal, toCamera, vs, barizenticCoordinate);
 	}
 
 }

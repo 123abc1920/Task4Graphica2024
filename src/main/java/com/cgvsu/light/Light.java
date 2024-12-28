@@ -64,12 +64,10 @@ public class Light {
 		return isOn;
 	}
 
-	public Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f dot) {
+	public Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f ray) {
 		if (!this.isOn) {
 			return start;
 		}
-
-		Vector3f ray = dot.sub(this.position).normalize();
 
 		double l = ray.dotProduct(n.multiplyScalar(-1));
 
@@ -79,7 +77,11 @@ public class Light {
 
 		vectorToCamera = vectorToCamera.normalize();
 		Vector3f reflectedRay = ray.sub(n.multiplyScalar(2 * ray.dotProduct(n)));
-		reflectedRay = reflectedRay.normalize();
+		try {
+			reflectedRay = reflectedRay.normalize();
+		} catch (Exception e) {
+			reflectedRay = new Vector3f();
+		}
 
 		double r = reflectedRay.dotProduct(vectorToCamera.multiplyScalar(-1));
 

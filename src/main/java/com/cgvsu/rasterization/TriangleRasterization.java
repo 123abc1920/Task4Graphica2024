@@ -33,7 +33,8 @@ public class TriangleRasterization {
 		}
 	}
 
-	public static boolean fillTriangle(Vector3f[] vertices, Color color, Vector3f[] normals, Vector3f[] vecsToCamera) {
+	public static boolean fillTriangle(Vector3f[] vertices, Color color, Vector3f[] normals, Vector3f[] vecsToCamera,
+			Vector3f[] vs) {
 
 		if (vertices.length < 3) {
 			throw new IllegalArgumentException("Массивы должны содержать как минимум 3 элемента.");
@@ -72,7 +73,7 @@ public class TriangleRasterization {
 			int delta = (finX - startX) / 2;
 			finX = startX + 2 * delta;
 			for (int x = startX; x <= finX; x++) {
-				putPxl(x, y, color, vertexList);
+				putPxl(x, y, color, vertexList, vs);
 			}
 		}
 
@@ -86,14 +87,14 @@ public class TriangleRasterization {
 			int delta = (finX - startX) / 2;
 			finX = startX + 2 * delta;
 			for (int x = startX; x <= finX; x++) {
-				putPxl(x, y, color, vertexList);
+				putPxl(x, y, color, vertexList, vs);
 			}
 		}
 
 		return true;
 	}
 
-	private static void putPxl(int x, int y, Color c, List<VertexObject> list) {
+	private static void putPxl(int x, int y, Color c, List<VertexObject> list, Vector3f[] vs) {
 		double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y,
 				new Vector3f[] { list.get(0).vertice, list.get(1).vertice, list.get(2).vertice });
 
@@ -123,14 +124,14 @@ public class TriangleRasterization {
 
 			Color dotColor = getDotColor(c,
 					new Vector3f[] { list.get(0).normal, list.get(1).normal, list.get(2).normal }, barizenticCoordinate,
-					vecToCamera, new Vector3f(x, y, z));
+					vecToCamera, vs);
 			RasterizationParams.zBuffer.set((int) x, (int) y, z);
 			RasterizationParams.drawBuffer.set(x, y, dotColor);
 		}
 	}
 
 	private static Color getDotColor(Color c, Vector3f[] normals, double[] barizenticCoordinate, Vector3f toCamera,
-			Vector3f dot) {
+			Vector3f[] vs) {
 		if (!RasterizationParams.getIsLight()) {
 			return c;
 		}
@@ -143,8 +144,8 @@ public class TriangleRasterization {
 		dotNormal.setZ(normals[0].getZ() * barizenticCoordinate[0] + normals[1].getZ() * barizenticCoordinate[1]
 				+ normals[2].getZ() * barizenticCoordinate[2]);
 		dotNormal = dotNormal.normalize();
-		
-		return LightManager.addLight(c, dotNormal, toCamera, dot);
+
+		return LightManager.addLight(c, dotNormal, toCamera, vs, barizenticCoordinate);
 	}
 
 }
