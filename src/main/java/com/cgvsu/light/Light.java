@@ -2,7 +2,6 @@ package com.cgvsu.light;
 
 import com.cgvsu.math.Vector3f;
 import com.cgvsu.model.Model;
-import com.cgvsu.model.Polygon;
 import com.cgvsu.normals.FindNormals;
 import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.triangulation.Triangulation;
@@ -10,7 +9,7 @@ import com.cgvsu.triangulation.Triangulation;
 import javafx.scene.paint.Color;
 
 public class Light {
-	public Vector3f position = new Vector3f(0, 3, 0);
+	public Vector3f position = new Vector3f(3, 0, 0);
 
 	public Model lightModel = new Model();
 
@@ -33,25 +32,25 @@ public class Light {
 		lightModel.setColor(this.color);
 		Triangulation.triangulateModel(lightModel);
 		lightModel.setNormals(FindNormals.findNormals(lightModel));
-		moveLight();
+		moveLight(new Vector3f());
 	}
 
-	private void moveLight() {
-		double t = this.position.getX();
+	private void moveLight(Vector3f v) {
+		double t = -v.getX() + this.position.getX();
 		if (t > 0) {
 			Model.moveModelRight(t, this.lightModel);
 		} else {
 			Model.moveModelLeft(Math.abs(t), this.lightModel);
 		}
 
-		t = this.position.getY();
+		t = -v.getY() + this.position.getY();
 		if (t > 0) {
-			Model.moveModelDown(t, this.lightModel);
+			Model.moveModelUp(t, this.lightModel);
 		} else {
-			Model.moveModelUp(Math.abs(t), this.lightModel);
+			Model.moveModelDown(Math.abs(t), this.lightModel);
 		}
 
-		t = this.position.getZ();
+		t = -v.getZ() + this.position.getZ();
 		if (t > 0) {
 			Model.moveModelBackward(t, this.lightModel);
 		} else {
@@ -65,11 +64,8 @@ public class Light {
 	}
 
 	public void setPosition(Vector3f v) {
+		moveLight(v);
 		this.position = v;
-		moveLight();
-	}
-
-	public void setTarget(Vector3f v) {
 	}
 
 	public void setK(double k) {
