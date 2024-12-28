@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.cgvsu.light.Light;
 import com.cgvsu.light.LightManager;
 import com.cgvsu.math.Vector3f;
 
@@ -17,11 +16,13 @@ public class TriangleRasterization {
 		Vector3f vertice;
 		Vector3f normal;
 		Vector3f vecToCamera;
+		Vector3f firstVertice;
 
-		public VertexObject(Vector3f vertice, Vector3f normal, Vector3f vecToCamera) {
+		public VertexObject(Vector3f vertice, Vector3f normal, Vector3f vecToCamera, Vector3f firstVertice) {
 			this.vertice = vertice;
 			this.normal = normal;
 			this.vecToCamera = vecToCamera;
+			this.firstVertice = firstVertice;
 		}
 
 		public double getY() {
@@ -46,9 +47,9 @@ public class TriangleRasterization {
 			return false;
 		}
 
-		VertexObject vo1 = new VertexObject(vertices[0], normals[0], vecsToCamera[0]);
-		VertexObject vo2 = new VertexObject(vertices[1], normals[1], vecsToCamera[1]);
-		VertexObject vo3 = new VertexObject(vertices[2], normals[2], vecsToCamera[2]);
+		VertexObject vo1 = new VertexObject(vertices[0], normals[0], vecsToCamera[0], vs[0]);
+		VertexObject vo2 = new VertexObject(vertices[1], normals[1], vecsToCamera[1], vs[1]);
+		VertexObject vo3 = new VertexObject(vertices[2], normals[2], vecsToCamera[2], vs[2]);
 		List<VertexObject> vertexList = Arrays.asList(vo1, vo2, vo3);
 
 		Collections.sort(vertexList, new Comparator<VertexObject>() {
@@ -73,7 +74,7 @@ public class TriangleRasterization {
 			int delta = (finX - startX) / 2;
 			finX = startX + 2 * delta;
 			for (int x = startX; x <= finX; x++) {
-				putPxl(x, y, color, vertexList, vs);
+				putPxl(x, y, color, vertexList);
 			}
 		}
 
@@ -87,14 +88,14 @@ public class TriangleRasterization {
 			int delta = (finX - startX) / 2;
 			finX = startX + 2 * delta;
 			for (int x = startX; x <= finX; x++) {
-				putPxl(x, y, color, vertexList, vs);
+				putPxl(x, y, color, vertexList);
 			}
 		}
 
 		return true;
 	}
 
-	private static void putPxl(int x, int y, Color c, List<VertexObject> list, Vector3f[] vs) {
+	private static void putPxl(int x, int y, Color c, List<VertexObject> list) {
 		double[] barizenticCoordinate = BarycentricCoordinate.barizentricCalculator(x, y,
 				new Vector3f[] { list.get(0).vertice, list.get(1).vertice, list.get(2).vertice });
 
@@ -124,7 +125,8 @@ public class TriangleRasterization {
 
 			Color dotColor = getDotColor(c,
 					new Vector3f[] { list.get(0).normal, list.get(1).normal, list.get(2).normal }, barizenticCoordinate,
-					vecToCamera, vs);
+					vecToCamera,
+					new Vector3f[] { list.get(0).firstVertice, list.get(1).firstVertice, list.get(2).firstVertice });
 			RasterizationParams.zBuffer.set((int) x, (int) y, z);
 			RasterizationParams.drawBuffer.set(x, y, dotColor);
 		}

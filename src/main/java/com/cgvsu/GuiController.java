@@ -293,6 +293,7 @@ public class GuiController {
 					LightManager.setCurrent((Integer) number2);
 					uploadInfoInTextFields();
 					switchBtn.setSelected(LightManager.getCurrent().getOn());
+					colorLight.setValue(LightManager.getCurrent().getColor());
 				}
 			}
 		});
@@ -687,846 +688,848 @@ public class GuiController {
 //            scrollPaneMain.setManaged(true);
 //            scrollPaneMain.setVisible(true);
 //        }
-    }
-
-    @FXML
-    private void handleThemeChange() {
-        isInLightMode = !isInLightMode;
-        anchorPane.getStylesheets().clear();
-        String filePath = isInLightMode ? "styles/light_mode.css" : "styles/dark_mode.css";
-        anchorPane.getStylesheets().add(getClass().getResource(filePath).toExternalForm());
-    }
-
-    @FXML
-    private void onListViewModelsClick(MouseEvent mouseEvent) {
-        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-            int itemIndex = listViewModels.getSelectionModel().getSelectedIndex();
-            listViewModels.getSelectionModel().select(itemIndex);
-            mesh = modelList.get(itemIndex);
-            remakeModel();
-        }
-    }
-
-    @FXML
-    private void onOpenModelMenuItemClick() throws IOException {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
-        fileChooser.setTitle("Load Model");
-
-        File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
-        if (file == null) {
-            return;
-        }
-
-        Path fileName = Path.of(file.getAbsolutePath());
-
-        try {
-            String fileContent = Files.readString(fileName);
-            mesh = ObjReader.read(fileContent);
-        } catch (Exception exception) {
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Ошибка при открытии файла " + fileName, exception.getMessage());
-            alert.showAndWait();
-        }
-
-        if (mesh != null) {
-            modelList.add(mesh);
-            listViewModels.getItems().add(file.getName());
-            listViewModels.getSelectionModel().clearSelection();
-            listViewModels.getSelectionModel().selectLast();
-            try {
-                Triangulation.triangulateModel(mesh);
-            } catch (Exception exception) {
-                Alert alert = createAlert(Alert.AlertType.ERROR, exception.getMessage(), "");
-                alert.showAndWait();
-            }
-            mesh.setNormals(FindNormals.findNormals(mesh));
-            mesh.setTexture(null);
-            scrollPaneMain.setDisable(false);
-            remakeModel();
-        }
-    }
-
-    @FXML
-    private void onSaveModelAsMenuItemClick() {
-        if (mesh == null) {
-            Alert alert1 = createAlert(Alert.AlertType.WARNING, "Ошибка при сохранении файла", "Model is null. Download any model before saving it");
-            alert1.showAndWait();
-        } else {
-            FileChooser saveChooser = new FileChooser();
-            saveChooser.setTitle("Save file as");
-            saveChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("OBJ file", "*.obj"));
-            File file = saveChooser.showSaveDialog(canvas.getScene().getWindow());
-            String modelInfo = ObjWriter.write(mesh);
-            if (file != null) {
-                try {
-                    FileWriter fileWriter = new FileWriter(file);
-                    fileWriter.write(modelInfo);
-                    fileWriter.close();
-                } catch (Exception e) {
-                    Alert alert2 = createAlert(Alert.AlertType.ERROR, e.getMessage(), "");
-                    alert2.showAndWait();
-                }
-            }
-        }
-    }
-
-    @FXML
-    public void handleCameraForward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
-        remakeModel();
-    }
-
-    @FXML
-    public void handleCameraBackward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, TRANSLATION));
-        remakeModel();
-    }
-
-    @FXML
-    public void handleCameraLeft(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
-        remakeModel();
-    }
-
-    @FXML
-    public void handleCameraRight(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
-        remakeModel();
-    }
-
-    @FXML
-    public void handleCameraUp(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, TRANSLATION, 0));
-        remakeModel();
-    }
-
-    @FXML
-    public void handleCameraDown(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
-        remakeModel();
-    }
-
-    @FXML
-    private void toggleMoveMode() {
-        isMoveModeEnabled = !isMoveModeEnabled;
-        isRotateModeEnabled = false;
-        isScalingModeEnabled = false;
-        updateModeStyles();
-    }
-
-    @FXML
-    private void toggleRotateMode() {
-        isRotateModeEnabled = !isRotateModeEnabled;
-        isMoveModeEnabled = false;
-        isScalingModeEnabled = false;
-        updateModeStyles();
-    }
-
-    @FXML
-    private void toggleScalingMode() {
-        isScalingModeEnabled = !isScalingModeEnabled;
-        isMoveModeEnabled = false;
-        isRotateModeEnabled = false;
-        updateModeStyles();
-    }
-
-    private void updateModeStyles() {
-        if (isMoveModeEnabled) {
-            System.out.println("Move mode enabled");
-        } else if (isRotateModeEnabled) {
-            System.out.println("Rotate mode enabled");
-        } else if (isScalingModeEnabled) {
-            System.out.println("Scaling mode enabled");
-        } else {
-            System.out.println("No mode enabled");
-        }
-    }
-
-    private void remakeModel() {
-        if (mesh != null) {
-            textureText.setText(mesh.getTextureSource());
-            RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
-                    (int) height);
-            showModelInfo();
-        }
-    }
-
-    @FXML
-    private void scalingModelX() {
-        String newNear = scaleModelX.getText();
-        Double newNearDouble = 0d;
-
-        try {
-            newNearDouble = Double.parseDouble(newNear);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-        }
-
-        Model.scaleModelOnXForward(newNearDouble, mesh);
-        scaleModelX.setText(newNear);
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-    @FXML
-    private void translatingModelX() {
-        String newNear = translateModelX.getText();
-        Double newNearDouble = 0d;
-
-        try {
-            newNearDouble = Double.parseDouble(newNear);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-
-        if (newNearDouble > 0) {
-            Model.moveModelRight(newNearDouble, mesh);
-        } else {
-            Model.moveModelLeft(Math.abs(newNearDouble), mesh);
-        }
-
-        translateModelX.setText(newNear);
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-    @FXML
-    private void scalingModelY() {
-        String newNear = scaleModelY.getText();
-        Double newNearDouble = 0d;
-
-        try {
-            newNearDouble = Double.parseDouble(newNear);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-        }
-        Model.scaleModelOnYDown(newNearDouble, mesh);
-        scaleModelY.setText(newNear);
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-    @FXML
-    private void translatingModelY() {
-        String newNear = translateModelY.getText();
-        Double newNearDouble = 0d;
-
-        try {
-            newNearDouble = Double.parseDouble(newNear);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-
-        if (newNearDouble > 0) {
-            Model.moveModelUp(newNearDouble, mesh);
-        } else {
-            Model.moveModelDown(Math.abs(newNearDouble), mesh);
-        }
-
-        translateModelY.setText(newNear);
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-
-    @FXML
-    private void scalingModelZ() {
-        String newNear = scaleModelZ.getText();
-        Double newNearDouble = 0d;
-
-        try {
-            newNearDouble = Double.parseDouble(newNear);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        Model.scaleModelOnZRight(newNearDouble, mesh);
-
-        scaleModelZ.setText(newNear);
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-    @FXML
-    private void translatingModelZ() {
-        String newNear = translateModelZ.getText();
-        Double newNearDouble = 0d;
-        try {
-            newNearDouble = Double.parseDouble(newNear);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-        }
-        if (newNearDouble > 0) {
-            Model.moveModelBackward(newNearDouble, mesh);
-        } else {
-            Model.moveModelForward(Math.abs(newNearDouble), mesh);
-        }
-        translateModelZ.setText(newNear);
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-    @FXML
-    private void rotatingModelX() {
-        String newNear = rotateModelX.getText();
-        Integer newNearInt = 0;
-
-        try {
-            newNearInt = Integer.parseInt(newNear);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-        }
-        if (newNearInt > 0) {
-            Model.rotateModelOnXNotClockwise(newNearInt, mesh);
-        } else {
-            Model.rotateModelOnXClockwise(newNearInt, mesh);
-        }
-        rotateModelX.setText(newNear);
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-    @FXML
-    private void rotatingModelY() {
-        String newNear = rotateModelY.getText();
-        Integer newNearInt = 0;
-
-        try {
-            newNearInt = Integer.parseInt(newNear);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-        }
-        if (newNearInt > 0) {
-            Model.rotateModelOnYUp(newNearInt, mesh);
-        } else {
-            Model.rotateModelOnYDown(newNearInt, mesh);
-        }
-        rotateModelY.setText(newNear);
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-    @FXML
-    private void rotatingModelZ() {
-        String newNear = rotateModelZ.getText();
-        Integer newNearInt = 0;
-
-        try {
-            newNearInt = Integer.parseInt(newNear);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-            alert.showAndWait();
-        }
-        if (newNearInt > 0) {
-            Model.rotateModelOnZClockwise(newNearInt, mesh);
-        } else {
-            Model.rotateModelOnZNotClockwise(newNearInt, mesh);
-        }
-        rotateModelZ.setText(newNear);
-        anchorPane.requestFocus();
-        remakeModel();
-    }
-
-    private ScheduledExecutorService translateXExecutor;
-    private ScheduledExecutorService translateYExecutor;
-    private ScheduledExecutorService translateZExecutor;
-    private ScheduledExecutorService rotateXExecutor;
-    private ScheduledExecutorService rotateYExecutor;
-    private ScheduledExecutorService rotateZExecutor;
-    private ScheduledExecutorService scaleXExecutor;
-    private ScheduledExecutorService scaleYExecutor;
-    private ScheduledExecutorService scaleZExecutor;
-
-
-    private volatile boolean isTranslatingX = false;
-    private volatile boolean isTranslatingY = false;
-    private volatile boolean isTranslatingZ = false;
-    private volatile boolean isRotatingX = false;
-    private volatile boolean isRotatingY = false;
-    private volatile boolean isRotatingZ = false;
-    private volatile boolean isScalingX = false;
-    private volatile boolean isScalingY = false;
-    private volatile boolean isScalingZ = false;
-
-    @FXML
-    private void diskTranslatingModelX() {
-        if (isTranslatingX) {
-            return;
-        }
-        isTranslatingX = true;
-        String newLine = diskTranslateModelX.getText();
-        Double maxValue = 0d;
-
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-        translateXExecutor = Executors.newSingleThreadScheduledExecutor();
-        translateXExecutor.scheduleAtFixedRate(() -> {
-            if (!isTranslatingX) {
-                return;
-            }
-            double randomValue = getRandomValue(finalMaxValue);
-            if (randomValue > 0) {
-                Model.moveModelRight(randomValue, mesh);
-            } else {
-                Model.moveModelLeft(Math.abs(randomValue), mesh);
-            }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskTranslateModelX.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
-    }
-
-    @FXML
-    private void diskTranslatingModelY() {
-        if (isTranslatingY) {
-            return;
-        }
-        isTranslatingY = true;
-        String newLine = diskTranslateModelY.getText();
-        Double maxValue = 0d;
-
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-
-        translateYExecutor = Executors.newSingleThreadScheduledExecutor();
-        translateYExecutor.scheduleAtFixedRate(() -> {
-            if (!isTranslatingY) {
-                return;
-            }
-            double randomValue = getRandomValue(finalMaxValue);
-            if (randomValue > 0) {
-                Model.moveModelUp(randomValue, mesh);
-            } else {
-                Model.moveModelDown(Math.abs(randomValue), mesh);
-            }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskTranslateModelY.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
-    }
-
-
-    @FXML
-    private void diskTranslatingModelZ() {
-        if (isTranslatingZ) {
-            return;
-        }
-        isTranslatingZ = true;
-        String newLine = diskTranslateModelZ.getText();
-        Double maxValue = 0d;
-
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-
-        translateZExecutor = Executors.newSingleThreadScheduledExecutor();
-        translateZExecutor.scheduleAtFixedRate(() -> {
-            if (!isTranslatingZ) {
-                return;
-            }
-            double randomValue = getRandomValue(finalMaxValue);
-            if (randomValue > 0) {
-                Model.moveModelBackward(randomValue, mesh);
-            } else {
-                Model.moveModelForward(Math.abs(randomValue), mesh);
-            }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskTranslateModelZ.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
-    }
-
-
-    @FXML
-    private void stopTranslatingDiskModel() {
-        isTranslatingX = false;
-        isTranslatingY = false;
-        isTranslatingZ = false;
-
-
-        List<ScheduledExecutorService> executors = Arrays.asList(translateXExecutor, translateYExecutor, translateZExecutor);
-
-        for (ScheduledExecutorService executor : executors) {
-            if (executor != null && !executor.isShutdown()) {
-                executor.shutdown();
-            }
-        }
-    }
-
-    @FXML
-    private void diskRotatingModelX() {
-        if (isRotatingX) {
-            return;
-        }
-        isRotatingX = true;
-        String newLine = diskRotateModelX.getText();
-        Integer maxValue = 0;
-
-        try {
-            maxValue = Integer.parseInt(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        int finalMaxValue = maxValue;
-
-        rotateXExecutor = Executors.newSingleThreadScheduledExecutor();
-        rotateXExecutor.scheduleAtFixedRate(() -> {
-            if (!isRotatingX) {
-                return;
-            }
-            int randomValue = (int) getRandomValue(finalMaxValue);
-            if (randomValue > 0) {
-                Model.rotateModelOnXNotClockwise(randomValue, mesh);
-            } else {
-                Model.rotateModelOnXClockwise(Math.abs(randomValue), mesh);
-            }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskRotateModelX.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
-    }
-
-
-    @FXML
-    private void diskRotatingModelY() {
-        if (isRotatingY) {
-            return;
-        }
-        isRotatingY = true;
-        String newLine = diskRotateModelY.getText();
-        Integer maxValue = 0;
-
-        try {
-            maxValue = Integer.parseInt(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        int finalMaxValue = maxValue;
-
-        rotateYExecutor = Executors.newSingleThreadScheduledExecutor();
-        rotateYExecutor.scheduleAtFixedRate(() -> {
-            if (!isRotatingY) {
-                return;
-            }
-            int randomValue = (int) getRandomValue(finalMaxValue);
-            if (randomValue > 0) {
-                Model.rotateModelOnYUp(randomValue, mesh);
-            } else {
-                Model.rotateModelOnYDown(Math.abs(randomValue), mesh);
-            }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskRotateModelY.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
-    }
-
-    @FXML
-    private void diskRotatingModelZ() {
-        if (isRotatingZ) {
-            return;
-        }
-        isRotatingZ = true;
-        String newLine = diskRotateModelZ.getText();
-        Integer maxValue = 0;
-
-        try {
-            maxValue = Integer.parseInt(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        int finalMaxValue = maxValue;
-
-        rotateZExecutor = Executors.newSingleThreadScheduledExecutor();
-        rotateZExecutor.scheduleAtFixedRate(() -> {
-            if (!isRotatingZ) {
-                return;
-            }
-            int randomValue = (int) getRandomValue(finalMaxValue);
-            if (randomValue > 0) {
-                Model.rotateModelOnZClockwise(randomValue, mesh);
-            } else {
-                Model.rotateModelOnZNotClockwise(Math.abs(randomValue), mesh);
-            }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskRotateModelZ.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
-    }
-
-    @FXML
-    private void stopRotatingDiskModel() {
-        isRotatingX = false;
-        isRotatingY = false;
-        isRotatingZ = false;
-
-
-        List<ScheduledExecutorService> executors = Arrays.asList(rotateXExecutor, rotateYExecutor, rotateZExecutor);
-
-        for (ScheduledExecutorService executor : executors) {
-            if (executor != null && !executor.isShutdown()) {
-                executor.shutdown();
-            }
-        }
-    }
-
-    @FXML
-    private void diskScalingModelX() {
-        if (isScalingX) return;
-        isScalingX = true;
-        String newLine = diskScaleModelX.getText();
-        Double maxValue = 0d;
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-
-        scaleXExecutor = Executors.newSingleThreadScheduledExecutor();
-        scaleXExecutor.scheduleAtFixedRate(() -> {
-            if (!isScalingX) return;
-            double randomValue = getRandomValue(finalMaxValue);
-            Model.scaleModelOnXForward(randomValue, mesh);
-            Platform.runLater(() -> {
-                remakeModel();
-                diskScaleModelX.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 1, TimeUnit.SECONDS);
-    }
-
-    @FXML
-    private void diskScalingModelY() {
-        if (isScalingY) return;
-        isScalingY = true;
-        String newLine = diskScaleModelY.getText();
-        Double maxValue = 0d;
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-
-        scaleYExecutor = Executors.newSingleThreadScheduledExecutor();
-        scaleYExecutor.scheduleAtFixedRate(() -> {
-            if (!isScalingY) return;
-            double randomValue = getRandomValue(finalMaxValue);
-            Model.scaleModelOnYDown(randomValue, mesh);
-            Platform.runLater(() -> {
-                remakeModel();
-                diskScaleModelY.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 1, TimeUnit.SECONDS);
-    }
-
-    @FXML
-    private void diskScalingModelZ() {
-        if (isScalingZ) return;
-        isScalingZ = true;
-        String newLine = diskScaleModelZ.getText();
-        Double maxValue = 0d;
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования.", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-
-        scaleZExecutor = Executors.newSingleThreadScheduledExecutor();
-        scaleZExecutor.scheduleAtFixedRate(() -> {
-            if (!isScalingZ) return;
-            double randomValue = getRandomValue(finalMaxValue);
-            Model.scaleModelOnZRight(randomValue, mesh);
-            Platform.runLater(() -> {
-                remakeModel();
-                diskScaleModelZ.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 1, TimeUnit.SECONDS);
-    }
-
-    @FXML
-    private void stopScalingDiskModel() {
-        isScalingX = false;
-        isScalingY = false;
-        isScalingZ = false;
-
-
-        List<ScheduledExecutorService> executors = Arrays.asList(scaleXExecutor, scaleYExecutor, scaleZExecutor);
-
-        for (ScheduledExecutorService executor : executors) {
-            if (executor != null && !executor.isShutdown()) {
-                executor.shutdown();
-            }
-        }
-    }
-
-    private double getRandomValue(double maxValue) {
-        Random random = new Random();
-        return -maxValue + (random.nextDouble() * (2 * maxValue));
-    }
-
-    @FXML
-    private void startDiskTranslation() {
-
-        String translateXValue = diskTranslateModelX.getText();
-        if (translateXValue != null && !translateXValue.isEmpty()) {
-            if (!isTranslatingX) {
-                diskTranslatingModelX();
-            }
-        }
-
-        String translateYValue = diskTranslateModelY.getText();
-        if (translateYValue != null && !translateYValue.isEmpty()) {
-            if (!isTranslatingY) {
-                diskTranslatingModelY();
-            }
-        }
-
-        String translateZValue = diskTranslateModelZ.getText();
-        if (translateZValue != null && !translateZValue.isEmpty()) {
-            if (!isTranslatingZ) {
-                diskTranslatingModelZ();
-            }
-        }
-    }
-
-    @FXML
-    private void startDiskScaling() {
-
-        String scaleXValue = diskScaleModelX.getText();
-        if (scaleXValue != null && !scaleXValue.isEmpty()) {
-            if (!isScalingX) {
-                diskScalingModelX();
-            }
-        }
-
-        String scaleYValue = diskScaleModelY.getText();
-        if (scaleYValue != null && !scaleYValue.isEmpty()) {
-            if (!isScalingY) {
-                diskScalingModelY();
-            }
-        }
-
-
-        String scaleZValue = diskScaleModelZ.getText();
-        if (scaleZValue != null && !scaleZValue.isEmpty()) {
-            if (!isScalingZ) {
-                diskScalingModelZ();
-            }
-        }
-    }
-
-    @FXML
-    private void startDiskRotation() {
-        String rotateXValue = diskRotateModelX.getText();
-        if (rotateXValue != null && !rotateXValue.isEmpty()) {
-            if (!isRotatingX) {
-                diskRotatingModelX();
-            }
-        }
-
-        String rotateYValue = diskRotateModelY.getText();
-        if (rotateYValue != null && !rotateYValue.isEmpty()) {
-            if (!isRotatingY) {
-                diskRotatingModelY();
-            }
-        }
-
-        String rotateZValue = diskRotateModelZ.getText();
-        if (rotateZValue != null && !rotateZValue.isEmpty()) {
-            if (!isRotatingZ) {
-                diskRotatingModelZ();
-            }
-        }
-    }
-  
-    @FXML
-    private void handleAddLightBtnAction() {
-      LightManager.addNewLight(new Light());
-      lightList.getItems().add(LightManager.printLight(LightManager.getLightsCount() - 1));
-      remakeModel();
-    }
-
-    @FXML
-    private void handleDeleteLightBtnAction() {
-      LightManager.deleteLight(LightManager.getCurrent());
-      LightManager.setCurrent(0);
-      lightList.getItems().clear();
-      for (int i = 0; i < LightManager.getLightsCount(); i++) {
-        lightList.getItems().add(LightManager.printLight(i));
-      }
-      lightList.setValue(lightList.getItems().get(0));
-      remakeModel();
-    }
-
-    @FXML
-    private void handleColorizeLightBtnAction() {
-      Color newLightColor = colorLight.getValue();
-      LightManager.getCurrent().setColor(newLightColor);
-      remakeModel();
-    }
+	}
+
+	@FXML
+	private void handleThemeChange() {
+		isInLightMode = !isInLightMode;
+		anchorPane.getStylesheets().clear();
+		String filePath = isInLightMode ? "styles/light_mode.css" : "styles/dark_mode.css";
+		anchorPane.getStylesheets().add(getClass().getResource(filePath).toExternalForm());
+	}
+
+	@FXML
+	private void onListViewModelsClick(MouseEvent mouseEvent) {
+		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+			int itemIndex = listViewModels.getSelectionModel().getSelectedIndex();
+			listViewModels.getSelectionModel().select(itemIndex);
+			mesh = modelList.get(itemIndex);
+			remakeModel();
+		}
+	}
+
+	@FXML
+	private void onOpenModelMenuItemClick() throws IOException {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
+		fileChooser.setTitle("Load Model");
+
+		File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+		if (file == null) {
+			return;
+		}
+
+		Path fileName = Path.of(file.getAbsolutePath());
+
+		try {
+			String fileContent = Files.readString(fileName);
+			mesh = ObjReader.read(fileContent);
+		} catch (Exception exception) {
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Ошибка при открытии файла " + fileName,
+					exception.getMessage());
+			alert.showAndWait();
+		}
+
+		if (mesh != null) {
+			modelList.add(mesh);
+			listViewModels.getItems().add(file.getName());
+			listViewModels.getSelectionModel().clearSelection();
+			listViewModels.getSelectionModel().selectLast();
+			try {
+				Triangulation.triangulateModel(mesh);
+			} catch (Exception exception) {
+				Alert alert = createAlert(Alert.AlertType.ERROR, exception.getMessage(), "");
+				alert.showAndWait();
+			}
+			mesh.setNormals(FindNormals.findNormals(mesh));
+			mesh.setTexture(null);
+			scrollPaneMain.setDisable(false);
+			remakeModel();
+		}
+	}
+
+	@FXML
+	private void onSaveModelAsMenuItemClick() {
+		if (mesh == null) {
+			Alert alert1 = createAlert(Alert.AlertType.WARNING, "Ошибка при сохранении файла",
+					"Model is null. Download any model before saving it");
+			alert1.showAndWait();
+		} else {
+			FileChooser saveChooser = new FileChooser();
+			saveChooser.setTitle("Save file as");
+			saveChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("OBJ file", "*.obj"));
+			File file = saveChooser.showSaveDialog(canvas.getScene().getWindow());
+			String modelInfo = ObjWriter.write(mesh);
+			if (file != null) {
+				try {
+					FileWriter fileWriter = new FileWriter(file);
+					fileWriter.write(modelInfo);
+					fileWriter.close();
+				} catch (Exception e) {
+					Alert alert2 = createAlert(Alert.AlertType.ERROR, e.getMessage(), "");
+					alert2.showAndWait();
+				}
+			}
+		}
+	}
+
+	@FXML
+	public void handleCameraForward(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
+		remakeModel();
+	}
+
+	@FXML
+	public void handleCameraBackward(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, 0, TRANSLATION));
+		remakeModel();
+	}
+
+	@FXML
+	public void handleCameraLeft(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
+		remakeModel();
+	}
+
+	@FXML
+	public void handleCameraRight(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
+		remakeModel();
+	}
+
+	@FXML
+	public void handleCameraUp(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, TRANSLATION, 0));
+		remakeModel();
+	}
+
+	@FXML
+	public void handleCameraDown(ActionEvent actionEvent) {
+		camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
+		remakeModel();
+	}
+
+	@FXML
+	private void toggleMoveMode() {
+		isMoveModeEnabled = !isMoveModeEnabled;
+		isRotateModeEnabled = false;
+		isScalingModeEnabled = false;
+		updateModeStyles();
+	}
+
+	@FXML
+	private void toggleRotateMode() {
+		isRotateModeEnabled = !isRotateModeEnabled;
+		isMoveModeEnabled = false;
+		isScalingModeEnabled = false;
+		updateModeStyles();
+	}
+
+	@FXML
+	private void toggleScalingMode() {
+		isScalingModeEnabled = !isScalingModeEnabled;
+		isMoveModeEnabled = false;
+		isRotateModeEnabled = false;
+		updateModeStyles();
+	}
+
+	private void updateModeStyles() {
+		if (isMoveModeEnabled) {
+			System.out.println("Move mode enabled");
+		} else if (isRotateModeEnabled) {
+			System.out.println("Rotate mode enabled");
+		} else if (isScalingModeEnabled) {
+			System.out.println("Scaling mode enabled");
+		} else {
+			System.out.println("No mode enabled");
+		}
+	}
+
+	private void remakeModel() {
+		if (mesh != null) {
+			textureText.setText(mesh.getTextureSource());
+			RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
+					(int) height);
+			showModelInfo();
+		}
+	}
+
+	@FXML
+	private void scalingModelX() {
+		String newNear = scaleModelX.getText();
+		Double newNearDouble = 0d;
+
+		try {
+			newNearDouble = Double.parseDouble(newNear);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			alert.showAndWait();
+		}
+
+		Model.scaleModelOnXForward(newNearDouble, mesh);
+		scaleModelX.setText(newNear);
+		anchorPane.requestFocus();
+		remakeModel();
+	}
+
+	@FXML
+	private void translatingModelX() {
+		String newNear = translateModelX.getText();
+		Double newNearDouble = 0d;
+
+		try {
+			newNearDouble = Double.parseDouble(newNear);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			alert.showAndWait();
+			return;
+		}
+
+		if (newNearDouble > 0) {
+			Model.moveModelRight(newNearDouble, mesh);
+		} else {
+			Model.moveModelLeft(Math.abs(newNearDouble), mesh);
+		}
+
+		translateModelX.setText(newNear);
+		anchorPane.requestFocus();
+		remakeModel();
+	}
+
+	@FXML
+	private void scalingModelY() {
+		String newNear = scaleModelY.getText();
+		Double newNearDouble = 0d;
+
+		try {
+			newNearDouble = Double.parseDouble(newNear);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			alert.showAndWait();
+		}
+		Model.scaleModelOnYDown(newNearDouble, mesh);
+		scaleModelY.setText(newNear);
+		anchorPane.requestFocus();
+		remakeModel();
+	}
+
+	@FXML
+	private void translatingModelY() {
+		String newNear = translateModelY.getText();
+		Double newNearDouble = 0d;
+
+		try {
+			newNearDouble = Double.parseDouble(newNear);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			alert.showAndWait();
+			return;
+		}
+
+		if (newNearDouble > 0) {
+			Model.moveModelUp(newNearDouble, mesh);
+		} else {
+			Model.moveModelDown(Math.abs(newNearDouble), mesh);
+		}
+
+		translateModelY.setText(newNear);
+		anchorPane.requestFocus();
+		remakeModel();
+	}
+
+	@FXML
+	private void scalingModelZ() {
+		String newNear = scaleModelZ.getText();
+		Double newNearDouble = 0d;
+
+		try {
+			newNearDouble = Double.parseDouble(newNear);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			alert.showAndWait();
+			return;
+		}
+		Model.scaleModelOnZRight(newNearDouble, mesh);
+
+		scaleModelZ.setText(newNear);
+		anchorPane.requestFocus();
+		remakeModel();
+	}
+
+	@FXML
+	private void translatingModelZ() {
+		String newNear = translateModelZ.getText();
+		Double newNearDouble = 0d;
+		try {
+			newNearDouble = Double.parseDouble(newNear);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			alert.showAndWait();
+		}
+		if (newNearDouble > 0) {
+			Model.moveModelBackward(newNearDouble, mesh);
+		} else {
+			Model.moveModelForward(Math.abs(newNearDouble), mesh);
+		}
+		translateModelZ.setText(newNear);
+		anchorPane.requestFocus();
+		remakeModel();
+	}
+
+	@FXML
+	private void rotatingModelX() {
+		String newNear = rotateModelX.getText();
+		Integer newNearInt = 0;
+
+		try {
+			newNearInt = Integer.parseInt(newNear);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			alert.showAndWait();
+		}
+		if (newNearInt > 0) {
+			Model.rotateModelOnXNotClockwise(newNearInt, mesh);
+		} else {
+			Model.rotateModelOnXClockwise(newNearInt, mesh);
+		}
+		rotateModelX.setText(newNear);
+		anchorPane.requestFocus();
+		remakeModel();
+	}
+
+	@FXML
+	private void rotatingModelY() {
+		String newNear = rotateModelY.getText();
+		Integer newNearInt = 0;
+
+		try {
+			newNearInt = Integer.parseInt(newNear);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			alert.showAndWait();
+		}
+		if (newNearInt > 0) {
+			Model.rotateModelOnYUp(newNearInt, mesh);
+		} else {
+			Model.rotateModelOnYDown(newNearInt, mesh);
+		}
+		rotateModelY.setText(newNear);
+		anchorPane.requestFocus();
+		remakeModel();
+	}
+
+	@FXML
+	private void rotatingModelZ() {
+		String newNear = rotateModelZ.getText();
+		Integer newNearInt = 0;
+
+		try {
+			newNearInt = Integer.parseInt(newNear);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			alert.showAndWait();
+		}
+		if (newNearInt > 0) {
+			Model.rotateModelOnZClockwise(newNearInt, mesh);
+		} else {
+			Model.rotateModelOnZNotClockwise(newNearInt, mesh);
+		}
+		rotateModelZ.setText(newNear);
+		anchorPane.requestFocus();
+		remakeModel();
+	}
+
+	private ScheduledExecutorService translateXExecutor;
+	private ScheduledExecutorService translateYExecutor;
+	private ScheduledExecutorService translateZExecutor;
+	private ScheduledExecutorService rotateXExecutor;
+	private ScheduledExecutorService rotateYExecutor;
+	private ScheduledExecutorService rotateZExecutor;
+	private ScheduledExecutorService scaleXExecutor;
+	private ScheduledExecutorService scaleYExecutor;
+	private ScheduledExecutorService scaleZExecutor;
+
+	private volatile boolean isTranslatingX = false;
+	private volatile boolean isTranslatingY = false;
+	private volatile boolean isTranslatingZ = false;
+	private volatile boolean isRotatingX = false;
+	private volatile boolean isRotatingY = false;
+	private volatile boolean isRotatingZ = false;
+	private volatile boolean isScalingX = false;
+	private volatile boolean isScalingY = false;
+	private volatile boolean isScalingZ = false;
+
+	@FXML
+	private void diskTranslatingModelX() {
+		if (isTranslatingX) {
+			return;
+		}
+		isTranslatingX = true;
+		String newLine = diskTranslateModelX.getText();
+		Double maxValue = 0d;
+
+		try {
+			maxValue = Double.parseDouble(newLine);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения.", errorMessage);
+			alert.showAndWait();
+			return;
+		}
+		double finalMaxValue = maxValue;
+		translateXExecutor = Executors.newSingleThreadScheduledExecutor();
+		translateXExecutor.scheduleAtFixedRate(() -> {
+			if (!isTranslatingX) {
+				return;
+			}
+			double randomValue = getRandomValue(finalMaxValue);
+			if (randomValue > 0) {
+				Model.moveModelRight(randomValue, mesh);
+			} else {
+				Model.moveModelLeft(Math.abs(randomValue), mesh);
+			}
+			Platform.runLater(() -> {
+				remakeModel();
+				diskTranslateModelX.setText(String.valueOf(finalMaxValue));
+			});
+		}, 0, 100, TimeUnit.MILLISECONDS);
+	}
+
+	@FXML
+	private void diskTranslatingModelY() {
+		if (isTranslatingY) {
+			return;
+		}
+		isTranslatingY = true;
+		String newLine = diskTranslateModelY.getText();
+		Double maxValue = 0d;
+
+		try {
+			maxValue = Double.parseDouble(newLine);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения.", errorMessage);
+			alert.showAndWait();
+			return;
+		}
+		double finalMaxValue = maxValue;
+
+		translateYExecutor = Executors.newSingleThreadScheduledExecutor();
+		translateYExecutor.scheduleAtFixedRate(() -> {
+			if (!isTranslatingY) {
+				return;
+			}
+			double randomValue = getRandomValue(finalMaxValue);
+			if (randomValue > 0) {
+				Model.moveModelUp(randomValue, mesh);
+			} else {
+				Model.moveModelDown(Math.abs(randomValue), mesh);
+			}
+			Platform.runLater(() -> {
+				remakeModel();
+				diskTranslateModelY.setText(String.valueOf(finalMaxValue));
+			});
+		}, 0, 100, TimeUnit.MILLISECONDS);
+	}
+
+	@FXML
+	private void diskTranslatingModelZ() {
+		if (isTranslatingZ) {
+			return;
+		}
+		isTranslatingZ = true;
+		String newLine = diskTranslateModelZ.getText();
+		Double maxValue = 0d;
+
+		try {
+			maxValue = Double.parseDouble(newLine);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения.", errorMessage);
+			alert.showAndWait();
+			return;
+		}
+		double finalMaxValue = maxValue;
+
+		translateZExecutor = Executors.newSingleThreadScheduledExecutor();
+		translateZExecutor.scheduleAtFixedRate(() -> {
+			if (!isTranslatingZ) {
+				return;
+			}
+			double randomValue = getRandomValue(finalMaxValue);
+			if (randomValue > 0) {
+				Model.moveModelBackward(randomValue, mesh);
+			} else {
+				Model.moveModelForward(Math.abs(randomValue), mesh);
+			}
+			Platform.runLater(() -> {
+				remakeModel();
+				diskTranslateModelZ.setText(String.valueOf(finalMaxValue));
+			});
+		}, 0, 100, TimeUnit.MILLISECONDS);
+	}
+
+	@FXML
+	private void stopTranslatingDiskModel() {
+		isTranslatingX = false;
+		isTranslatingY = false;
+		isTranslatingZ = false;
+
+		List<ScheduledExecutorService> executors = Arrays.asList(translateXExecutor, translateYExecutor,
+				translateZExecutor);
+
+		for (ScheduledExecutorService executor : executors) {
+			if (executor != null && !executor.isShutdown()) {
+				executor.shutdown();
+			}
+		}
+	}
+
+	@FXML
+	private void diskRotatingModelX() {
+		if (isRotatingX) {
+			return;
+		}
+		isRotatingX = true;
+		String newLine = diskRotateModelX.getText();
+		Integer maxValue = 0;
+
+		try {
+			maxValue = Integer.parseInt(newLine);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения.", errorMessage);
+			alert.showAndWait();
+			return;
+		}
+		int finalMaxValue = maxValue;
+
+		rotateXExecutor = Executors.newSingleThreadScheduledExecutor();
+		rotateXExecutor.scheduleAtFixedRate(() -> {
+			if (!isRotatingX) {
+				return;
+			}
+			int randomValue = (int) getRandomValue(finalMaxValue);
+			if (randomValue > 0) {
+				Model.rotateModelOnXNotClockwise(randomValue, mesh);
+			} else {
+				Model.rotateModelOnXClockwise(Math.abs(randomValue), mesh);
+			}
+			Platform.runLater(() -> {
+				remakeModel();
+				diskRotateModelX.setText(String.valueOf(finalMaxValue));
+			});
+		}, 0, 100, TimeUnit.MILLISECONDS);
+	}
+
+	@FXML
+	private void diskRotatingModelY() {
+		if (isRotatingY) {
+			return;
+		}
+		isRotatingY = true;
+		String newLine = diskRotateModelY.getText();
+		Integer maxValue = 0;
+
+		try {
+			maxValue = Integer.parseInt(newLine);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения.", errorMessage);
+			alert.showAndWait();
+			return;
+		}
+		int finalMaxValue = maxValue;
+
+		rotateYExecutor = Executors.newSingleThreadScheduledExecutor();
+		rotateYExecutor.scheduleAtFixedRate(() -> {
+			if (!isRotatingY) {
+				return;
+			}
+			int randomValue = (int) getRandomValue(finalMaxValue);
+			if (randomValue > 0) {
+				Model.rotateModelOnYUp(randomValue, mesh);
+			} else {
+				Model.rotateModelOnYDown(Math.abs(randomValue), mesh);
+			}
+			Platform.runLater(() -> {
+				remakeModel();
+				diskRotateModelY.setText(String.valueOf(finalMaxValue));
+			});
+		}, 0, 100, TimeUnit.MILLISECONDS);
+	}
+
+	@FXML
+	private void diskRotatingModelZ() {
+		if (isRotatingZ) {
+			return;
+		}
+		isRotatingZ = true;
+		String newLine = diskRotateModelZ.getText();
+		Integer maxValue = 0;
+
+		try {
+			maxValue = Integer.parseInt(newLine);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения.", errorMessage);
+			alert.showAndWait();
+			return;
+		}
+		int finalMaxValue = maxValue;
+
+		rotateZExecutor = Executors.newSingleThreadScheduledExecutor();
+		rotateZExecutor.scheduleAtFixedRate(() -> {
+			if (!isRotatingZ) {
+				return;
+			}
+			int randomValue = (int) getRandomValue(finalMaxValue);
+			if (randomValue > 0) {
+				Model.rotateModelOnZClockwise(randomValue, mesh);
+			} else {
+				Model.rotateModelOnZNotClockwise(Math.abs(randomValue), mesh);
+			}
+			Platform.runLater(() -> {
+				remakeModel();
+				diskRotateModelZ.setText(String.valueOf(finalMaxValue));
+			});
+		}, 0, 100, TimeUnit.MILLISECONDS);
+	}
+
+	@FXML
+	private void stopRotatingDiskModel() {
+		isRotatingX = false;
+		isRotatingY = false;
+		isRotatingZ = false;
+
+		List<ScheduledExecutorService> executors = Arrays.asList(rotateXExecutor, rotateYExecutor, rotateZExecutor);
+
+		for (ScheduledExecutorService executor : executors) {
+			if (executor != null && !executor.isShutdown()) {
+				executor.shutdown();
+			}
+		}
+	}
+
+	@FXML
+	private void diskScalingModelX() {
+		if (isScalingX)
+			return;
+		isScalingX = true;
+		String newLine = diskScaleModelX.getText();
+		Double maxValue = 0d;
+		try {
+			maxValue = Double.parseDouble(newLine);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования.",
+					errorMessage);
+			alert.showAndWait();
+			return;
+		}
+		double finalMaxValue = maxValue;
+
+		scaleXExecutor = Executors.newSingleThreadScheduledExecutor();
+		scaleXExecutor.scheduleAtFixedRate(() -> {
+			if (!isScalingX)
+				return;
+			double randomValue = getRandomValue(finalMaxValue);
+			Model.scaleModelOnXForward(randomValue, mesh);
+			Platform.runLater(() -> {
+				remakeModel();
+				diskScaleModelX.setText(String.valueOf(finalMaxValue));
+			});
+		}, 0, 1, TimeUnit.SECONDS);
+	}
+
+	@FXML
+	private void diskScalingModelY() {
+		if (isScalingY)
+			return;
+		isScalingY = true;
+		String newLine = diskScaleModelY.getText();
+		Double maxValue = 0d;
+		try {
+			maxValue = Double.parseDouble(newLine);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования.",
+					errorMessage);
+			alert.showAndWait();
+			return;
+		}
+		double finalMaxValue = maxValue;
+
+		scaleYExecutor = Executors.newSingleThreadScheduledExecutor();
+		scaleYExecutor.scheduleAtFixedRate(() -> {
+			if (!isScalingY)
+				return;
+			double randomValue = getRandomValue(finalMaxValue);
+			Model.scaleModelOnYDown(randomValue, mesh);
+			Platform.runLater(() -> {
+				remakeModel();
+				diskScaleModelY.setText(String.valueOf(finalMaxValue));
+			});
+		}, 0, 1, TimeUnit.SECONDS);
+	}
+
+	@FXML
+	private void diskScalingModelZ() {
+		if (isScalingZ)
+			return;
+		isScalingZ = true;
+		String newLine = diskScaleModelZ.getText();
+		Double maxValue = 0d;
+		try {
+			maxValue = Double.parseDouble(newLine);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования.",
+					errorMessage);
+			alert.showAndWait();
+			return;
+		}
+		double finalMaxValue = maxValue;
+
+		scaleZExecutor = Executors.newSingleThreadScheduledExecutor();
+		scaleZExecutor.scheduleAtFixedRate(() -> {
+			if (!isScalingZ)
+				return;
+			double randomValue = getRandomValue(finalMaxValue);
+			Model.scaleModelOnZRight(randomValue, mesh);
+			Platform.runLater(() -> {
+				remakeModel();
+				diskScaleModelZ.setText(String.valueOf(finalMaxValue));
+			});
+		}, 0, 1, TimeUnit.SECONDS);
+	}
+
+	@FXML
+	private void stopScalingDiskModel() {
+		isScalingX = false;
+		isScalingY = false;
+		isScalingZ = false;
+
+		List<ScheduledExecutorService> executors = Arrays.asList(scaleXExecutor, scaleYExecutor, scaleZExecutor);
+
+		for (ScheduledExecutorService executor : executors) {
+			if (executor != null && !executor.isShutdown()) {
+				executor.shutdown();
+			}
+		}
+	}
+
+	private double getRandomValue(double maxValue) {
+		Random random = new Random();
+		return -maxValue + (random.nextDouble() * (2 * maxValue));
+	}
+
+	@FXML
+	private void startDiskTranslation() {
+
+		String translateXValue = diskTranslateModelX.getText();
+		if (translateXValue != null && !translateXValue.isEmpty()) {
+			if (!isTranslatingX) {
+				diskTranslatingModelX();
+			}
+		}
+
+		String translateYValue = diskTranslateModelY.getText();
+		if (translateYValue != null && !translateYValue.isEmpty()) {
+			if (!isTranslatingY) {
+				diskTranslatingModelY();
+			}
+		}
+
+		String translateZValue = diskTranslateModelZ.getText();
+		if (translateZValue != null && !translateZValue.isEmpty()) {
+			if (!isTranslatingZ) {
+				diskTranslatingModelZ();
+			}
+		}
+	}
+
+	@FXML
+	private void startDiskScaling() {
+
+		String scaleXValue = diskScaleModelX.getText();
+		if (scaleXValue != null && !scaleXValue.isEmpty()) {
+			if (!isScalingX) {
+				diskScalingModelX();
+			}
+		}
+
+		String scaleYValue = diskScaleModelY.getText();
+		if (scaleYValue != null && !scaleYValue.isEmpty()) {
+			if (!isScalingY) {
+				diskScalingModelY();
+			}
+		}
+
+		String scaleZValue = diskScaleModelZ.getText();
+		if (scaleZValue != null && !scaleZValue.isEmpty()) {
+			if (!isScalingZ) {
+				diskScalingModelZ();
+			}
+		}
+	}
+
+	@FXML
+	private void startDiskRotation() {
+		String rotateXValue = diskRotateModelX.getText();
+		if (rotateXValue != null && !rotateXValue.isEmpty()) {
+			if (!isRotatingX) {
+				diskRotatingModelX();
+			}
+		}
+
+		String rotateYValue = diskRotateModelY.getText();
+		if (rotateYValue != null && !rotateYValue.isEmpty()) {
+			if (!isRotatingY) {
+				diskRotatingModelY();
+			}
+		}
+
+		String rotateZValue = diskRotateModelZ.getText();
+		if (rotateZValue != null && !rotateZValue.isEmpty()) {
+			if (!isRotatingZ) {
+				diskRotatingModelZ();
+			}
+		}
+	}
+
+	@FXML
+	private void handleAddLightBtnAction() {
+		LightManager.addNewLight(new Light());
+		lightList.getItems().add(LightManager.printLight(LightManager.getLightsCount() - 1));
+		remakeModel();
+	}
+
+	@FXML
+	private void handleDeleteLightBtnAction() {
+		LightManager.deleteLight(LightManager.getCurrent());
+		LightManager.setCurrent(0);
+		lightList.getItems().clear();
+		for (int i = 0; i < LightManager.getLightsCount(); i++) {
+			lightList.getItems().add(LightManager.printLight(i));
+		}
+		lightList.setValue(lightList.getItems().get(0));
+		remakeModel();
+	}
+
+	@FXML
+	private void handleColorizeLightBtnAction() {
+		Color newLightColor = colorLight.getValue();
+		LightManager.getCurrent().setColor(newLightColor);
+		remakeModel();
+	}
 }
-

@@ -15,7 +15,6 @@ public class LightManager {
 		Light light = new Light();
 		lights.add(light);
 		current = light;
-		lights.add(light);
 	}
 
 	public static Light getLight(int id) {

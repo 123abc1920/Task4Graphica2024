@@ -63,6 +63,10 @@ public class Light {
 	public boolean getOn() {
 		return isOn;
 	}
+	
+	public Color getColor() {
+		return color;
+	}
 
 	public Color newRgb(Color start, Vector3f n, Vector3f vectorToCamera, Vector3f ray) {
 		if (!this.isOn) {
