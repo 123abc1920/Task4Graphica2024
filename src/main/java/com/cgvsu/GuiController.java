@@ -867,6 +867,8 @@ public class GuiController {
 
 		boolean light = RasterizationParams.getIsLight();
 		RasterizationParams.setLight(false);
+		boolean line = RasterizationParams.getDrawLine();
+		RasterizationParams.setLine(false);
 		if (lampsOnOff.isSelected()) {
 			if (LightManager.getLightsCount() != 0) {
 				for (int i = 0; i < LightManager.getLightsCount(); i++) {
@@ -879,6 +881,7 @@ public class GuiController {
 		}
 
 		RasterizationParams.setLight(light);
+		RasterizationParams.setLine(line);
 		if (mesh != null) {
 			textureText.setText(mesh.getTextureSource());
 			RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,

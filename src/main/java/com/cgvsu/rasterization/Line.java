@@ -1,5 +1,4 @@
 package com.cgvsu.rasterization;
-//
 
 import com.cgvsu.math.Global;
 import com.cgvsu.zbuffer.ZBuffer;

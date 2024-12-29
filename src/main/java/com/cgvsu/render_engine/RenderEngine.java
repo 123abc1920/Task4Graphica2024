@@ -16,8 +16,6 @@ import com.cgvsu.rasterization.Line;
 import com.cgvsu.rasterization.RasterizationParams;
 import com.cgvsu.rasterization.TextureRasterization;
 import com.cgvsu.rasterization.TriangleRasterization;
-import com.cgvsu.zbuffer.DrawBuffer;
-import com.cgvsu.zbuffer.ZBuffer;
 
 import static com.cgvsu.render_engine.GraphicConveyor.*;
 
