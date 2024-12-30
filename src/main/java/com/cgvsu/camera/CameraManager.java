@@ -36,10 +36,16 @@ public class CameraManager {
 	}
 
 	public static void deleteCamera(Camera c) {
+		if (cameras.size() <= 1) {
+			return;
+		}
 		cameras.remove(c);
 	}
 
 	public static void deleteCamera(int id) {
+		if (cameras.size() <= 1) {
+			return;
+		}
 		cameras.remove(id);
 	}
 

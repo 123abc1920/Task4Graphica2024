@@ -26,10 +26,16 @@ public class LightManager {
 	}
 
 	public static void deleteLight(Light c) {
+		if (lights.size() <= 1) {
+			return;
+		}
 		lights.remove(c);
 	}
 
 	public static void deleteLight(int id) {
+		if (lights.size() <= 1) {
+			return;
+		}
 		lights.remove(id);
 	}
 

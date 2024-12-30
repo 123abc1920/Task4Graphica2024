@@ -32,29 +32,29 @@ public class Light {
 		lightModel.setColor(this.color);
 		Triangulation.triangulateModel(lightModel);
 		lightModel.setNormals(FindNormals.findNormals(lightModel));
-		moveLight(new Vector3f());
+		moveLight(this.position, new Vector3f());
 	}
 
-	private void moveLight(Vector3f v) {
-		double t = -v.getX() + this.position.getX();
+	private void moveLight(Vector3f v, Vector3f v2) {
+		double t = v.getX() - v2.getX();
 		if (t > 0) {
 			Model.moveModelRight(t, this.lightModel);
 		} else {
 			Model.moveModelLeft(Math.abs(t), this.lightModel);
 		}
 
-		t = -v.getY() + this.position.getY();
+		t = v.getY() - v2.getY();
 		if (t > 0) {
-			Model.moveModelUp(t, this.lightModel);
+			Model.moveModelDown(t, this.lightModel);
 		} else {
-			Model.moveModelDown(Math.abs(t), this.lightModel);
+			Model.moveModelUp(Math.abs(t), this.lightModel);
 		}
 
-		t = -v.getZ() + this.position.getZ();
+		t = v.getZ() - v2.getZ();
 		if (t > 0) {
-			Model.moveModelBackward(t, this.lightModel);
+			Model.moveModelForward(t, this.lightModel);
 		} else {
-			Model.moveModelForward(Math.abs(t), this.lightModel);
+			Model.moveModelBackward(Math.abs(t), this.lightModel);
 		}
 	}
 
@@ -64,7 +64,7 @@ public class Light {
 	}
 
 	public void setPosition(Vector3f v) {
-		moveLight(v);
+		moveLight(v, this.position);
 		this.position = v;
 	}
 
