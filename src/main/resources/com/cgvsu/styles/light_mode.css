@@ -57,13 +57,13 @@ Button, ColorPicker, ChoiceBox {
     -fx-background-color: rgb(215, 215, 215);
 }
 .list-cell {
-    -fx-background: transparent;
+    -fx-background-color: transparent;
     -fx-alignment: center;
     -fx-text-alignment: center;
 }
-.list-cell:selected {
-    -fx-background: rgb(81, 175, 238);
-}
+/* .list-cell:selected {
+    -fx-background-color: rgb(81, 175, 238);
+} */
 /* .textFieldTexture:disabled {
     -fx-padding: 3px;
     -fx-opacity: 1;

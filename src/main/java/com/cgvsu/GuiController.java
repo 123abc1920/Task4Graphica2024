@@ -140,6 +140,9 @@ public class GuiController {
 	private ListView<String> listViewModels;
 
 	@FXML
+	private ListView<CheckBox> listViewCheckBoxesForModels;
+
+	@FXML
 	private TextField textureText;
 
 	@FXML
@@ -255,6 +258,7 @@ public class GuiController {
 				(ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - scrollPaneMain.getWidth()));
 		anchorPane.prefHeightProperty()
 				.addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
+
 
 		timeline = new Timeline();
 		timeline.setCycleCount(Animation.INDEFINITE);
@@ -398,6 +402,13 @@ public class GuiController {
 		return alert;
 	}
 
+	private CheckBox createCheckBox() {
+		CheckBox checkBox= new CheckBox("Modified");
+		checkBox.setFocusTraversable(false);
+		checkBox.setSelected(true);
+		return checkBox;
+	}
+
 	@FXML
 	private void handleTextFieldLightAction(ActionEvent actionEvent) {
 		TextField source = (TextField) actionEvent.getSource();
@@ -489,7 +500,22 @@ public class GuiController {
 
 	@FXML
 	private void handleChooseFileBtnAction(ActionEvent actionEvent) {
-		if (mesh != null) {
+//		if (mesh != null) {
+//			FileChooser fileChooser = new FileChooser();
+//			fileChooser.getExtensionFilters()
+//					.add(new FileChooser.ExtensionFilter("Images (*.png, *.jpg)", "*.png", "*.jpg"));
+//			fileChooser.setTitle("Choose texture image");
+//			File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+//			if (file == null) {
+//				return;
+//			}
+//
+//			Path fileName = Path.of(file.getAbsolutePath());
+//			mesh.setTexture(fileName.toString());
+//		}
+//		remakeModel();
+
+		if (modelList.size() != 0) {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.getExtensionFilters()
 					.add(new FileChooser.ExtensionFilter("Images (*.png, *.jpg)", "*.png", "*.jpg"));
@@ -500,7 +526,12 @@ public class GuiController {
 			}
 
 			Path fileName = Path.of(file.getAbsolutePath());
-			mesh.setTexture(fileName.toString());
+			for (int i = 0; i < listViewCheckBoxesForModels.getItems().size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					modelList.get(i).setTexture(fileName.toString());
+				}
+			}
 		}
 		remakeModel();
 	}
@@ -543,7 +574,12 @@ public class GuiController {
 	@FXML
 	private void handleColorPickerModelAction(ActionEvent actionEvent) {
 		Color newModelColor = colorPickerModel.getValue();
-		mesh.setColor(newModelColor);
+		for (int i = 0; i < modelList.size(); i++) {
+			CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+			if (checkBox.isSelected()) {
+				modelList.get(i).setColor(newModelColor);
+			}
+		}
 		remakeModel();
 	}
 
@@ -667,19 +703,14 @@ public class GuiController {
 			double shiftXLBM = endXLMB - startXLMB;
 			double shiftYLMB = endYLMB - startYLMB;
 
-			camera.movePosition(new Vector3f((float) shiftXLBM * 0.05f, (float) shiftYLMB * 0.05f, 0));
-			camera.moveTarget(new Vector3f((float) shiftXLBM * 0.05f, (float) shiftYLMB * 0.05f, 0));
+			camera.movePosition(new Vector3f((float) shiftXLBM * 0.1f, (float) shiftYLMB * 0.1f, 0));
+//			camera.moveTarget(new Vector3f((float) shiftXLBM * 0.1f, (float) shiftYLMB * 015f, 0));
 
 			startXLMB = mouseEvent.getSceneX();
 			startYLMB = mouseEvent.getSceneY();
 			uploadInfoInTextFields();
 			remakeModel();
 		}
-		/*
-		 * else if (mouseEvent.getButton() == MouseButton.SECONDARY) { endXRMB =
-		 * mouseEvent.getX(); endYRMB = mouseEvent.getY(); double shiftXRBM = endXRMB -
-		 * startXRMB; double shiftYRMB = endYRMB - startYRMB; }
-		 */
 	}
 
 	@FXML
@@ -692,18 +723,6 @@ public class GuiController {
 			uploadInfoInTextFields();
 		}
 		remakeModel();
-	}
-
-	@FXML
-	private void handleSidePanelRemove() {
-//        isPanelRemoved = !isPanelRemoved;
-//        if (isPanelRemoved) {
-//            scrollPaneMain.setManaged(false);
-//            scrollPaneMain.setVisible(false);
-//        } else {
-//            scrollPaneMain.setManaged(true);
-//            scrollPaneMain.setVisible(true);
-//        }
 	}
 
 	@FXML
@@ -748,9 +767,13 @@ public class GuiController {
 
 		if (mesh != null) {
 			modelList.add(mesh);
+
 			listViewModels.getItems().add(file.getName());
-			listViewModels.getSelectionModel().clearSelection();
-			listViewModels.getSelectionModel().selectLast();
+//			listViewModels.getSelectionModel().clearSelection();
+//			listViewModels.getSelectionModel().selectLast();
+
+			listViewCheckBoxesForModels.getItems().add(createCheckBox());
+
 			try {
 				Triangulation.triangulateModel(mesh);
 			} catch (Exception exception) {
@@ -882,204 +905,165 @@ public class GuiController {
 
 		RasterizationParams.setLight(light);
 		RasterizationParams.setLine(line);
-		if (mesh != null) {
+		if (modelList.size() != 0) {
 			textureText.setText(mesh.getTextureSource());
-			RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), mesh, (int) width,
-					(int) height);
-			showModelInfo();
+			for (int i = 0; i < modelList.size(); i++) {
+				RenderEngine.render(canvas.getGraphicsContext2D(), CameraManager.getActive(), modelList.get(i), (int) width,
+						(int) height);
+				showModelInfo();
+			}
 		}
 	}
 
 	@FXML
-	private void scalingModelX() {
-		String newNear = scaleModelX.getText();
-		Double newNearDouble = 0d;
+	private void scaleModel(ActionEvent actionEvent) {
+		TextField source = (TextField) actionEvent.getSource();
+		String scaling = source.getText();
+		Double newScaling = 1d;
 
 		try {
-			newNearDouble = Double.parseDouble(newNear);
+			newScaling = Double.parseDouble(scaling);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования", errorMessage);
 			alert.showAndWait();
 		}
 
-		Model.scaleModelOnXForward(newNearDouble, mesh);
-		scaleModelX.setText(newNear);
+		if (source.equals(scaleModelX)) {
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					Model.scaleModelOnXForward(newScaling, modelList.get(i));
+				}
+			}
+
+		} else if (source.equals(scaleModelY)) {
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					Model.scaleModelOnYDown(newScaling, modelList.get(i));
+				}
+			}
+
+		} else if (source.equals(scaleModelZ)) {
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					Model.scaleModelOnZRight(newScaling, modelList.get(i));
+				}
+			}
+		}
+		source.setText(newScaling.toString());
 		anchorPane.requestFocus();
 		remakeModel();
 	}
 
 	@FXML
-	private void translatingModelX() {
-		String newNear = translateModelX.getText();
-		Double newNearDouble = 0d;
+	private void rotateModel(ActionEvent actionEvent) {
+		TextField source = (TextField) actionEvent.getSource();
+		String rotation = source.getText();
+		Double newRotation = 0d;
 
 		try {
-			newNearDouble = Double.parseDouble(newNear);
+			newRotation = Double.parseDouble(rotation);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
 			alert.showAndWait();
-			return;
 		}
 
-		if (newNearDouble > 0) {
-			Model.moveModelRight(newNearDouble, mesh);
-		} else {
-			Model.moveModelLeft(Math.abs(newNearDouble), mesh);
-		}
+		if (source.equals(rotateModelX)) {
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (newRotation > 0) {
+						Model.rotateModelOnXNotClockwise(newRotation.intValue(), modelList.get(i));
+					} else {
+						Model.rotateModelOnXClockwise(newRotation.intValue(), modelList.get(i));
+					}
+				}
+			}
 
-		translateModelX.setText(newNear);
+		} else if (source.equals(rotateModelY)) {
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (newRotation > 0) {
+						Model.rotateModelOnYUp(newRotation.intValue(), modelList.get(i));
+					} else {
+						Model.rotateModelOnYDown(newRotation.intValue(), modelList.get(i));
+					}
+				}
+			}
+
+		} else if (source.equals(rotateModelZ)) {
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (newRotation > 0) {
+						Model.rotateModelOnZClockwise(newRotation.intValue(), modelList.get(i));
+					} else {
+						Model.rotateModelOnZNotClockwise(newRotation.intValue(), modelList.get(i));
+					}
+				}
+			}
+		}
+		source.setText(newRotation.toString());
 		anchorPane.requestFocus();
 		remakeModel();
 	}
 
 	@FXML
-	private void scalingModelY() {
-		String newNear = scaleModelY.getText();
-		Double newNearDouble = 0d;
+	private void translateModel(ActionEvent actionEvent) {
+		TextField source = (TextField) actionEvent.getSource();
+		String translation = source.getText();
+		Double newTranslation = 0d;
 
 		try {
-			newNearDouble = Double.parseDouble(newNear);
+			newTranslation = Double.parseDouble(translation);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
 			alert.showAndWait();
 		}
-		Model.scaleModelOnYDown(newNearDouble, mesh);
-		scaleModelY.setText(newNear);
-		anchorPane.requestFocus();
-		remakeModel();
-	}
 
-	@FXML
-	private void translatingModelY() {
-		String newNear = translateModelY.getText();
-		Double newNearDouble = 0d;
+		if (source.equals(translateModelX)) {
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (newTranslation > 0) {
+						Model.moveModelRight(newTranslation, modelList.get(i));
+					} else {
+						Model.moveModelLeft(Math.abs(newTranslation), modelList.get(i));
+					}
+				}
+			}
 
-		try {
-			newNearDouble = Double.parseDouble(newNear);
-		} catch (Exception e) {
-			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-			alert.showAndWait();
-			return;
+		} else if (source.equals(translateModelY)) {
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (newTranslation > 0) {
+						Model.moveModelUp(newTranslation, modelList.get(i));
+					} else {
+						Model.moveModelDown(Math.abs(newTranslation), modelList.get(i));
+					}
+				}
+			}
+
+		} else if (source.equals(translateModelZ)) {
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (newTranslation > 0) {
+						Model.moveModelBackward(newTranslation, modelList.get(i));
+					} else {
+						Model.moveModelForward(Math.abs(newTranslation), modelList.get(i));
+					}
+				}
+			}
 		}
-
-		if (newNearDouble > 0) {
-			Model.moveModelUp(newNearDouble, mesh);
-		} else {
-			Model.moveModelDown(Math.abs(newNearDouble), mesh);
-		}
-
-		translateModelY.setText(newNear);
-		anchorPane.requestFocus();
-		remakeModel();
-	}
-
-	@FXML
-	private void scalingModelZ() {
-		String newNear = scaleModelZ.getText();
-		Double newNearDouble = 0d;
-
-		try {
-			newNearDouble = Double.parseDouble(newNear);
-		} catch (Exception e) {
-			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-			alert.showAndWait();
-			return;
-		}
-		Model.scaleModelOnZRight(newNearDouble, mesh);
-
-		scaleModelZ.setText(newNear);
-		anchorPane.requestFocus();
-		remakeModel();
-	}
-
-	@FXML
-	private void translatingModelZ() {
-		String newNear = translateModelZ.getText();
-		Double newNearDouble = 0d;
-		try {
-			newNearDouble = Double.parseDouble(newNear);
-		} catch (Exception e) {
-			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-			alert.showAndWait();
-		}
-		if (newNearDouble > 0) {
-			Model.moveModelBackward(newNearDouble, mesh);
-		} else {
-			Model.moveModelForward(Math.abs(newNearDouble), mesh);
-		}
-		translateModelZ.setText(newNear);
-		anchorPane.requestFocus();
-		remakeModel();
-	}
-
-	@FXML
-	private void rotatingModelX() {
-		String newNear = rotateModelX.getText();
-		Integer newNearInt = 0;
-
-		try {
-			newNearInt = Integer.parseInt(newNear);
-		} catch (Exception e) {
-			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-			alert.showAndWait();
-		}
-		if (newNearInt > 0) {
-			Model.rotateModelOnXNotClockwise(newNearInt, mesh);
-		} else {
-			Model.rotateModelOnXClockwise(newNearInt, mesh);
-		}
-		rotateModelX.setText(newNear);
-		anchorPane.requestFocus();
-		remakeModel();
-	}
-
-	@FXML
-	private void rotatingModelY() {
-		String newNear = rotateModelY.getText();
-		Integer newNearInt = 0;
-
-		try {
-			newNearInt = Integer.parseInt(newNear);
-		} catch (Exception e) {
-			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-			alert.showAndWait();
-		}
-		if (newNearInt > 0) {
-			Model.rotateModelOnYUp(newNearInt, mesh);
-		} else {
-			Model.rotateModelOnYDown(newNearInt, mesh);
-		}
-		rotateModelY.setText(newNear);
-		anchorPane.requestFocus();
-		remakeModel();
-	}
-
-	@FXML
-	private void rotatingModelZ() {
-		String newNear = rotateModelZ.getText();
-		Integer newNearInt = 0;
-
-		try {
-			newNearInt = Integer.parseInt(newNear);
-		} catch (Exception e) {
-			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение ближнего плана.", errorMessage);
-			alert.showAndWait();
-		}
-		if (newNearInt > 0) {
-			Model.rotateModelOnZClockwise(newNearInt, mesh);
-		} else {
-			Model.rotateModelOnZNotClockwise(newNearInt, mesh);
-		}
-		rotateModelZ.setText(newNear);
+		source.setText(newTranslation.toString());
 		anchorPane.requestFocus();
 		remakeModel();
 	}
@@ -1117,7 +1101,7 @@ public class GuiController {
 			maxValue = Double.parseDouble(newLine);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения.", errorMessage);
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
 			alert.showAndWait();
 			return;
 		}
@@ -1128,11 +1112,17 @@ public class GuiController {
 				return;
 			}
 			double randomValue = getRandomValue(finalMaxValue);
-			if (randomValue > 0) {
-				Model.moveModelRight(randomValue, mesh);
-			} else {
-				Model.moveModelLeft(Math.abs(randomValue), mesh);
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (randomValue > 0) {
+						Model.moveModelRight(randomValue, modelList.get(i));
+					} else {
+						Model.moveModelLeft(Math.abs(randomValue), modelList.get(i));
+					}
+				}
 			}
+
 			Platform.runLater(() -> {
 				remakeModel();
 				diskTranslateModelX.setText(String.valueOf(finalMaxValue));
@@ -1153,7 +1143,7 @@ public class GuiController {
 			maxValue = Double.parseDouble(newLine);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения.", errorMessage);
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
 			alert.showAndWait();
 			return;
 		}
@@ -1165,10 +1155,15 @@ public class GuiController {
 				return;
 			}
 			double randomValue = getRandomValue(finalMaxValue);
-			if (randomValue > 0) {
-				Model.moveModelUp(randomValue, mesh);
-			} else {
-				Model.moveModelDown(Math.abs(randomValue), mesh);
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (randomValue > 0) {
+						Model.moveModelUp(randomValue, modelList.get(i));
+					} else {
+						Model.moveModelDown(Math.abs(randomValue), modelList.get(i));
+					}
+				}
 			}
 			Platform.runLater(() -> {
 				remakeModel();
@@ -1190,7 +1185,7 @@ public class GuiController {
 			maxValue = Double.parseDouble(newLine);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения.", errorMessage);
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
 			alert.showAndWait();
 			return;
 		}
@@ -1202,10 +1197,15 @@ public class GuiController {
 				return;
 			}
 			double randomValue = getRandomValue(finalMaxValue);
-			if (randomValue > 0) {
-				Model.moveModelBackward(randomValue, mesh);
-			} else {
-				Model.moveModelForward(Math.abs(randomValue), mesh);
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (randomValue > 0) {
+						Model.moveModelBackward(randomValue, modelList.get(i));
+					} else {
+						Model.moveModelForward(Math.abs(randomValue), modelList.get(i));
+					}
+				}
 			}
 			Platform.runLater(() -> {
 				remakeModel();
@@ -1243,7 +1243,7 @@ public class GuiController {
 			maxValue = Integer.parseInt(newLine);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения.", errorMessage);
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
 			alert.showAndWait();
 			return;
 		}
@@ -1255,10 +1255,15 @@ public class GuiController {
 				return;
 			}
 			int randomValue = (int) getRandomValue(finalMaxValue);
-			if (randomValue > 0) {
-				Model.rotateModelOnXNotClockwise(randomValue, mesh);
-			} else {
-				Model.rotateModelOnXClockwise(Math.abs(randomValue), mesh);
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (randomValue > 0) {
+						Model.rotateModelOnXNotClockwise(randomValue, modelList.get(i));
+					} else {
+						Model.rotateModelOnXClockwise(Math.abs(randomValue), modelList.get(i));
+					}
+				}
 			}
 			Platform.runLater(() -> {
 				remakeModel();
@@ -1280,7 +1285,7 @@ public class GuiController {
 			maxValue = Integer.parseInt(newLine);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения.", errorMessage);
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
 			alert.showAndWait();
 			return;
 		}
@@ -1292,10 +1297,15 @@ public class GuiController {
 				return;
 			}
 			int randomValue = (int) getRandomValue(finalMaxValue);
-			if (randomValue > 0) {
-				Model.rotateModelOnYUp(randomValue, mesh);
-			} else {
-				Model.rotateModelOnYDown(Math.abs(randomValue), mesh);
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (randomValue > 0) {
+						Model.rotateModelOnYUp(randomValue, modelList.get(i));
+					} else {
+						Model.rotateModelOnYDown(Math.abs(randomValue), modelList.get(i));
+					}
+				}
 			}
 			Platform.runLater(() -> {
 				remakeModel();
@@ -1317,7 +1327,7 @@ public class GuiController {
 			maxValue = Integer.parseInt(newLine);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения.", errorMessage);
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
 			alert.showAndWait();
 			return;
 		}
@@ -1329,11 +1339,17 @@ public class GuiController {
 				return;
 			}
 			int randomValue = (int) getRandomValue(finalMaxValue);
-			if (randomValue > 0) {
-				Model.rotateModelOnZClockwise(randomValue, mesh);
-			} else {
-				Model.rotateModelOnZNotClockwise(Math.abs(randomValue), mesh);
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					if (randomValue > 0) {
+						Model.rotateModelOnZClockwise(randomValue, modelList.get(i));
+					} else {
+						Model.rotateModelOnZNotClockwise(Math.abs(randomValue), modelList.get(i));
+					}
+				}
 			}
+
 			Platform.runLater(() -> {
 				remakeModel();
 				diskRotateModelZ.setText(String.valueOf(finalMaxValue));
@@ -1367,7 +1383,7 @@ public class GuiController {
 			maxValue = Double.parseDouble(newLine);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования.",
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования",
 					errorMessage);
 			alert.showAndWait();
 			return;
@@ -1379,7 +1395,12 @@ public class GuiController {
 			if (!isScalingX)
 				return;
 			double randomValue = getRandomValue(finalMaxValue);
-			Model.scaleModelOnXForward(randomValue, mesh);
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					Model.scaleModelOnXForward(randomValue, modelList.get(i));
+				}
+			}
 			Platform.runLater(() -> {
 				remakeModel();
 				diskScaleModelX.setText(String.valueOf(finalMaxValue));
@@ -1398,7 +1419,7 @@ public class GuiController {
 			maxValue = Double.parseDouble(newLine);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования.",
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования",
 					errorMessage);
 			alert.showAndWait();
 			return;
@@ -1410,7 +1431,12 @@ public class GuiController {
 			if (!isScalingY)
 				return;
 			double randomValue = getRandomValue(finalMaxValue);
-			Model.scaleModelOnYDown(randomValue, mesh);
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					Model.scaleModelOnYDown(randomValue, modelList.get(i));
+				}
+			}
 			Platform.runLater(() -> {
 				remakeModel();
 				diskScaleModelY.setText(String.valueOf(finalMaxValue));
@@ -1429,7 +1455,7 @@ public class GuiController {
 			maxValue = Double.parseDouble(newLine);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
-			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования.",
+			Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования",
 					errorMessage);
 			alert.showAndWait();
 			return;
@@ -1441,7 +1467,12 @@ public class GuiController {
 			if (!isScalingZ)
 				return;
 			double randomValue = getRandomValue(finalMaxValue);
-			Model.scaleModelOnZRight(randomValue, mesh);
+			for (int i = 0; i < modelList.size(); i++) {
+				CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+				if (checkBox.isSelected()) {
+					Model.scaleModelOnZRight(randomValue, modelList.get(i));
+				}
+			}
 			Platform.runLater(() -> {
 				remakeModel();
 				diskScaleModelZ.setText(String.valueOf(finalMaxValue));
