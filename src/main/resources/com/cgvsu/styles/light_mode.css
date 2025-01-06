@@ -61,15 +61,6 @@ Button, ColorPicker, ChoiceBox {
     -fx-alignment: center;
     -fx-text-alignment: center;
 }
-/* .list-cell:selected {
-    -fx-background-color: rgb(81, 175, 238);
-} */
-/* .textFieldTexture:disabled {
-    -fx-padding: 3px;
-    -fx-opacity: 1;
-    -fx-background-color: white;
-    -fx-prompt-text-fill: black;
-} */
 /* Меню */
 MenuBar {
     -fx-background-color: rgb(215, 215, 215);

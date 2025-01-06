@@ -10,38 +10,48 @@ import java.util.List;
 import java.util.Locale;
 
 public class ObjWriter {
-    public static String write(Model model) {
-        return String.valueOf(writeVertices(model.getVertices())) +
-                writeTextureVertices(model.getTextureVertices()) +
-                writeNormals(model.getNormals()) +
-                writePolygons(model.getPolygons());
+    public static String write(List<Model> modelList) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Model model : modelList) {
+            stringBuilder.append(writeVertices(model.getVertices()));
+        }
+        for (Model model : modelList) {
+            stringBuilder.append(writeTextureVertices(model.getTextureVertices()));
+        }
+        for (Model model : modelList) {
+            stringBuilder.append(writeNormals(model.getNormals()));
+        }
+        for (Model model : modelList) {
+            stringBuilder.append(writePolygons(model.getPolygons()));
+        }
+        return stringBuilder.toString();
     }
 
-    protected static StringBuilder writeVertices(ArrayList<Vector3f> vertices) {
+    protected static String writeVertices(ArrayList<Vector3f> vertices) {
         StringBuilder stringVertices = new StringBuilder();
         for (Vector3f vertex : vertices) {
             stringVertices.append(String.format(Locale.US, "v %.4f %.4f %.4f\n", vertex.getX(), vertex.getY(), vertex.getZ()));
         }
-        return stringVertices;
+        return stringVertices.toString();
     }
 
-    protected static StringBuilder writeTextureVertices(ArrayList<Vector2f> textureVertices) {
+    protected static String writeTextureVertices(ArrayList<Vector2f> textureVertices) {
         StringBuilder stringTextureVertices = new StringBuilder();
         for (Vector2f textureVertex : textureVertices) {
             stringTextureVertices.append(String.format(Locale.US, "vt %.4f %.4f\n", textureVertex.getX(), textureVertex.getY()));
         }
-        return stringTextureVertices;
+        return stringTextureVertices.toString();
     }
 
-    protected static StringBuilder writeNormals(ArrayList<Vector3f> normals) {
+    protected static String writeNormals(ArrayList<Vector3f> normals) {
         StringBuilder stringNormals = new StringBuilder();
         for (Vector3f normal : normals) {
             stringNormals.append(String.format(Locale.US, "vn %.4f %.4f %.4f\n", normal.getX(), normal.getY(), normal.getZ()));
         }
-        return stringNormals;
+        return stringNormals.toString();
     }
 
-    protected static StringBuilder writePolygons(ArrayList<Polygon> polygons) {
+    protected static String writePolygons(ArrayList<Polygon> polygons) {
         StringBuilder stringPolygons = new StringBuilder();
         for (Polygon polygon : polygons) {
             List<Integer> vertexIndices = polygon.getVertexIndices();
@@ -71,6 +81,6 @@ public class ObjWriter {
 
             stringPolygons.append("\n");
         }
-        return stringPolygons;
+        return stringPolygons.toString();
     }
 }

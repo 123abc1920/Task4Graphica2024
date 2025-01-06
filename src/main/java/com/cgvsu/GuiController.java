@@ -405,6 +405,11 @@ public class GuiController {
         return checkBox;
     }
 
+    private String getFileExtension(String fileName) {
+        String[] array = fileName.split("\\.");
+        return array[array.length - 1].trim();
+    }
+
     @FXML
     private void handleTextFieldLightAction(ActionEvent actionEvent) {
         TextField source = (TextField) actionEvent.getSource();
@@ -507,7 +512,7 @@ public class GuiController {
             }
 
             Path fileName = Path.of(file.getAbsolutePath());
-            for (int i = 0; i < listViewCheckBoxesForModels.getItems().size(); i++) {
+            for (int i = 0; i < modelList.size(); i++) {
                 CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
                 if (checkBox.isSelected()) {
                     modelList.get(i).setTexture(fileName.toString());
@@ -607,6 +612,20 @@ public class GuiController {
     }
 
     @FXML
+    private void handleListViewModelsClick(MouseEvent mouseEvent) {
+        if (mouseEvent.getButton().equals(MouseButton.SECONDARY) && !modelList.isEmpty()) {
+            int index = listViewModels.getSelectionModel().getSelectedIndex();
+            modelList.remove(index);
+            listViewModels.getItems().remove(index);
+            listViewCheckBoxesForModels.getItems().remove(index);
+            if (modelList.isEmpty()) {
+                colorPickerModel.setDisable(true);
+            }
+        }
+        remakeModel();
+    }
+
+    @FXML
     private void setFovAction() {
         String newFov = fovTextField.getText();
         Double newFovDouble = 1.0d;
@@ -669,9 +688,21 @@ public class GuiController {
     @FXML
     private void handleMousePressed(MouseEvent mouseEvent) {
         anchorPane.requestFocus();
-        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-            startXLMB = mouseEvent.getSceneX();
-            startYLMB = mouseEvent.getSceneY();
+        if (!modelList.isEmpty()) {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                startXLMB = mouseEvent.getSceneX();
+                startYLMB = mouseEvent.getSceneY();
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                startXRMB = mouseEvent.getSceneX();
+                startYRMB = mouseEvent.getSceneY();
+            }
+            for (int i = 0; i < modelList.size(); i++) {
+                System.out.printf("Модель № %1s\n", i);
+                System.out.println(modelList.get(i).getVertices().toString());
+                System.out.println(modelList.get(i).getTextureVertices().toString());
+                System.out.println(modelList.get(i).getNormals().toString());
+                System.out.println(modelList.get(i).getPolygons().toString());
+            }
         }
     }
 
@@ -682,17 +713,30 @@ public class GuiController {
 
     @FXML
     private void handleMouseDragged(MouseEvent mouseEvent) {
-        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-            endXLMB = mouseEvent.getSceneX();
-            endYLMB = mouseEvent.getSceneY();
-            double shiftXLBM = endXLMB - startXLMB;
-            double shiftYLMB = endYLMB - startYLMB;
+        if (!modelList.isEmpty()) {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                endXLMB = mouseEvent.getSceneX();
+                endYLMB = mouseEvent.getSceneY();
+                double shiftXLBM = endXLMB - startXLMB;
+                double shiftYLMB = endYLMB - startYLMB;
 
-            camera.movePosition(new Vector3f((float) shiftXLBM * 0.1f, (float) shiftYLMB * 0.1f, 0));
+                camera.movePosition(new Vector3f((float) shiftXLBM * 0.1f, (float) shiftYLMB * 0.1f, 0));
 //			camera.moveTarget(new Vector3f((float) shiftXLBM * 0.1f, (float) shiftYLMB * 015f, 0));
 
-            startXLMB = mouseEvent.getSceneX();
-            startYLMB = mouseEvent.getSceneY();
+                startXLMB = mouseEvent.getSceneX();
+                startYLMB = mouseEvent.getSceneY();
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                endXRMB = mouseEvent.getSceneX();
+                endYRMB = mouseEvent.getSceneY();
+                double shiftXRBM = endXRMB - startXRMB;
+                double shiftYRMB = endYRMB - startYRMB;
+
+//            camera.movePosition(new Vector3f((float) shiftXLBM * 0.1f, (float) shiftYLMB * 0.1f, 0));
+                camera.moveTarget(new Vector3f((float) shiftXRBM * 0.1f, (float) shiftYRMB * 0.1f, 0));
+
+                startXRMB = mouseEvent.getSceneX();
+                startYRMB = mouseEvent.getSceneY();
+            }
             uploadInfoInTextFields();
             remakeModel();
         }
@@ -700,14 +744,16 @@ public class GuiController {
 
     @FXML
     private void handleMouseScroll(ScrollEvent scrollEvent) {
-        if (scrollEvent.getDeltaY() > 0) {
-            camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
-            uploadInfoInTextFields();
-        } else {
-            camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
-            uploadInfoInTextFields();
+        if (!modelList.isEmpty()) {
+            if (scrollEvent.getDeltaY() > 0) {
+                camera.movePosition(new Vector3f(0, 0, -TRANSLATION * 10));
+                uploadInfoInTextFields();
+            } else {
+                camera.movePosition(new Vector3f(0, 0, TRANSLATION * 10));
+                uploadInfoInTextFields();
+            }
+            remakeModel();
         }
-        remakeModel();
     }
 
     @FXML
@@ -726,7 +772,7 @@ public class GuiController {
     }
 
     @FXML
-    private void onCanvasDragDropped(DragEvent dragEvent) throws IOException {
+    private void onCanvasDragDropped(DragEvent dragEvent) {
         Dragboard dragboard = dragEvent.getDragboard();
         boolean success = false;
 
@@ -742,51 +788,62 @@ public class GuiController {
                 Path fileName = Path.of(file.getAbsolutePath());
                 String fileExtension = getFileExtension(fileName.toString());
 
-                if (!fileExtension.equals("obj")) {
+                if (fileExtension.equals("obj")) {
+                    try {
+                        String fileContent = Files.readString(fileName);
+                        modelList.add(ObjReader.read(fileContent));
+                    } catch (Exception exception) {
+                        dragEvent.consume();
+                        Alert alert = createAlert(Alert.AlertType.ERROR, "Ошибка при открытии файла" + fileName,
+                                exception.getMessage());
+                        alert.showAndWait();
+                    }
+                    if (modelList.get(modelList.size() - 1) != null) {
+
+                        colorPickerModel.setDisable(false);
+
+                        listViewModels.getItems().add(file.getName());
+
+                        listViewCheckBoxesForModels.getItems().add(createCheckBox());
+
+                        try {
+                            Triangulation.triangulateModel(modelList.get(modelList.size() - 1));
+                        } catch (Exception exception) {
+                            Alert alert = createAlert(Alert.AlertType.ERROR, exception.getMessage(), "");
+                            alert.showAndWait();
+                        }
+                        modelList.get(modelList.size() - 1).setNormals(FindNormals.findNormals(modelList.get(modelList.size() - 1)));
+                        modelList.get(modelList.size() - 1).setTexture(null);
+                        scrollPaneMain.setDisable(false);
+                        remakeModel();
+                    }
+
+                } else if ((fileExtension.equals("png") || fileExtension.equals("jpg"))) {
+                    if (!modelList.isEmpty() && checkBoxTexture.isSelected()) {
+                        for (int j = 0; j < listViewCheckBoxesForModels.getItems().size(); j++) {
+                            CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(j);
+                            if (checkBox.isSelected()) {
+                                modelList.get(j).setTexture(fileName.toString());
+                            }
+                        }
+                    } else {
+                        dragEvent.consume();
+                        Alert alert = createAlert(Alert.AlertType.WARNING, "Работа с текстурами невозможна", "Включите её перед тем, как загружать изображение\nЛибо загрузите хотя бы одну модель");
+                        alert.showAndWait();
+                        return;
+                    }
+                } else {
                     dragEvent.consume();
-                    Alert alert = createAlert(Alert.AlertType.WARNING, "Ошибка при открытии файла", "Это не OBJ файл");
+                    Alert alert = createAlert(Alert.AlertType.WARNING, "Ошибка при открытии файла", "Выберете файл с расширением obj для модели, png или jpg для текстуры");
                     alert.showAndWait();
                     return;
                 }
-
-                try {
-                    String fileContent = Files.readString(fileName);
-                    modelList.add(ObjReader.read(fileContent));
-                } catch (Exception exception) {
-                    dragEvent.consume();
-                    Alert alert = createAlert(Alert.AlertType.ERROR, "Ошибка при открытии файла" + fileName,
-                            exception.getMessage());
-                    alert.showAndWait();
-                }
-                if (modelList.get(modelList.size()-1) != null) {
-
-                    listViewModels.getItems().add(file.getName());
-
-                    listViewCheckBoxesForModels.getItems().add(createCheckBox());
-
-                    try {
-                        Triangulation.triangulateModel(modelList.get(modelList.size()-1));
-                    } catch (Exception exception) {
-                        Alert alert = createAlert(Alert.AlertType.ERROR, exception.getMessage(), "");
-                        alert.showAndWait();
-                    }
-                    modelList.get(modelList.size()-1).setNormals(FindNormals.findNormals(modelList.get(modelList.size()-1)));
-                    modelList.get(modelList.size()-1).setTexture(null);
-                    scrollPaneMain.setDisable(false);
-                    remakeModel();
-                }
             }
-
-
             success = true;
         }
+        remakeModel();
         dragEvent.setDropCompleted(success);
         dragEvent.consume();
-    }
-
-    private String getFileExtension(String fileName) {
-        String[] array = fileName.split("\\.");
-        return array[array.length-1].trim();
     }
 
     @FXML
@@ -815,6 +872,8 @@ public class GuiController {
 
             listViewModels.getItems().add(file.getName());
 
+            colorPickerModel.setDisable(false);
+
             listViewCheckBoxesForModels.getItems().add(createCheckBox());
 
             try {
@@ -832,16 +891,16 @@ public class GuiController {
 
     @FXML
     private void onSaveModelAsMenuItemClick() {
-        if (mesh == null) {
-            Alert alert1 = createAlert(Alert.AlertType.WARNING, "Ошибка при сохранении файла",
-                    "Model is null. Download any model before saving it");
+        if (modelList.isEmpty()) {
+            Alert alert1 = createAlert(Alert.AlertType.WARNING, "Ошибка при сохранении модели",
+                    "Нет ни одной загруженной модели, которую можно было бы сохранить");
             alert1.showAndWait();
         } else {
             FileChooser saveChooser = new FileChooser();
             saveChooser.setTitle("Save file as");
             saveChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("OBJ file", "*.obj"));
             File file = saveChooser.showSaveDialog(canvas.getScene().getWindow());
-            String modelInfo = ObjWriter.write(mesh);
+            String modelInfo = ObjWriter.write(modelList);
             if (file != null) {
                 try {
                     FileWriter fileWriter = new FileWriter(file);
@@ -891,30 +950,6 @@ public class GuiController {
         remakeModel();
     }
 
-    @FXML
-    private void toggleMoveMode() {
-        isMoveModeEnabled = !isMoveModeEnabled;
-        isRotateModeEnabled = false;
-        isScalingModeEnabled = false;
-        updateModeStyles();
-    }
-
-    @FXML
-    private void toggleRotateMode() {
-        isRotateModeEnabled = !isRotateModeEnabled;
-        isMoveModeEnabled = false;
-        isScalingModeEnabled = false;
-        updateModeStyles();
-    }
-
-    @FXML
-    private void toggleScalingMode() {
-        isScalingModeEnabled = !isScalingModeEnabled;
-        isMoveModeEnabled = false;
-        isRotateModeEnabled = false;
-        updateModeStyles();
-    }
-
     private void updateModeStyles() {
         if (isMoveModeEnabled) {
             System.out.println("Move mode enabled");
@@ -958,155 +993,161 @@ public class GuiController {
 
     @FXML
     private void scaleModel(ActionEvent actionEvent) {
-        TextField source = (TextField) actionEvent.getSource();
-        String scaling = source.getText();
-        Double newScaling = 1d;
+        if (!modelList.isEmpty()) {
+            TextField source = (TextField) actionEvent.getSource();
+            String scaling = source.getText();
+            Double newScaling = 1d;
 
-        try {
-            newScaling = Double.parseDouble(scaling);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования", errorMessage);
-            alert.showAndWait();
+            try {
+                newScaling = Double.parseDouble(scaling);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования", errorMessage);
+                alert.showAndWait();
+            }
+
+            if (source.equals(scaleModelX)) {
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        Model.scaleModelOnXForward(newScaling, modelList.get(i));
+                    }
+                }
+
+            } else if (source.equals(scaleModelY)) {
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        Model.scaleModelOnYDown(newScaling, modelList.get(i));
+                    }
+                }
+
+            } else if (source.equals(scaleModelZ)) {
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        Model.scaleModelOnZRight(newScaling, modelList.get(i));
+                    }
+                }
+            }
+            source.setText(newScaling.toString());
+            anchorPane.requestFocus();
+            remakeModel();
         }
-
-        if (source.equals(scaleModelX)) {
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    Model.scaleModelOnXForward(newScaling, modelList.get(i));
-                }
-            }
-
-        } else if (source.equals(scaleModelY)) {
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    Model.scaleModelOnYDown(newScaling, modelList.get(i));
-                }
-            }
-
-        } else if (source.equals(scaleModelZ)) {
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    Model.scaleModelOnZRight(newScaling, modelList.get(i));
-                }
-            }
-        }
-        source.setText(newScaling.toString());
-        anchorPane.requestFocus();
-        remakeModel();
     }
 
     @FXML
     private void rotateModel(ActionEvent actionEvent) {
-        TextField source = (TextField) actionEvent.getSource();
-        String rotation = source.getText();
-        Double newRotation = 0d;
+        if (!modelList.isEmpty()) {
+            TextField source = (TextField) actionEvent.getSource();
+            String rotation = source.getText();
+            Double newRotation = 0d;
 
-        try {
-            newRotation = Double.parseDouble(rotation);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
-            alert.showAndWait();
+            try {
+                newRotation = Double.parseDouble(rotation);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
+                alert.showAndWait();
+            }
+
+            if (source.equals(rotateModelX)) {
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (newRotation > 0) {
+                            Model.rotateModelOnXNotClockwise(newRotation.intValue(), modelList.get(i));
+                        } else {
+                            Model.rotateModelOnXClockwise(newRotation.intValue(), modelList.get(i));
+                        }
+                    }
+                }
+
+            } else if (source.equals(rotateModelY)) {
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (newRotation > 0) {
+                            Model.rotateModelOnYUp(newRotation.intValue(), modelList.get(i));
+                        } else {
+                            Model.rotateModelOnYDown(newRotation.intValue(), modelList.get(i));
+                        }
+                    }
+                }
+
+            } else if (source.equals(rotateModelZ)) {
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (newRotation > 0) {
+                            Model.rotateModelOnZClockwise(newRotation.intValue(), modelList.get(i));
+                        } else {
+                            Model.rotateModelOnZNotClockwise(newRotation.intValue(), modelList.get(i));
+                        }
+                    }
+                }
+            }
+            source.setText(newRotation.toString());
+            anchorPane.requestFocus();
+            remakeModel();
         }
-
-        if (source.equals(rotateModelX)) {
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (newRotation > 0) {
-                        Model.rotateModelOnXNotClockwise(newRotation.intValue(), modelList.get(i));
-                    } else {
-                        Model.rotateModelOnXClockwise(newRotation.intValue(), modelList.get(i));
-                    }
-                }
-            }
-
-        } else if (source.equals(rotateModelY)) {
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (newRotation > 0) {
-                        Model.rotateModelOnYUp(newRotation.intValue(), modelList.get(i));
-                    } else {
-                        Model.rotateModelOnYDown(newRotation.intValue(), modelList.get(i));
-                    }
-                }
-            }
-
-        } else if (source.equals(rotateModelZ)) {
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (newRotation > 0) {
-                        Model.rotateModelOnZClockwise(newRotation.intValue(), modelList.get(i));
-                    } else {
-                        Model.rotateModelOnZNotClockwise(newRotation.intValue(), modelList.get(i));
-                    }
-                }
-            }
-        }
-        source.setText(newRotation.toString());
-        anchorPane.requestFocus();
-        remakeModel();
     }
 
     @FXML
     private void translateModel(ActionEvent actionEvent) {
-        TextField source = (TextField) actionEvent.getSource();
-        String translation = source.getText();
-        Double newTranslation = 0d;
+        if (!modelList.isEmpty()) {
+            TextField source = (TextField) actionEvent.getSource();
+            String translation = source.getText();
+            Double newTranslation = 0d;
 
-        try {
-            newTranslation = Double.parseDouble(translation);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
-            alert.showAndWait();
+            try {
+                newTranslation = Double.parseDouble(translation);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
+                alert.showAndWait();
+            }
+
+            if (source.equals(translateModelX)) {
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (newTranslation > 0) {
+                            Model.moveModelRight(newTranslation, modelList.get(i));
+                        } else {
+                            Model.moveModelLeft(Math.abs(newTranslation), modelList.get(i));
+                        }
+                    }
+                }
+
+            } else if (source.equals(translateModelY)) {
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (newTranslation > 0) {
+                            Model.moveModelUp(newTranslation, modelList.get(i));
+                        } else {
+                            Model.moveModelDown(Math.abs(newTranslation), modelList.get(i));
+                        }
+                    }
+                }
+
+            } else if (source.equals(translateModelZ)) {
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (newTranslation > 0) {
+                            Model.moveModelBackward(newTranslation, modelList.get(i));
+                        } else {
+                            Model.moveModelForward(Math.abs(newTranslation), modelList.get(i));
+                        }
+                    }
+                }
+            }
+            source.setText(newTranslation.toString());
+            anchorPane.requestFocus();
+            remakeModel();
         }
-
-        if (source.equals(translateModelX)) {
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (newTranslation > 0) {
-                        Model.moveModelRight(newTranslation, modelList.get(i));
-                    } else {
-                        Model.moveModelLeft(Math.abs(newTranslation), modelList.get(i));
-                    }
-                }
-            }
-
-        } else if (source.equals(translateModelY)) {
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (newTranslation > 0) {
-                        Model.moveModelUp(newTranslation, modelList.get(i));
-                    } else {
-                        Model.moveModelDown(Math.abs(newTranslation), modelList.get(i));
-                    }
-                }
-            }
-
-        } else if (source.equals(translateModelZ)) {
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (newTranslation > 0) {
-                        Model.moveModelBackward(newTranslation, modelList.get(i));
-                    } else {
-                        Model.moveModelForward(Math.abs(newTranslation), modelList.get(i));
-                    }
-                }
-            }
-        }
-        source.setText(newTranslation.toString());
-        anchorPane.requestFocus();
-        remakeModel();
     }
 
     private ScheduledExecutorService translateXExecutor;
@@ -1131,128 +1172,134 @@ public class GuiController {
 
     @FXML
     private void diskTranslatingModelX() {
-        if (isTranslatingX) {
-            return;
-        }
-        isTranslatingX = true;
-        String newLine = diskTranslateModelX.getText();
-        Double maxValue = 0d;
-
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-        translateXExecutor = Executors.newSingleThreadScheduledExecutor();
-        translateXExecutor.scheduleAtFixedRate(() -> {
-            if (!isTranslatingX) {
+        if (!modelList.isEmpty()) {
+            if (isTranslatingX) {
                 return;
             }
-            double randomValue = getRandomValue(finalMaxValue);
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (randomValue > 0) {
-                        Model.moveModelRight(randomValue, modelList.get(i));
-                    } else {
-                        Model.moveModelLeft(Math.abs(randomValue), modelList.get(i));
+            isTranslatingX = true;
+            String newLine = diskTranslateModelX.getText();
+            Double maxValue = 0d;
+
+            try {
+                maxValue = Double.parseDouble(newLine);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
+                alert.showAndWait();
+                return;
+            }
+            double finalMaxValue = maxValue;
+            translateXExecutor = Executors.newSingleThreadScheduledExecutor();
+            translateXExecutor.scheduleAtFixedRate(() -> {
+                if (!isTranslatingX) {
+                    return;
+                }
+                double randomValue = getRandomValue(finalMaxValue);
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (randomValue > 0) {
+                            Model.moveModelRight(randomValue, modelList.get(i));
+                        } else {
+                            Model.moveModelLeft(Math.abs(randomValue), modelList.get(i));
+                        }
                     }
                 }
-            }
 
-            Platform.runLater(() -> {
-                remakeModel();
-                diskTranslateModelX.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
+                Platform.runLater(() -> {
+                    remakeModel();
+                    diskTranslateModelX.setText(String.valueOf(finalMaxValue));
+                });
+            }, 0, 100, TimeUnit.MILLISECONDS);
+        }
     }
 
     @FXML
     private void diskTranslatingModelY() {
-        if (isTranslatingY) {
-            return;
-        }
-        isTranslatingY = true;
-        String newLine = diskTranslateModelY.getText();
-        Double maxValue = 0d;
-
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-
-        translateYExecutor = Executors.newSingleThreadScheduledExecutor();
-        translateYExecutor.scheduleAtFixedRate(() -> {
-            if (!isTranslatingY) {
+        if (!modelList.isEmpty()) {
+            if (isTranslatingY) {
                 return;
             }
-            double randomValue = getRandomValue(finalMaxValue);
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (randomValue > 0) {
-                        Model.moveModelUp(randomValue, modelList.get(i));
-                    } else {
-                        Model.moveModelDown(Math.abs(randomValue), modelList.get(i));
+            isTranslatingY = true;
+            String newLine = diskTranslateModelY.getText();
+            Double maxValue = 0d;
+
+            try {
+                maxValue = Double.parseDouble(newLine);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
+                alert.showAndWait();
+                return;
+            }
+            double finalMaxValue = maxValue;
+
+            translateYExecutor = Executors.newSingleThreadScheduledExecutor();
+            translateYExecutor.scheduleAtFixedRate(() -> {
+                if (!isTranslatingY) {
+                    return;
+                }
+                double randomValue = getRandomValue(finalMaxValue);
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (randomValue > 0) {
+                            Model.moveModelUp(randomValue, modelList.get(i));
+                        } else {
+                            Model.moveModelDown(Math.abs(randomValue), modelList.get(i));
+                        }
                     }
                 }
-            }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskTranslateModelY.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
+                Platform.runLater(() -> {
+                    remakeModel();
+                    diskTranslateModelY.setText(String.valueOf(finalMaxValue));
+                });
+            }, 0, 100, TimeUnit.MILLISECONDS);
+        }
     }
 
     @FXML
     private void diskTranslatingModelZ() {
-        if (isTranslatingZ) {
-            return;
-        }
-        isTranslatingZ = true;
-        String newLine = diskTranslateModelZ.getText();
-        Double maxValue = 0d;
-
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-
-        translateZExecutor = Executors.newSingleThreadScheduledExecutor();
-        translateZExecutor.scheduleAtFixedRate(() -> {
-            if (!isTranslatingZ) {
+        if (!modelList.isEmpty()) {
+            if (isTranslatingZ) {
                 return;
             }
-            double randomValue = getRandomValue(finalMaxValue);
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (randomValue > 0) {
-                        Model.moveModelBackward(randomValue, modelList.get(i));
-                    } else {
-                        Model.moveModelForward(Math.abs(randomValue), modelList.get(i));
+            isTranslatingZ = true;
+            String newLine = diskTranslateModelZ.getText();
+            Double maxValue = 0d;
+
+            try {
+                maxValue = Double.parseDouble(newLine);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для перемещения", errorMessage);
+                alert.showAndWait();
+                return;
+            }
+            double finalMaxValue = maxValue;
+
+            translateZExecutor = Executors.newSingleThreadScheduledExecutor();
+            translateZExecutor.scheduleAtFixedRate(() -> {
+                if (!isTranslatingZ) {
+                    return;
+                }
+                double randomValue = getRandomValue(finalMaxValue);
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (randomValue > 0) {
+                            Model.moveModelBackward(randomValue, modelList.get(i));
+                        } else {
+                            Model.moveModelForward(Math.abs(randomValue), modelList.get(i));
+                        }
                     }
                 }
-            }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskTranslateModelZ.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
+                Platform.runLater(() -> {
+                    remakeModel();
+                    diskTranslateModelZ.setText(String.valueOf(finalMaxValue));
+                });
+            }, 0, 100, TimeUnit.MILLISECONDS);
+        }
     }
 
     @FXML
@@ -1273,129 +1320,135 @@ public class GuiController {
 
     @FXML
     private void diskRotatingModelX() {
-        if (isRotatingX) {
-            return;
-        }
-        isRotatingX = true;
-        String newLine = diskRotateModelX.getText();
-        Integer maxValue = 0;
-
-        try {
-            maxValue = Integer.parseInt(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        int finalMaxValue = maxValue;
-
-        rotateXExecutor = Executors.newSingleThreadScheduledExecutor();
-        rotateXExecutor.scheduleAtFixedRate(() -> {
-            if (!isRotatingX) {
+        if (!modelList.isEmpty()) {
+            if (isRotatingX) {
                 return;
             }
-            int randomValue = (int) getRandomValue(finalMaxValue);
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (randomValue > 0) {
-                        Model.rotateModelOnXNotClockwise(randomValue, modelList.get(i));
-                    } else {
-                        Model.rotateModelOnXClockwise(Math.abs(randomValue), modelList.get(i));
+            isRotatingX = true;
+            String newLine = diskRotateModelX.getText();
+            Integer maxValue = 0;
+
+            try {
+                maxValue = Integer.parseInt(newLine);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
+                alert.showAndWait();
+                return;
+            }
+            int finalMaxValue = maxValue;
+
+            rotateXExecutor = Executors.newSingleThreadScheduledExecutor();
+            rotateXExecutor.scheduleAtFixedRate(() -> {
+                if (!isRotatingX) {
+                    return;
+                }
+                int randomValue = (int) getRandomValue(finalMaxValue);
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (randomValue > 0) {
+                            Model.rotateModelOnXNotClockwise(randomValue, modelList.get(i));
+                        } else {
+                            Model.rotateModelOnXClockwise(Math.abs(randomValue), modelList.get(i));
+                        }
                     }
                 }
-            }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskRotateModelX.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
+                Platform.runLater(() -> {
+                    remakeModel();
+                    diskRotateModelX.setText(String.valueOf(finalMaxValue));
+                });
+            }, 0, 100, TimeUnit.MILLISECONDS);
+        }
     }
 
     @FXML
     private void diskRotatingModelY() {
-        if (isRotatingY) {
-            return;
-        }
-        isRotatingY = true;
-        String newLine = diskRotateModelY.getText();
-        Integer maxValue = 0;
-
-        try {
-            maxValue = Integer.parseInt(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        int finalMaxValue = maxValue;
-
-        rotateYExecutor = Executors.newSingleThreadScheduledExecutor();
-        rotateYExecutor.scheduleAtFixedRate(() -> {
-            if (!isRotatingY) {
+        if (modelList.isEmpty()) {
+            if (isRotatingY) {
                 return;
             }
-            int randomValue = (int) getRandomValue(finalMaxValue);
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (randomValue > 0) {
-                        Model.rotateModelOnYUp(randomValue, modelList.get(i));
-                    } else {
-                        Model.rotateModelOnYDown(Math.abs(randomValue), modelList.get(i));
+            isRotatingY = true;
+            String newLine = diskRotateModelY.getText();
+            Integer maxValue = 0;
+
+            try {
+                maxValue = Integer.parseInt(newLine);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
+                alert.showAndWait();
+                return;
+            }
+            int finalMaxValue = maxValue;
+
+            rotateYExecutor = Executors.newSingleThreadScheduledExecutor();
+            rotateYExecutor.scheduleAtFixedRate(() -> {
+                if (!isRotatingY) {
+                    return;
+                }
+                int randomValue = (int) getRandomValue(finalMaxValue);
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (randomValue > 0) {
+                            Model.rotateModelOnYUp(randomValue, modelList.get(i));
+                        } else {
+                            Model.rotateModelOnYDown(Math.abs(randomValue), modelList.get(i));
+                        }
                     }
                 }
-            }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskRotateModelY.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
+                Platform.runLater(() -> {
+                    remakeModel();
+                    diskRotateModelY.setText(String.valueOf(finalMaxValue));
+                });
+            }, 0, 100, TimeUnit.MILLISECONDS);
+        }
     }
 
     @FXML
     private void diskRotatingModelZ() {
-        if (isRotatingZ) {
-            return;
-        }
-        isRotatingZ = true;
-        String newLine = diskRotateModelZ.getText();
-        Integer maxValue = 0;
-
-        try {
-            maxValue = Integer.parseInt(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        int finalMaxValue = maxValue;
-
-        rotateZExecutor = Executors.newSingleThreadScheduledExecutor();
-        rotateZExecutor.scheduleAtFixedRate(() -> {
-            if (!isRotatingZ) {
+        if (!modelList.isEmpty()) {
+            if (isRotatingZ) {
                 return;
             }
-            int randomValue = (int) getRandomValue(finalMaxValue);
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    if (randomValue > 0) {
-                        Model.rotateModelOnZClockwise(randomValue, modelList.get(i));
-                    } else {
-                        Model.rotateModelOnZNotClockwise(Math.abs(randomValue), modelList.get(i));
+            isRotatingZ = true;
+            String newLine = diskRotateModelZ.getText();
+            Integer maxValue = 0;
+
+            try {
+                maxValue = Integer.parseInt(newLine);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для вращения", errorMessage);
+                alert.showAndWait();
+                return;
+            }
+            int finalMaxValue = maxValue;
+
+            rotateZExecutor = Executors.newSingleThreadScheduledExecutor();
+            rotateZExecutor.scheduleAtFixedRate(() -> {
+                if (!isRotatingZ) {
+                    return;
+                }
+                int randomValue = (int) getRandomValue(finalMaxValue);
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        if (randomValue > 0) {
+                            Model.rotateModelOnZClockwise(randomValue, modelList.get(i));
+                        } else {
+                            Model.rotateModelOnZNotClockwise(Math.abs(randomValue), modelList.get(i));
+                        }
                     }
                 }
-            }
 
-            Platform.runLater(() -> {
-                remakeModel();
-                diskRotateModelZ.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 100, TimeUnit.MILLISECONDS);
+                Platform.runLater(() -> {
+                    remakeModel();
+                    diskRotateModelZ.setText(String.valueOf(finalMaxValue));
+                });
+            }, 0, 100, TimeUnit.MILLISECONDS);
+        }
     }
 
     @FXML
@@ -1415,110 +1468,116 @@ public class GuiController {
 
     @FXML
     private void diskScalingModelX() {
-        if (isScalingX)
-            return;
-        isScalingX = true;
-        String newLine = diskScaleModelX.getText();
-        Double maxValue = 0d;
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования",
-                    errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-
-        scaleXExecutor = Executors.newSingleThreadScheduledExecutor();
-        scaleXExecutor.scheduleAtFixedRate(() -> {
-            if (!isScalingX)
+        if (!modelList.isEmpty()) {
+            if (isScalingX)
                 return;
-            double randomValue = getRandomValue(finalMaxValue);
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    Model.scaleModelOnXForward(randomValue, modelList.get(i));
-                }
+            isScalingX = true;
+            String newLine = diskScaleModelX.getText();
+            Double maxValue = 0d;
+            try {
+                maxValue = Double.parseDouble(newLine);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования",
+                        errorMessage);
+                alert.showAndWait();
+                return;
             }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskScaleModelX.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 1, TimeUnit.SECONDS);
+            double finalMaxValue = maxValue;
+
+            scaleXExecutor = Executors.newSingleThreadScheduledExecutor();
+            scaleXExecutor.scheduleAtFixedRate(() -> {
+                if (!isScalingX)
+                    return;
+                double randomValue = getRandomValue(finalMaxValue);
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        Model.scaleModelOnXForward(randomValue, modelList.get(i));
+                    }
+                }
+                Platform.runLater(() -> {
+                    remakeModel();
+                    diskScaleModelX.setText(String.valueOf(finalMaxValue));
+                });
+            }, 0, 1, TimeUnit.SECONDS);
+        }
     }
 
     @FXML
     private void diskScalingModelY() {
-        if (isScalingY)
-            return;
-        isScalingY = true;
-        String newLine = diskScaleModelY.getText();
-        Double maxValue = 0d;
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования",
-                    errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-
-        scaleYExecutor = Executors.newSingleThreadScheduledExecutor();
-        scaleYExecutor.scheduleAtFixedRate(() -> {
-            if (!isScalingY)
+        if (!modelList.isEmpty()) {
+            if (isScalingY)
                 return;
-            double randomValue = getRandomValue(finalMaxValue);
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    Model.scaleModelOnYDown(randomValue, modelList.get(i));
-                }
+            isScalingY = true;
+            String newLine = diskScaleModelY.getText();
+            Double maxValue = 0d;
+            try {
+                maxValue = Double.parseDouble(newLine);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования",
+                        errorMessage);
+                alert.showAndWait();
+                return;
             }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskScaleModelY.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 1, TimeUnit.SECONDS);
+            double finalMaxValue = maxValue;
+
+            scaleYExecutor = Executors.newSingleThreadScheduledExecutor();
+            scaleYExecutor.scheduleAtFixedRate(() -> {
+                if (!isScalingY)
+                    return;
+                double randomValue = getRandomValue(finalMaxValue);
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        Model.scaleModelOnYDown(randomValue, modelList.get(i));
+                    }
+                }
+                Platform.runLater(() -> {
+                    remakeModel();
+                    diskScaleModelY.setText(String.valueOf(finalMaxValue));
+                });
+            }, 0, 1, TimeUnit.SECONDS);
+        }
     }
 
     @FXML
     private void diskScalingModelZ() {
-        if (isScalingZ)
-            return;
-        isScalingZ = true;
-        String newLine = diskScaleModelZ.getText();
-        Double maxValue = 0d;
-        try {
-            maxValue = Double.parseDouble(newLine);
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования",
-                    errorMessage);
-            alert.showAndWait();
-            return;
-        }
-        double finalMaxValue = maxValue;
-
-        scaleZExecutor = Executors.newSingleThreadScheduledExecutor();
-        scaleZExecutor.scheduleAtFixedRate(() -> {
-            if (!isScalingZ)
+        if (!modelList.isEmpty()) {
+            if (isScalingZ)
                 return;
-            double randomValue = getRandomValue(finalMaxValue);
-            for (int i = 0; i < modelList.size(); i++) {
-                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
-                if (checkBox.isSelected()) {
-                    Model.scaleModelOnZRight(randomValue, modelList.get(i));
-                }
+            isScalingZ = true;
+            String newLine = diskScaleModelZ.getText();
+            Double maxValue = 0d;
+            try {
+                maxValue = Double.parseDouble(newLine);
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                Alert alert = createAlert(Alert.AlertType.ERROR, "Неправильное значение для масштабирования",
+                        errorMessage);
+                alert.showAndWait();
+                return;
             }
-            Platform.runLater(() -> {
-                remakeModel();
-                diskScaleModelZ.setText(String.valueOf(finalMaxValue));
-            });
-        }, 0, 1, TimeUnit.SECONDS);
+            double finalMaxValue = maxValue;
+
+            scaleZExecutor = Executors.newSingleThreadScheduledExecutor();
+            scaleZExecutor.scheduleAtFixedRate(() -> {
+                if (!isScalingZ)
+                    return;
+                double randomValue = getRandomValue(finalMaxValue);
+                for (int i = 0; i < modelList.size(); i++) {
+                    CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                    if (checkBox.isSelected()) {
+                        Model.scaleModelOnZRight(randomValue, modelList.get(i));
+                    }
+                }
+                Platform.runLater(() -> {
+                    remakeModel();
+                    diskScaleModelZ.setText(String.valueOf(finalMaxValue));
+                });
+            }, 0, 1, TimeUnit.SECONDS);
+        }
     }
 
     @FXML

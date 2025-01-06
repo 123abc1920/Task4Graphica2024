@@ -16,11 +16,6 @@ AnchorPane {
 TextField, ColorPicker Label, Button, ChoiceBox Label {
     -fx-text-fill: black;
 }
-/* TextField {
-    -fx-background-color: lightgray;
-    -fx-background-radius: 10px;
-    -fx-padding: 5px;
-} */
 /* Боковая панель */
 Label, TextField {
     -fx-padding: 5px;
@@ -69,19 +64,10 @@ Button, ColorPicker, ChoiceBox {
     -fx-background-color: rgb(140,140,140);
 }
 .list-cell {
-    -fx-background: transparent; /* Прозрачный фон ячеек */
-}
-.list-cell:selected {
-    -fx-background: rgb(81, 175, 238);
+    -fx-background-color: transparent;
     -fx-alignment: center;
     -fx-text-alignment: center;
 }
-/* .textFieldTexture:disabled {
-    -fx-padding: 3px;
-    -fx-opacity: 1.0;
-    -fx-background-color: white;
-    -fx-prompt-text-fill: black;
-} */
 /* Меню */
 MenuBar {
     -fx-background-color: rgb(140,140,140);

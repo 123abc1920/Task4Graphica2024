@@ -347,6 +347,21 @@
 									</HBox>
 								</children>
 							</VBox>
+                     <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="200.0" styleClass="vBoxSecondary">
+                        <children>
+                           <StackPane styleClass="stakePaneHeader">
+                              <children>
+                                 <Label text="Модели" />
+                              </children>
+                           </StackPane>
+                           <HBox prefHeight="100.0" prefWidth="200.0">
+                              <children>
+                                 <ListView fx:id="listViewModels" fixedCellSize="25.0" focusTraversable="false" onMouseClicked="#handleListViewModelsClick" />
+                                 <ListView fx:id="listViewCheckBoxesForModels" fixedCellSize="25.0" focusTraversable="false" prefWidth="155.0" />
+                              </children>
+                           </HBox>
+                        </children>
+                     </VBox>
                      <VBox styleClass="vBoxSecondary">
                         <children>
                            <StackPane styleClass="stakePaneHeader">
@@ -400,21 +415,6 @@
                                        <Insets left="10.0" />
                                     </HBox.margin>
                                  </Button>
-                              </children>
-                           </HBox>
-                        </children>
-                     </VBox>
-                     <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="150.0" styleClass="vBoxSecondary">
-                        <children>
-                           <StackPane styleClass="stakePaneHeader">
-                              <children>
-                                 <Label text="Модели" />
-                              </children>
-                           </StackPane>
-                           <HBox prefHeight="100.0" prefWidth="200.0">
-                              <children>
-                                 <ListView fx:id="listViewModels" fixedCellSize="25.0" focusTraversable="false" />
-                                 <ListView fx:id="listViewCheckBoxesForModels" fixedCellSize="25.0" focusTraversable="false" prefWidth="155.0" />
                               </children>
                            </HBox>
                         </children>
