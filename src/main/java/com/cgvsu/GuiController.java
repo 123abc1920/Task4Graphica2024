@@ -248,6 +248,7 @@ public class GuiController {
     private double width, height;
 
     List<Model> modelList = new ArrayList<>();
+    List<Model> modelListOrigin = new ArrayList<>();
 
     @FXML
     private void initialize() {
@@ -616,6 +617,7 @@ public class GuiController {
         if (mouseEvent.getButton().equals(MouseButton.SECONDARY) && !modelList.isEmpty()) {
             int index = listViewModels.getSelectionModel().getSelectedIndex();
             modelList.remove(index);
+            modelListOrigin.remove(index);
             listViewModels.getItems().remove(index);
             listViewCheckBoxesForModels.getItems().remove(index);
             if (modelList.isEmpty()) {
@@ -701,7 +703,12 @@ public class GuiController {
                 System.out.println(modelList.get(i).getVertices().toString());
                 System.out.println(modelList.get(i).getTextureVertices().toString());
                 System.out.println(modelList.get(i).getNormals().toString());
-                System.out.println(modelList.get(i).getPolygons().toString());
+                for (int j = 0; j < modelList.get(i).getPolygons().size(); j++) {
+                    System.out.println("Вершины" + modelList.get(i).getPolygons().get(j).getVertexIndices());
+                    System.out.println("Текст вершины" + modelList.get(i).getPolygons().get(j).getTextureVertexIndices());
+                    System.out.println("Нормали" + modelList.get(i).getPolygons().get(j).getNormalIndices());
+                }
+
             }
         }
     }
@@ -792,6 +799,7 @@ public class GuiController {
                     try {
                         String fileContent = Files.readString(fileName);
                         modelList.add(ObjReader.read(fileContent));
+                        modelListOrigin.add(ObjReader.read(fileContent));
                     } catch (Exception exception) {
                         dragEvent.consume();
                         Alert alert = createAlert(Alert.AlertType.ERROR, "Ошибка при открытии файла" + fileName,
@@ -862,6 +870,7 @@ public class GuiController {
         try {
             String fileContent = Files.readString(fileName);
             modelList.add(ObjReader.read(fileContent));
+            modelListOrigin.add(ObjReader.read(fileContent));
         } catch (Exception exception) {
             Alert alert = createAlert(Alert.AlertType.ERROR, "Ошибка при открытии файла " + fileName,
                     exception.getMessage());
@@ -900,7 +909,7 @@ public class GuiController {
             saveChooser.setTitle("Save file as");
             saveChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("OBJ file", "*.obj"));
             File file = saveChooser.showSaveDialog(canvas.getScene().getWindow());
-            String modelInfo = ObjWriter.write(modelList);
+            String modelInfo = ObjWriter.write(modelListOrigin);
             if (file != null) {
                 try {
                     FileWriter fileWriter = new FileWriter(file);
@@ -1114,6 +1123,7 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (newTranslation > 0) {
                             Model.moveModelRight(newTranslation, modelList.get(i));
+                            Model.moveModelRight(newTranslation, modelListOrigin.get(i));
                         } else {
                             Model.moveModelLeft(Math.abs(newTranslation), modelList.get(i));
                         }

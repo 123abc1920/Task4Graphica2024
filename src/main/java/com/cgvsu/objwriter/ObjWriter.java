@@ -21,8 +21,9 @@ public class ObjWriter {
         for (Model model : modelList) {
             stringBuilder.append(writeNormals(model.getNormals()));
         }
-        for (Model model : modelList) {
-            stringBuilder.append(writePolygons(model.getPolygons()));
+        for (int i = 0; i < modelList.size(); i++) {
+            Model model = modelList.get(i);
+            stringBuilder.append(writePolygons(model.getPolygons(), modelList, i));
         }
         return stringBuilder.toString();
     }
@@ -51,7 +52,15 @@ public class ObjWriter {
         return stringNormals.toString();
     }
 
-    protected static String writePolygons(ArrayList<Polygon> polygons) {
+    protected static String writePolygons(ArrayList<Polygon> polygons, List<Model> modelList, int index) {
+        int verticesGeneralCount = 0;
+        int textureVerticesGeneralCount = 0;
+        int normalsGeneralCount = 0;
+        for (int i = 0; i < index; i++) {
+            verticesGeneralCount += modelList.get(i).getVertices().size();
+            textureVerticesGeneralCount += modelList.get(i).getTextureVertices().size();
+            normalsGeneralCount += modelList.get(i).getNormals().size();
+        }
         StringBuilder stringPolygons = new StringBuilder();
         for (Polygon polygon : polygons) {
             List<Integer> vertexIndices = polygon.getVertexIndices();
@@ -61,15 +70,15 @@ public class ObjWriter {
             stringPolygons.append("f");
 
             for (int i = 0; i < vertexIndices.size(); i++) {
-                int vertexIndex = vertexIndices.get(i) + 1; // Переключение с 0-индекса на 1
+                int vertexIndex = vertexIndices.get(i) + 1 + verticesGeneralCount; // Переключение с 0-индекса на 1
                 String faceElement = String.valueOf(vertexIndex);
 
                 if (!textureVertexIndices.isEmpty()) {
-                    int textureIndex = textureVertexIndices.get(i) + 1;
+                    int textureIndex = textureVertexIndices.get(i) + 1 + textureVerticesGeneralCount;
                     faceElement += "/" + textureIndex;
                 }
                 if (!normalIndices.isEmpty()) {
-                    int normalIndex = normalIndices.get(i) + 1;
+                    int normalIndex = normalIndices.get(i) + 1 + normalsGeneralCount;
                     if (textureVertexIndices.isEmpty()) {
                         faceElement += "/";
                     }
