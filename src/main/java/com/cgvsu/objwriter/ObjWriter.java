@@ -10,20 +10,32 @@ import java.util.List;
 import java.util.Locale;
 
 public class ObjWriter {
-    public static String write(List<Model> modelList) {
+    public static String write(List<Model> modelList, boolean[] isSelected) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Model model : modelList) {
-            stringBuilder.append(writeVertices(model.getVertices()));
+        for (int i = 0; i < modelList.size(); i++) {
+            if (isSelected[i]) {
+                stringBuilder.append(writeVertices(modelList.get(i).getVertices()));
+            }
         }
-        for (Model model : modelList) {
-            stringBuilder.append(writeTextureVertices(model.getTextureVertices()));
+
+        for (int i = 0; i < modelList.size(); i++) {
+            if (isSelected[i]) {
+                stringBuilder.append(writeTextureVertices(modelList.get(i).getTextureVertices()));
+            }
         }
-        for (Model model : modelList) {
-            stringBuilder.append(writeNormals(model.getNormals()));
+
+        for (int i = 0; i < modelList.size(); i++) {
+            if (isSelected[i]) {
+                stringBuilder.append(writeNormals(modelList.get(i).getNormals()));
+            }
+
         }
         for (int i = 0; i < modelList.size(); i++) {
-            Model model = modelList.get(i);
-            stringBuilder.append(writePolygons(model.getPolygons(), modelList, i));
+            if (isSelected[i]) {
+                Model model = modelList.get(i);
+                stringBuilder.append(writePolygons(model.getPolygons(), modelList, i, isSelected));
+            }
+
         }
         return stringBuilder.toString();
     }
@@ -52,14 +64,16 @@ public class ObjWriter {
         return stringNormals.toString();
     }
 
-    protected static String writePolygons(ArrayList<Polygon> polygons, List<Model> modelList, int index) {
+    protected static String writePolygons(ArrayList<Polygon> polygons, List<Model> modelList, int index, boolean[] isSelected) {
         int verticesGeneralCount = 0;
         int textureVerticesGeneralCount = 0;
         int normalsGeneralCount = 0;
         for (int i = 0; i < index; i++) {
-            verticesGeneralCount += modelList.get(i).getVertices().size();
-            textureVerticesGeneralCount += modelList.get(i).getTextureVertices().size();
-            normalsGeneralCount += modelList.get(i).getNormals().size();
+            if (isSelected[i]) {
+                verticesGeneralCount += modelList.get(i).getVertices().size();
+                textureVerticesGeneralCount += modelList.get(i).getTextureVertices().size();
+                normalsGeneralCount += modelList.get(i).getNormals().size();
+            }
         }
         StringBuilder stringPolygons = new StringBuilder();
         for (Polygon polygon : polygons) {

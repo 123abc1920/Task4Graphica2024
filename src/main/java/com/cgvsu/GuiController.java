@@ -411,6 +411,15 @@ public class GuiController {
         return array[array.length - 1].trim();
     }
 
+    private boolean[] getCheckBoxesInfo(ListView<CheckBox> listViewCheckBoxesForModels) {
+        boolean[] isSelected = new boolean[listViewCheckBoxesForModels.getItems().size()];
+        for (int i = 0; i < listViewCheckBoxesForModels.getItems().size(); i++) {
+            CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+            isSelected[i] = checkBox.isSelected();
+        }
+        return isSelected;
+    }
+
     @FXML
     private void handleTextFieldLightAction(ActionEvent actionEvent) {
         TextField source = (TextField) actionEvent.getSource();
@@ -700,13 +709,14 @@ public class GuiController {
             }
             for (int i = 0; i < modelList.size(); i++) {
                 System.out.printf("Модель № %1s\n", i);
-                System.out.println(modelList.get(i).getVertices().toString());
-                System.out.println(modelList.get(i).getTextureVertices().toString());
-                System.out.println(modelList.get(i).getNormals().toString());
+                System.out.println("VERT" + modelList.get(i).getVertices().toString());
+                System.out.println("T VERT" + modelList.get(i).getTextureVertices().toString());
+                System.out.println("NORM" + modelList.get(i).getNormals().toString() + "-----\n" + modelList.get(i).getNormals().size());
                 for (int j = 0; j < modelList.get(i).getPolygons().size(); j++) {
+                    System.out.println("Полигон №" + j);
                     System.out.println("Вершины" + modelList.get(i).getPolygons().get(j).getVertexIndices());
                     System.out.println("Текст вершины" + modelList.get(i).getPolygons().get(j).getTextureVertexIndices());
-                    System.out.println("Нормали" + modelList.get(i).getPolygons().get(j).getNormalIndices());
+                    System.out.println("Нормали" + modelList.get(i).getPolygons().get(j).getNormalIndices() + "\n");
                 }
 
             }
@@ -909,7 +919,7 @@ public class GuiController {
             saveChooser.setTitle("Save file as");
             saveChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("OBJ file", "*.obj"));
             File file = saveChooser.showSaveDialog(canvas.getScene().getWindow());
-            String modelInfo = ObjWriter.write(modelListOrigin);
+            String modelInfo = ObjWriter.write(modelListOrigin, getCheckBoxesInfo(listViewCheckBoxesForModels));
             if (file != null) {
                 try {
                     FileWriter fileWriter = new FileWriter(file);
@@ -1020,6 +1030,7 @@ public class GuiController {
                     CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
                     if (checkBox.isSelected()) {
                         Model.scaleModelOnXForward(newScaling, modelList.get(i));
+                        Model.scaleModelOnXForward(newScaling, modelListOrigin.get(i));
                     }
                 }
 
@@ -1028,6 +1039,7 @@ public class GuiController {
                     CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
                     if (checkBox.isSelected()) {
                         Model.scaleModelOnYDown(newScaling, modelList.get(i));
+                        Model.scaleModelOnYDown(newScaling, modelListOrigin.get(i));
                     }
                 }
 
@@ -1036,6 +1048,7 @@ public class GuiController {
                     CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
                     if (checkBox.isSelected()) {
                         Model.scaleModelOnZRight(newScaling, modelList.get(i));
+                        Model.scaleModelOnZRight(newScaling, modelListOrigin.get(i));
                     }
                 }
             }
@@ -1066,8 +1079,10 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (newRotation > 0) {
                             Model.rotateModelOnXNotClockwise(newRotation.intValue(), modelList.get(i));
+                            Model.rotateModelOnXNotClockwise(newRotation.intValue(), modelListOrigin.get(i));
                         } else {
                             Model.rotateModelOnXClockwise(newRotation.intValue(), modelList.get(i));
+                            Model.rotateModelOnXClockwise(newRotation.intValue(), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1078,8 +1093,10 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (newRotation > 0) {
                             Model.rotateModelOnYUp(newRotation.intValue(), modelList.get(i));
+                            Model.rotateModelOnYUp(newRotation.intValue(), modelListOrigin.get(i));
                         } else {
                             Model.rotateModelOnYDown(newRotation.intValue(), modelList.get(i));
+                            Model.rotateModelOnYDown(newRotation.intValue(), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1090,8 +1107,10 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (newRotation > 0) {
                             Model.rotateModelOnZClockwise(newRotation.intValue(), modelList.get(i));
+                            Model.rotateModelOnZClockwise(newRotation.intValue(), modelListOrigin.get(i));
                         } else {
                             Model.rotateModelOnZNotClockwise(newRotation.intValue(), modelList.get(i));
+                            Model.rotateModelOnZNotClockwise(newRotation.intValue(), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1126,6 +1145,7 @@ public class GuiController {
                             Model.moveModelRight(newTranslation, modelListOrigin.get(i));
                         } else {
                             Model.moveModelLeft(Math.abs(newTranslation), modelList.get(i));
+                            Model.moveModelLeft(Math.abs(newTranslation), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1136,8 +1156,10 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (newTranslation > 0) {
                             Model.moveModelUp(newTranslation, modelList.get(i));
+                            Model.moveModelUp(newTranslation, modelListOrigin.get(i));
                         } else {
                             Model.moveModelDown(Math.abs(newTranslation), modelList.get(i));
+                            Model.moveModelDown(Math.abs(newTranslation), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1148,8 +1170,10 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (newTranslation > 0) {
                             Model.moveModelBackward(newTranslation, modelList.get(i));
+                            Model.moveModelBackward(newTranslation, modelListOrigin.get(i));
                         } else {
                             Model.moveModelForward(Math.abs(newTranslation), modelList.get(i));
+                            Model.moveModelForward(Math.abs(newTranslation), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1210,8 +1234,10 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (randomValue > 0) {
                             Model.moveModelRight(randomValue, modelList.get(i));
+                            Model.moveModelRight(randomValue, modelListOrigin.get(i));
                         } else {
                             Model.moveModelLeft(Math.abs(randomValue), modelList.get(i));
+                            Model.moveModelLeft(Math.abs(randomValue), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1255,8 +1281,10 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (randomValue > 0) {
                             Model.moveModelUp(randomValue, modelList.get(i));
+                            Model.moveModelUp(randomValue, modelListOrigin.get(i));
                         } else {
                             Model.moveModelDown(Math.abs(randomValue), modelList.get(i));
+                            Model.moveModelDown(Math.abs(randomValue), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1299,8 +1327,10 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (randomValue > 0) {
                             Model.moveModelBackward(randomValue, modelList.get(i));
+                            Model.moveModelBackward(randomValue, modelListOrigin.get(i));
                         } else {
                             Model.moveModelForward(Math.abs(randomValue), modelList.get(i));
+                            Model.moveModelForward(Math.abs(randomValue), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1359,8 +1389,10 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (randomValue > 0) {
                             Model.rotateModelOnXNotClockwise(randomValue, modelList.get(i));
+                            Model.rotateModelOnXNotClockwise(randomValue, modelListOrigin.get(i));
                         } else {
                             Model.rotateModelOnXClockwise(Math.abs(randomValue), modelList.get(i));
+                            Model.rotateModelOnXClockwise(Math.abs(randomValue), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1403,8 +1435,10 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (randomValue > 0) {
                             Model.rotateModelOnYUp(randomValue, modelList.get(i));
+                            Model.rotateModelOnYUp(randomValue, modelListOrigin.get(i));
                         } else {
                             Model.rotateModelOnYDown(Math.abs(randomValue), modelList.get(i));
+                            Model.rotateModelOnYDown(Math.abs(randomValue), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1447,8 +1481,10 @@ public class GuiController {
                     if (checkBox.isSelected()) {
                         if (randomValue > 0) {
                             Model.rotateModelOnZClockwise(randomValue, modelList.get(i));
+                            Model.rotateModelOnZClockwise(randomValue, modelListOrigin.get(i));
                         } else {
                             Model.rotateModelOnZNotClockwise(Math.abs(randomValue), modelList.get(i));
+                            Model.rotateModelOnZNotClockwise(Math.abs(randomValue), modelListOrigin.get(i));
                         }
                     }
                 }
@@ -1504,6 +1540,7 @@ public class GuiController {
                     CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
                     if (checkBox.isSelected()) {
                         Model.scaleModelOnXForward(randomValue, modelList.get(i));
+                        Model.scaleModelOnXForward(randomValue, modelListOrigin.get(i));
                     }
                 }
                 Platform.runLater(() -> {
@@ -1542,6 +1579,7 @@ public class GuiController {
                     CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
                     if (checkBox.isSelected()) {
                         Model.scaleModelOnYDown(randomValue, modelList.get(i));
+                        Model.scaleModelOnYDown(randomValue, modelListOrigin.get(i));
                     }
                 }
                 Platform.runLater(() -> {
@@ -1580,6 +1618,7 @@ public class GuiController {
                     CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
                     if (checkBox.isSelected()) {
                         Model.scaleModelOnZRight(randomValue, modelList.get(i));
+                        Model.scaleModelOnZRight(randomValue, modelListOrigin.get(i));
                     }
                 }
                 Platform.runLater(() -> {
