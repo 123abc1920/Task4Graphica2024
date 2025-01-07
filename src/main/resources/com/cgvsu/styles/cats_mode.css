@@ -6,12 +6,12 @@
     font-family: "OpenSans";
     src: url("../fonts/OpenSans.ttf");
 }
-* {
-    -fx-text-fill: black;
-}
 AnchorPane {
-    -fx-background-image: url("../images/background.jpg");
-    -fx-opacity: 0.25;
+    -fx-background-image: url("../images/background2.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-color: rgba(255, 255, 255, 0.5);
 }
 /* Боковая панель */
 Label, TextField {
@@ -76,22 +76,26 @@ Button, ColorPicker, ChoiceBox {
 } */
 /* Меню */
 MenuBar {
-    -fx-background-color: rgb(215, 215, 215);
+    -fx-text-fill: white;
+    -fx-background-color: black;
     -fx-background-radius: 0 0 10px 10px;
     -fx-border-radius: 10px;
     -fx-padding: 0px;
 }
 .menu {
+    -fx-text-fill: white;
     -fx-padding: 6px;
     -fx-background-radius: 10px;
     -fx-border-radius: 0 0 10px 10px;
 }
 .context-menu {
+    -fx-text-fill: white;
     -fx-padding: 0px;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
 }
 .menu-item {
+    -fx-text-fill: white;
     -fx-padding: 2px;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
