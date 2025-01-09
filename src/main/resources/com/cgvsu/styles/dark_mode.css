@@ -1,11 +1,3 @@
-@font-face {
-    font-family: "DaysOne";
-    src: url("../fonts/DaysOne.ttf");
-}
-@font-face {
-    font-family: "OpenSans";
-    src: url("../fonts/OpenSans.ttf");
-}
 * {
     -fx-text-fill: white;
 }

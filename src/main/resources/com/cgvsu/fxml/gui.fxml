@@ -366,6 +366,22 @@
                         <children>
                            <StackPane styleClass="stakePaneHeader">
                               <children>
+                                 <Label text="Удаление части модели" />
+                              </children>
+                           </StackPane>
+                           <HBox fx:id="hBoxDeletion" alignment="CENTER" styleClass="hBoxTopPadding">
+                              <children>
+                                 <ChoiceBox fx:id="deletionMode" focusTraversable="false" prefWidth="130.0" />
+                                 <Label text="Индекс элемента" />
+                                 <TextField fx:id="textFieldDeletion" focusTraversable="false" onAction="#handleTextFieldDeletion" prefWidth="50.0" />
+                              </children>
+                           </HBox>
+                        </children>
+                     </VBox>
+                     <VBox styleClass="vBoxSecondary">
+                        <children>
+                           <StackPane styleClass="stakePaneHeader">
+                              <children>
                                  <Label text="Трансформации" />
                               </children>
                            </StackPane>

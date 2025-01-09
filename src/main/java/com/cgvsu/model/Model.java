@@ -243,4 +243,47 @@ public class Model {
 		}
 	}
 
+	public boolean deletePolygon(int index) {
+		if (index < polygons.size() && index >= 0) {
+			polygons.remove(index);
+			return true;
+		} else {
+			return false;
+//			throw new RuntimeException("В модели нет полигона с таким номером");
+		}
+	}
+
+	public boolean deleteVertex(int index) {
+//		List<Integer> polygonsForDeletion = new ArrayList<>();
+		if (index < vertices.size() && index >= 0) {
+			for (int i = 0; i < polygons.size(); i++) {
+				Polygon polygon = polygons.get(i);
+				int polSize = polygon.getVertexIndices().size();
+				for (int j = 0; j < polSize; j++) {
+					if (polygon.getVertexIndices().get(j) == index && polSize == 3) {
+//						polygonsForDeletion.add(i);
+						deletePolygon(i);
+						i-=1;
+						break;
+					} else if (polygon.getVertexIndices().get(j) == index) {
+						polygon.getVertexIndices().remove(j);
+						if (!polygon.getTextureVertexIndices().isEmpty()) {
+							polygon.getTextureVertexIndices().remove(j);
+						}
+						if (!polygon.getNormalIndices().isEmpty()) {
+							polygon.getNormalIndices().remove(j);
+						}
+						break;
+					}
+				}
+			}
+//			for (int i = 0; i < vertices.size(); i++) {
+//				vertices.remove(index-1);
+//			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }

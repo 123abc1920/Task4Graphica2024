@@ -33,7 +33,6 @@ import javafx.util.Duration;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -43,6 +42,7 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
 
 import com.cgvsu.camera.Camera;
 import com.cgvsu.camera.CameraManager;
@@ -123,6 +123,9 @@ public class GuiController {
     private ColorPicker colorPickerLines;
 
     @FXML
+    private HBox hBoxDeletion;
+
+    @FXML
     private Button deleteTextureBtn;
 
     @FXML
@@ -181,33 +184,47 @@ public class GuiController {
 
     @FXML
     private TextField nearTextField;
+
     @FXML
     private TextField farTextField;
+
     @FXML
     private TextField scaleModelX;
+
     @FXML
     private TextField scaleModelY;
+
     @FXML
     private TextField scaleModelZ;
+
     @FXML
     private TextField rotateModelX;
+
     @FXML
     private TextField rotateModelY;
+
     @FXML
     private TextField rotateModelZ;
+
     @FXML
     private TextField translateModelX;
+
     @FXML
     private TextField translateModelY;
+
     @FXML
     private TextField translateModelZ;
+
     private boolean isInLightMode = true;
-    private boolean isPanelRemoved = true;
+
     @FXML
     private HBox hBoxTextures;
 
     @FXML
     private ChoiceBox<String> lightList;
+
+    @FXML
+    private ChoiceBox<String> deletionMode;
 
     @FXML
     private Button addLightBtn;
@@ -223,6 +240,9 @@ public class GuiController {
 
     @FXML
     private CheckBox lampsOnOff;
+
+    @FXML
+    private TextField textFieldDeletion;
 
     private Model mesh = null;
 
@@ -335,6 +355,11 @@ public class GuiController {
                 remakeModel();
             }
         });
+
+        deletionMode.getItems().add("Полигон");
+        deletionMode.getItems().add("Вершина");
+        deletionMode.setValue(deletionMode.getItems().get(0));
+
     }
 
     private void uploadInfoInTextFields() {
@@ -418,6 +443,50 @@ public class GuiController {
             isSelected[i] = checkBox.isSelected();
         }
         return isSelected;
+    }
+
+    @FXML
+    private void handleTextFieldDeletion(ActionEvent actionEvent) {
+        String index = textFieldDeletion.getText();
+        String deletionModeValue = deletionMode.getValue();
+        List<Integer> success = new ArrayList<>();
+        Integer newNumber = -1;
+        try {
+            newNumber = Integer.parseInt(index);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            Alert alert = createAlert(Alert.AlertType.ERROR, "Не удалось запарсить значение Integer", errorMessage);
+            alert.showAndWait();
+        }
+        textFieldDeletion.setText(newNumber.toString());
+        if (newNumber != -1) {
+            for (int i = 0; i < modelList.size(); i++) {
+                CheckBox checkBox = listViewCheckBoxesForModels.getItems().get(i);
+                if (checkBox.isSelected()) {
+                    if (deletionModeValue.equals("Полигон")) {
+                        if (!modelList.get(i).deletePolygon(newNumber)) {
+                            success.add(i+1);
+                        }
+                    } else {
+                        if (!modelList.get(i).deleteVertex(newNumber)) {
+                            success.add(i+1);
+                        }
+                    }
+                }
+            }
+        }
+        if (!success.isEmpty()) {
+            Alert alert = createAlert(Alert.AlertType.INFORMATION, "Внимание: " + deletionModeValue.toLowerCase() +  " с индексом " + newNumber, "В моделях под номерами " + success + " нет " + deletionModeValue.toLowerCase() + " с таким индексом");
+            alert.showAndWait();
+        }
+//        for (int i = 0; i < modelList.size(); i++) {
+//            if (modelList.get(i).getPolygons().isEmpty()) {
+//                modelList.remove(i);
+//            }
+//        }
+        canvas.requestFocus();
+        remakeModel();
+
     }
 
     @FXML
@@ -631,6 +700,7 @@ public class GuiController {
             listViewCheckBoxesForModels.getItems().remove(index);
             if (modelList.isEmpty()) {
                 colorPickerModel.setDisable(true);
+                hBoxDeletion.setDisable(true);
             }
         }
         remakeModel();
@@ -707,19 +777,19 @@ public class GuiController {
                 startXRMB = mouseEvent.getSceneX();
                 startYRMB = mouseEvent.getSceneY();
             }
-            for (int i = 0; i < modelList.size(); i++) {
-                System.out.printf("Модель № %1s\n", i);
-                System.out.println("VERT" + modelList.get(i).getVertices().toString());
-                System.out.println("T VERT" + modelList.get(i).getTextureVertices().toString());
-                System.out.println("NORM" + modelList.get(i).getNormals().toString() + "-----\n" + modelList.get(i).getNormals().size());
-                for (int j = 0; j < modelList.get(i).getPolygons().size(); j++) {
-                    System.out.println("Полигон №" + j);
-                    System.out.println("Вершины" + modelList.get(i).getPolygons().get(j).getVertexIndices());
-                    System.out.println("Текст вершины" + modelList.get(i).getPolygons().get(j).getTextureVertexIndices());
-                    System.out.println("Нормали" + modelList.get(i).getPolygons().get(j).getNormalIndices() + "\n");
-                }
-
-            }
+//            for (int i = 0; i < modelList.size(); i++) {
+//                System.out.printf("Модель № %1s\n", i);
+//                System.out.println("VERT" + modelList.get(i).getVertices().toString());
+//                System.out.println("T VERT" + modelList.get(i).getTextureVertices().toString());
+//                System.out.println("NORM" + modelList.get(i).getNormals().toString() + "-----\n" + modelList.get(i).getNormals().size());
+//                for (int j = 0; j < modelList.get(i).getPolygons().size(); j++) {
+//                    System.out.println("Полигон №" + j);
+//                    System.out.println("Вершины" + modelList.get(i).getPolygons().get(j).getVertexIndices());
+//                    System.out.println("Текст вершины" + modelList.get(i).getPolygons().get(j).getTextureVertexIndices());
+//                    System.out.println("Нормали" + modelList.get(i).getPolygons().get(j).getNormalIndices() + "\n");
+//                }
+//
+//            }
         }
     }
 
@@ -892,6 +962,8 @@ public class GuiController {
             listViewModels.getItems().add(file.getName());
 
             colorPickerModel.setDisable(false);
+
+            hBoxDeletion.setDisable(false);
 
             listViewCheckBoxesForModels.getItems().add(createCheckBox());
 
