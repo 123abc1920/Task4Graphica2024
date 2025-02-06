@@ -20,15 +20,15 @@ public class Light {
 	private double ks = 0.4;
 	private double highLightShine = 31;
 
-//	private String modelText = "# Blender 4.0.1\r\n" + "# www.blender.org\r\n" + "o Cube\r\n"
-//			+ "v -0.100000 -0.100000 0.100000\r\n" + "v -0.100000 0.100000 0.100000\r\n"
-//			+ "v -0.100000 -0.100000 -0.100000\r\n" + "v -0.100000 0.100000 -0.100000\r\n"
-//			+ "v 0.100000 -0.100000 0.100000\r\n" + "v 0.100000 0.100000 0.100000\r\n"
-//			+ "v 0.100000 -0.100000 -0.100000\r\n" + "v 0.100000 0.100000 -0.100000\r\n" + "s 0\r\n" + "f 1 2 4 3\r\n"
-//			+ "f 3 4 8 7\r\n" + "f 7 8 6 5\r\n" + "f 5 6 2 1\r\n" + "f 3 7 5 1\r\n" + "f 8 4 2 6";
+	private String modelText = "# Blender 4.0.1\r\n" + "# www.blender.org\r\n" + "o Cube\r\n"
+			+ "v -0.100000 -0.100000 0.100000\r\n" + "v -0.100000 0.100000 0.100000\r\n"
+			+ "v -0.100000 -0.100000 -0.100000\r\n" + "v -0.100000 0.100000 -0.100000\r\n"
+			+ "v 0.100000 -0.100000 0.100000\r\n" + "v 0.100000 0.100000 0.100000\r\n"
+			+ "v 0.100000 -0.100000 -0.100000\r\n" + "v 0.100000 0.100000 -0.100000\r\n" + "s 0\r\n" + "f 1 2 4 3\r\n"
+			+ "f 3 4 8 7\r\n" + "f 7 8 6 5\r\n" + "f 5 6 2 1\r\n" + "f 3 7 5 1\r\n" + "f 8 4 2 6";
 
 	public Light() {
-//		lightModel = ObjReader.read(modelText);
+		lightModel = ObjReader.read(modelText);
 		lightModel.setColor(this.color);
 		Triangulation.triangulateModel(lightModel);
 		lightModel.setNormals(FindNormals.findNormals(lightModel));
@@ -127,6 +127,9 @@ public class Light {
 		}
 
 		double r = reflectedRay.dotProduct(vectorToCamera.multiplyScalar(-1));
+		if (r < 0) {
+			r = 0;
+		}
 
 		double sred = start.getRed() * color.getRed();
 		double sgreen = start.getGreen() * color.getGreen();
